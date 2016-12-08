@@ -1,0 +1,1050 @@
+{{define "header"}}
+<html>
+  <head>
+    <title>Ahgora.com.br</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <link rel="stylesheet" type="text/css" href="./static/js/Semantic-UI/dist/semantic.css">
+    <link rel="stylesheet" type="text/css" href="./static/js/Semantic-UI/dist/components/reset.css">
+    <link rel="stylesheet" type="text/css" href="./static/js/Semantic-UI/dist/components/site.css">
+    <link rel="stylesheet" type="text/css" href="./static/js/Semantic-UI/dist/components/grid.css">
+    <link rel="stylesheet" type="text/css" href="./static/js/Semantic-UI/dist/components/icon.css">
+    <link rel="stylesheet" type="text/css" href="./static/js/Semantic-UI/dist/components/input.css">
+    <link rel="stylesheet" type="text/css" href="./static/js/Semantic-UI/dist/components/button.css">
+    <link rel="stylesheet" type="text/css" href="./static/js/Semantic-UI/dist/components/divider.css">
+    <link rel="stylesheet" type="text/css" href="./static/js/Semantic-UI/dist/components/label.css">
+    <link rel="stylesheet" type="text/css" href="./static/js/Semantic-UI/dist/components/dropdown.css">
+    <link rel="stylesheet" type="text/css" href="./static/js/Semantic-UI/dist/components/transition.css">
+    <link rel="stylesheet" type="text/css" href="./static/js/Semantic-UI/dist/components/popup.css">
+    <link rel="stylesheet" type="text/css" href="./static/js/Semantic-UI/dist/semantic.min.css" />
+
+    <script type="text/javascript" src="./static/js/jquery-3.1.1.min.js"></script>
+
+    <script type="text/javascript" src="./static/js/iframe.js"></script>
+    <script type="text/javascript" src="./static/js/Semantic-UI/dist/components/popup.js"></script>
+    <script type="text/javascript" src="./static/js/Semantic-UI/dist/components/dropdown.js"></script>
+    <script type="text/javascript" src="./static/js/Semantic-UI/dist/components/transition.js"></script>
+    <script type="text/javascript" src="./static/js/Semantic-UI/dist/semantic.min.js"></script>
+
+    <link rel="stylesheet" href="/static/js/Leaflet.draw/docs/examples/libs/leaflet.css" />
+    <link rel="stylesheet" href="./static/js/Leaflet.draw/dist/leaflet.draw.css" />
+
+    <script src="/static/js/Leaflet.draw/docs/examples/libs/leaflet-src.js"></script>
+
+    <script src="./static/js/Leaflet.draw/src/Leaflet.draw.js"></script>
+    <script src="./static/js/Leaflet.draw/src/Leaflet.Draw.Event.js"></script>
+
+    <script src="./static/js/Leaflet.draw/src/edit/handler/Edit.Poly.js"></script>
+    <script src="./static/js/Leaflet.draw/src/edit/handler/Edit.SimpleShape.js"></script>
+    <script src="./static/js/Leaflet.draw/src/edit/handler/Edit.Circle.js"></script>
+    <script src="./static/js/Leaflet.draw/src/edit/handler/Edit.Rectangle.js"></script>
+    <script src="./static/js/Leaflet.draw/src/edit/handler/Edit.Marker.js"></script>
+
+    <script src="./static/js/Leaflet.draw/src/draw/handler/Draw.Feature.js"></script>
+    <script src="./static/js/Leaflet.draw/src/draw/handler/Draw.Polyline.js"></script>
+    <script src="./static/js/Leaflet.draw/src/draw/handler/Draw.Polygon.js"></script>
+    <script src="./static/js/Leaflet.draw/src/draw/handler/Draw.SimpleShape.js"></script>
+    <script src="./static/js/Leaflet.draw/src/draw/handler/Draw.Rectangle.js"></script>
+    <script src="./static/js/Leaflet.draw/src/draw/handler/Draw.Circle.js"></script>
+    <script src="./static/js/Leaflet.draw/src/draw/handler/Draw.Marker.js"></script>
+
+    <script src="./static/js/Leaflet.draw/src/ext/TouchEvents.js"></script>
+    <script src="./static/js/Leaflet.draw/src/ext/LatLngUtil.js"></script>
+    <script src="./static/js/Leaflet.draw/src/ext/GeometryUtil.js"></script>
+    <script src="./static/js/Leaflet.draw/src/ext/LineUtil.Intersect.js"></script>
+    <script src="./static/js/Leaflet.draw/src/ext/Polyline.Intersect.js"></script>
+    <script src="./static/js/Leaflet.draw/src/ext/Polygon.Intersect.js"></script>
+
+    <script src="./static/js/Leaflet.draw/src/Control.Draw.js"></script>
+    <script src="./static/js/Leaflet.draw/src/Tooltip.js"></script>
+    <script src="./static/js/Leaflet.draw/src/Toolbar.js"></script>
+
+    <script src="./static/js/Leaflet.draw/src/draw/DrawToolbar.js"></script>
+    <script src="./static/js/Leaflet.draw/src/edit/EditToolbar.js"></script>
+    <script src="./static/js/Leaflet.draw/src/edit/handler/EditToolbar.Edit.js"></script>
+    <script src="./static/js/Leaflet.draw/src/edit/handler/EditToolbar.Delete.js"></script>
+
+    <script src="./static/js/Leaflet.draw/docs/examples/libs/leaflet.snap.js"></script>
+    <script src="/static/js/Leaflet.draw/docs/examples/libs/leaflet.geometryutil.js"></script>
+
+    <script type="text/javascript">
+      var map;
+      var polygon;
+
+      var getPointsEventOkPositive = false;
+
+      function uniqueId() {
+        var id = new Date().getTime().toString(16);
+
+        id = id.concat( Math.floor((1 + Math.random()) * 0xFFFFFFFFFFFFF).toString(16) );
+        id = id.concat( Math.floor((1 + Math.random()) * 0xFFFFFF).toString(16) );
+
+        return id
+      }
+
+      var empresas;
+      var batidas;
+
+      var dataToSend = {
+        PointsList: [],
+        Type: []
+      };
+
+      function getBatidas ( map ){
+        $.ajax({
+          type: "POST",
+          url: "./getBatidas/",
+          data: JSON.stringify( dataToSend ),
+          success: function( data ){
+            console.log( "data:", data );
+            for( var i in data.Objects ){
+
+              var t = '<div class="ui cards">' +
+                      '<div class="card">' +
+                      '<div class="content">' +
+                      '<img class="right floated mini ui image" src="./static/images/elliot.jpg">' +
+                      '<div class="header">' +
+                      data.Objects[i].Nome +
+                      '</div>' +
+                      '<div class="meta">' +
+                      'Empresa: ' +
+                      data.Objects[i].Empresa +
+                      ' Matricula:  ' +
+                      data.Objects[i].Matricula +
+                      '</div>' +
+                      '<div class="description">' +
+                      data.Objects[i].Date +
+                      '</div>' +
+                      '</div>' +
+                      '<div class="extra content">' +
+                      '<div class="ui two buttons">' +
+                      '<div class="ui basic blue button">Empresas</div>' +
+                      '<div class="ui basic blue button">Proximidades</div>' +
+                      '</div>' +
+                      '</div>' +
+                      '</div>';
+              var LeafIcon = L.Icon.extend({
+                options: {
+                  shadowUrl: './static/js/Leaflet.draw/docs/examples/libs/images/marker-shadow.png'
+                }
+              });
+
+              var greenIcon = new LeafIcon({iconUrl: './static/js/Leaflet.draw/docs/examples/libs/images/marker-icon-red.png'});
+              L.marker([data.Objects[i].Loc[1], data.Objects[i].Loc[0]], {icon: greenIcon}).bindPopup(t).addTo(map);
+            }
+
+            $('.addPoint').removeClass('disabled');
+
+            if( getPointsEventOkPositive == false ) {
+              $('.getPointsEventOk').modal('show');
+
+              $('.getPointsEventOkPositive').click(function () {
+                getPointsEventOkPositive = true;
+                //console.log("getPointsEventOkPositive:",getPointsEventOkPositive);
+              });
+            }
+          },
+          dataType: "json"
+        });
+      }
+
+      function getPoints ( map ){
+        $.ajax({
+          type: "POST",
+          //url: "./getPoints/",
+          url: "./getPro/",
+          data: JSON.stringify( dataToSend ),
+          success: function( data ){
+            console.log( "data:", data );
+            for( var i in data.Objects ){
+
+              var text = "";
+
+              for( var t in data.Objects[i].Tag ){
+                text += "<b>" + t + ":</b> " + data.Objects[i].Tag[t] + "<br>";
+                //console.log( t, data.Objects[i].Tag[t] );
+              }
+
+
+              var t = '<div class="ui cards">' +
+                      '<div class="card">' +
+                      '<div class="content">' +
+                      '<img class="right floated mini ui image" src="./static/images/elliot.jpg">' +
+                      '<div class="header">' +
+                      'Elliot Fu' +
+                      '</div>' +
+                      '<div class="meta">' +
+                      'Friends of Veronika' +
+                      '</div>' +
+                      '<div class="description">' +
+                      'Elliot requested permission to view your contact details' +
+                      '</div>' +
+                      '</div>' +
+                      '<div class="extra content">' +
+                      '<div class="ui two buttons">' +
+                      '<div class="ui basic blue button">Approve</div>' +
+                      '<div class="ui basic blue button">Decline</div>' +
+                      '</div>' +
+                      '</div>' +
+                      '</div>';
+              L.marker([data.Objects[i].Loc[1], data.Objects[i].Loc[0]]).bindPopup(text).addTo(map);
+            }
+
+            if( getPointsEventOkPositive == false ) {
+              $('.getPointsEventOk').modal('show');
+
+              $('.getPointsEventOkPositive').click(function () {
+                getPointsEventOkPositive = true;
+                //console.log("getPointsEventOkPositive:",getPointsEventOkPositive);
+              });
+            }
+          },
+          dataType: "json"
+        });
+      }
+
+      function onMapEvent( event, type ){
+        console.log( "event:", event );
+        console.log( "type:", type );
+        console.log( "dataToSend:", dataToSend )
+      }
+
+      $( document ).ready(
+        function() {
+
+          // tradução
+          // https://leaflet.github.io/Leaflet.draw/docs/leaflet-draw-latest.html
+          L.drawLocal = {
+            draw: {
+              toolbar: {
+                actions: {
+                  title: 'Cancelar o desenho',
+                  text: 'Cancelar'
+                },
+                finish: {
+                  title: 'Terminar o desenho',
+                  text: 'Terminar'
+                },
+                undo: {
+                  title: 'Apagar o último ponto adicionado',
+                  text: 'Apagar o último ponto'
+                },
+                buttons: {
+                  polyline: 'Desenhar uma linha',
+                  polygon: 'Desenhar um polígono',
+                  rectangle: 'Desenhar um retangulo',
+                  circle: 'Desenhar um círculo',
+                  marker: 'Adicionar uma marca'
+                }
+              },
+              handlers: {
+                circle: {
+                  tooltip: {
+                    start: 'Clique e arraste para desenhar um círculo'
+                  },
+                  radius: 'Radianos'
+                },
+                marker: {
+                  tooltip: {
+                    start: 'Clique no mapa para adicionar uma marca'
+                  }
+                },
+                polygon: {
+                  tooltip: {
+                    start: 'Clique para começar a desenhar o polígono',
+                    cont: 'Clique no próximo ponto para continuar',
+                    end: 'Clique no próximo ponto para continuar, ou em cima do primeiro ponto adicionado para terminar'
+                  }
+                },
+                polyline: {
+                  error: '<strong>Erro:</strong> as linhas que formam o polígono não podem se cruzar',
+                  tooltip: {
+                    start: 'Clique para começar a desenhar uma linha',
+                    cont: 'Clique no próximo ponto para continuar',
+                    end: 'Clique no próximo ponto para continuar, ou em cima do último ponto adicionado para terminar'
+                  }
+                },
+                rectangle: {
+                  tooltip: {
+                    start: 'Clique e arraste para desenhar um retângulo'
+                  }
+                },
+                simpleshape: {
+                  tooltip: {
+                    end: 'Solte o mouse para parar de desenhar'
+                  }
+                }
+              }
+            },
+            edit: {
+              toolbar: {
+                actions: {
+                  save: {
+                    title: 'Salvar as mudanças',
+                    text: 'Salvar'
+                  },
+                  cancel: {
+                    title: 'Cancelar a edição e apagar todas as mudanças',
+                    text: 'Cancelar'
+                  }
+                },
+                buttons: {
+                  edit: 'Editar',
+                  editDisabled: 'Não há o que editar',
+                  remove: 'Apagar',
+                  removeDisabled: 'Não há o que apagar'
+                }
+              },
+              handlers: {
+                edit: {
+                  tooltip: {
+                    text: 'Arraste os pontos ou a marca para editar',
+                    subtext: 'Clique em cancelar para desfazer'
+                  }
+                },
+                remove: {
+                  tooltip: {
+                    text: 'Clique no desenho ou na marca para remover'
+                  }
+                }
+              }
+            }
+          };
+
+          // cria o mapa
+          var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  osmAttrib = '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                  osm = L.tileLayer(osmUrl, {maxZoom: 19, attribution: osmAttrib}),
+                  map = new L.Map('map', {layers: [osm], center: new L.LatLng( -27.50737, -48.51300 ), zoom: 18 });
+
+          // barra de ferramentas
+          var drawnItems = new L.FeatureGroup();
+          map.addLayer( drawnItems );
+          /*
+          // original
+          var polygon = L.polygon([
+            [-27.50655, -48.51337],
+            [-27.50872, -48.51296],
+            [-27.50843, -48.51203],
+            [-27.50787, -48.51166],
+            [-27.50779, -48.51183],
+            [-27.50743, -48.51182],
+            [-27.50655, -48.51337]
+          ]).addTo(map);
+/*
+          var polygon = L.polygon([
+            [-27.50579, -48.51390],
+            [-27.50958, -48.51329],
+            [-27.50917, -48.51146],
+            [-27.50803, -48.51066],
+            [-27.50789, -48.51083],
+            [-27.50708, -48.51090],
+            [-27.50579, -48.51390]
+          ]).addTo(map);
+
+          var polygon = L.polygon([
+            [-27.50694, -48.51312],
+            [-27.50830, -48.51281],
+            [-27.50806, -48.51232],
+            [-27.50779, -48.51216],
+            [-27.50775, -48.51234],
+            [-27.50761, -48.51229],
+            [-27.50694, -48.51312]
+          ]).addTo(map);
+
+          var polygon = L.polygon([
+            [-27.50919, -48.51596],
+            [-27.50905, -48.51570],
+            [-27.50875, -48.51571],
+            [-27.50856, -48.51549],
+            [-27.50825, -48.51557],
+            [-27.50802, -48.51544],
+            [-27.50805, -48.51536],
+            [-27.50740, -48.51469],
+            [-27.50699, -48.51496],
+            [-27.50679, -48.51526],
+            [-27.50662, -48.51515],
+            [-27.50674, -48.51485],
+            [-27.50659, -48.51471],
+            [-27.50615, -48.51479],
+            [-27.50606, -48.51435],
+            [-27.50572, -48.51442],
+            [-27.50584, -48.51503],
+            [-27.50550, -48.51543],
+            [-27.50559, -48.51567],
+            [-27.50571, -48.51567],
+            [-27.50578, -48.51590],
+            [-27.50548, -48.51613],
+            [-27.50642, -48.51733],
+            [-27.50679, -48.51685],
+            [-27.50704, -48.51715],
+            [-27.50716, -48.51704],
+            [-27.50700, -48.51682],
+            [-27.50711, -48.51667],
+            [-27.50739, -48.51665],
+            [-27.50759, -48.51649],
+            [-27.50771, -48.51661],
+            [-27.50748, -48.51689],
+            [-27.50777, -48.51724],
+            [-27.50830, -48.51664],
+            [-27.50865, -48.51702],
+            [-27.50876, -48.51618],
+            [-27.50898, -48.51617],
+            [-27.50919, -48.51596]
+          ]).addTo(map);
+
+          var polygon = L.polygon([
+            [-27.51099, -48.51599],
+            [-27.51084, -48.51549],
+            [-27.51054, -48.51548],
+            [-27.51030, -48.51497],
+            [-27.50998, -48.51504],
+            [-27.50965, -48.51458],
+            [-27.50964, -48.51442],
+            [-27.50788, -48.51274],
+            [-27.50676, -48.51295],
+            [-27.50595, -48.51347],
+            [-27.50559, -48.51349],
+            [-27.50611, -48.51295],
+            [-27.50582, -48.51288],
+            [-27.50492, -48.51332],
+            [-27.50499, -48.51272],
+            [-27.50443, -48.51301],
+            [-27.50432, -48.51395],
+            [-27.50377, -48.51489],
+            [-27.50381, -48.51537],
+            [-27.50394, -48.51535],
+            [-27.50398, -48.51587],
+            [-27.50369, -48.51636],
+            [-27.50556, -48.51911],
+            [-27.50616, -48.51875],
+            [-27.50694, -48.51917],
+            [-27.50727, -48.51906],
+            [-27.50678, -48.51883],
+            [-27.50714, -48.51870],
+            [-27.50813, -48.51850],
+            [-27.50885, -48.51794],
+            [-27.50898, -48.51804],
+            [-27.50821, -48.51874],
+            [-27.50867, -48.51900],
+            [-27.50989, -48.51759],
+            [-27.51017, -48.51810],
+            [-27.51054, -48.51645],
+            [-27.51077, -48.51640],
+            [-27.51099, -48.51599]
+          ]).addTo(map);
+
+          L.circle([-27.50710,-48.51592], {
+            color: 'red',
+            fillColor: '#f03',
+            fillOpacity: 0.5,
+            radius: 0.1
+          }).addTo(map);
+
+          L.circle([-27.50710,-48.51592], {
+            color: 'red',
+            fillColor: '#f03',
+            fillOpacity: 0.2,
+            radius: 232.57 + 200
+          }).addTo(map);
+
+
+          L.rectangle([[-27.50548,-48.51733], [-27.50919,-48.51435]], {color: "#ff7800", weight: 1}).addTo(map);
+          L.rectangle([[-27.503693427521718,-48.51917402667859], [-27.510987697621,-48.51272421893006]], {color: "#ff7800", weight: 1}).addTo(map);
+*/
+          // Set the title to show on the polygon button
+          //L.drawLocal.draw.toolbar.buttons.polygon = 'Draw a sexy polygon!';
+
+          // Barra personalizada
+          var optionsControl =  L.Control.extend({
+            options: {
+              position: 'topleft'
+            },
+            onAdd: function (map) {
+              var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom ui small vertical icon buttons');
+              $(container).html('<button class="ui basic button smallButton relatroio"><i class="Search icon iconMapSearch"></i></button>' +
+                      '<button class="ui basic button smallButton cadastro"><i class="flag icon"></i></button>');
+              container.style.backgroundColor = '#fafafa';
+              return container;
+            }
+          });
+          map.addControl( new optionsControl() );
+
+          // Barra personalizada
+          var optionsControl =  L.Control.extend({
+            options: {
+              position: 'topleft'
+            },
+            onAdd: function (map) {
+              var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom ui small vertical icon buttons');
+              $(container).html('<button class="ui basic button smallButton relatroio"><i class="Search icon"></i></button>' +
+                      '<button class="ui basic button iconMapSearch smallButton borda cadastro"><i class="flag icon"></i></button><button class="ui basic button iconMapSearch smallButton cadastro"><i class="flag icon"></i></button>');
+              container.style.backgroundColor = '#fafafa';
+              return container;
+            }
+          });
+          //map.addControl( new optionsControl() );
+
+          // Barra de desenho
+          var drawControl = new L.Control.Draw({
+            position: 'topleft',
+            edit: {
+              featureGroup: drawnItems,
+              remove: true
+            }
+          });
+
+
+          //
+          var guideLayers = [];
+          drawControl.setDrawingOptions({
+            polyline: { guideLayers: guideLayers },
+            polygon: { guideLayers: guideLayers, snapDistance: 3 },
+            //marker: { guideLayers: guideLayers, snapVertices: false },
+            //rectangle: false,
+            //circle: false
+          });
+
+            map.addControl(drawControl);
+
+
+
+
+
+
+          // Prepara os desenhos do mapa para envio
+          // Polygon; Rectangle; Circle; Marker | String Layer that was just created. The type of layer this is. One of:
+          // polyline; polygon; rectangle; circle; marker Triggered when a new vector or marker has been created.
+          map.on('draw:created', function(e) {
+          //map.on(L.Draw.Event.CREATED, function (e) {
+            var type = e.layerType,
+                    layer = e.layer;
+
+            //https://en.wikipedia.org/wiki/GeoJSON
+            var geoData = layer.toGeoJSON();
+            var inputCoordinates;
+            var coordinateList = [];
+
+            if ( type == "polygon" ) {
+              inputCoordinates = geoData.geometry;
+
+              for( var i in inputCoordinates.coordinates ){
+                for( var c in inputCoordinates.coordinates[i] ){
+                  coordinateList.push([
+                    inputCoordinates.coordinates[i][c][0],
+                    inputCoordinates.coordinates[i][c][1]
+                  ]);
+                }
+              }
+            }
+            else if ( type == "marker" ) {
+              inputCoordinates = geoData.geometry.coordinates;
+              coordinateList = [
+                inputCoordinates[0],
+                inputCoordinates[1]
+              ];
+            }
+            else if ( type == "rectangle" ) {
+              inputCoordinates = geoData.geometry.coordinates[0];
+
+              //<bottom left coordinates>
+              coordinateList.push([
+                inputCoordinates[0][0],
+                inputCoordinates[0][1]
+              ]);
+              //<upper right coordinates>
+              coordinateList.push([
+                inputCoordinates[2][0],
+                inputCoordinates[2][1]
+              ]);
+            }
+            else if ( type == "polyline" ) {
+              coordinateList = geoData.geometry.coordinates;
+            }
+            else if ( type == "circle" ) {
+              coordinateList = [
+                geoData.geometry.coordinates[0],
+                geoData.geometry.coordinates[1],
+                layer.options.radius
+              ];
+            }
+
+            dataToSend.PointsList.push( coordinateList );
+            dataToSend.Type.push( type );
+
+            onMapEvent( 'added', type );
+
+            drawnItems.addLayer(layer);
+          });
+
+          map.on('click', function(e) {
+            if( onOpen == true ){
+              return;
+            }
+
+            if( !$('.prompt').is(':focus') ){
+              $('.iconMapSearch').popup('hide');
+            }
+          });
+
+          map.on('zoomlevelschange', function( Event ) {
+            $('.iconMapSearch').popup('hide');
+          });
+
+          map.on('resize', function( ResizeEvent ) {
+            $('.iconMapSearch').popup('hide');
+          });
+
+          map.on('unload', function( Event ) {
+            $('.iconMapSearch').popup('hide');
+          });
+
+          map.on('viewreset', function( Event ) {
+            $('.iconMapSearch').popup('hide');
+          });
+
+          map.on('load', function( Event ) {
+            $('.iconMapSearch').popup('hide');
+          });
+
+          map.on('zoomstart', function( Event ) {
+            $('.iconMapSearch').popup('hide');
+          });
+
+          map.on('movestart', function( Event ) {
+            $('.iconMapSearch').popup('hide');
+          });
+
+          map.on('zoom', function( Event ) {
+            $('.iconMapSearch').popup('hide');
+          });
+
+          map.on('move', function( Event ) {
+            $('.iconMapSearch').popup('hide');
+          });
+
+          map.on('zoomend', function( Event ) {
+            $('.iconMapSearch').popup('hide');
+          });
+
+          map.on('moveend', function( Event ) {
+            $('.iconMapSearch').popup('hide');
+          });
+
+          // List of all layers just edited on the map. Triggered when layers in the FeatureGroup; initialised with the
+          // plugin; have been edited and saved.
+          map.on('draw:edited', function(e) {
+            $('.iconMapSearch').popup('hide');
+          });
+
+          // List of all layers just removed from the map. Triggered when layers have been removed (and saved) from the
+          // FeatureGroup.
+          map.on('draw:deleted', function(e) {
+            $('.iconMapSearch').popup('hide');
+          });
+
+          // The type of layer this is. One of:polyline; polygon; rectangle; circle; marker Triggered when the user has
+          // chosen to draw a particular vector or marker.
+          map.on('draw:drawstart', function(e) {
+            $('.iconMapSearch').popup('hide');
+          });
+
+          // The type of layer this is. One of: polyline; polygon; rectangle; circle; marker Triggered when the user has
+          // finished a particular vector or marker.
+          map.on('draw:drawstop', function(e) {
+            $('.iconMapSearch').popup('hide');
+          });
+
+          // List of all layers just being added from the map. Triggered when a vertex is created on a polyline or
+          // polygon.
+          map.on('draw:drawvertex', function(e) {
+            $('.iconMapSearch').popup('hide');
+          });
+
+          // The type of edit this is. One of: edit Triggered when the user starts edit mode by clicking the edit tool
+          // button.
+          map.on('draw:editstart', function(e) {
+            $('.iconMapSearch').popup('hide');
+          });
+
+          // Layer that was just moved. Triggered as the user moves a rectangle; circle or marker.
+          map.on('draw:editmove', function(e) {
+            $('.iconMapSearch').popup('hide');
+          });
+
+          // Layer that was just moved. Triggered as the user resizes a rectangle or circle.
+          map.on('draw:editresize', function(e) {
+            $('.iconMapSearch').popup('hide');
+          });
+
+          // List of all layers just being edited from the map. Triggered when a vertex is edited on a polyline or
+          // polygon.
+          map.on('draw:editvertex', function(e) {
+            $('.iconMapSearch').popup('hide');
+          });
+
+          // The type of edit this is. One of: edit Triggered when the user has finshed editing (edit mode) and saves
+          // edits.
+          map.on('draw:editstop', function(e) {
+            $('.iconMapSearch').popup('hide');
+          });
+
+          // The type of edit this is. One of: remove Triggered when the user starts remove mode by clicking the remove
+          // tool button.
+          map.on('draw:deletestart', function(e) {
+            $('.iconMapSearch').popup('hide');
+          });
+
+          // The type of edit this is. One of: remove Triggered when the user has finished removing shapes (remove mode)
+          // and saves.
+          map.on('draw:deletestop', function(e) {
+            $('.iconMapSearch').popup('hide');
+          });
+
+          /*coordinate = new L.Draw.Polygon(map, {
+            showArea: true,
+            allowIntersection: false,
+            shapeOptions: {
+              color: '#FFF'
+            }
+          });*/
+
+          //$(".leaflet-draw-toolbar").hide();
+          //$(".leaflet-bar").hide();
+          //$(".leaflet-draw-toolbar-top").hide();
+
+
+
+          //$(".leaflet-draw-draw-polygon").hide();
+          //$(".leaflet-draw-draw-polyline").hide();
+          //$(".leaflet-draw-draw-rectangle").hide();
+          //$(".leaflet-draw-draw-marker").hide();
+
+          $( ".getPoints" ).click(function() {
+            $('.ui.sidebar').sidebar('hide');
+            //$(".leaflet-draw-draw-polygon").show();
+            drawControl._toolbars[L.DrawToolbar.TYPE]._modes.polygon.handler.enable()
+          });
+
+          $( ".viewBatidas" ).click(function() {
+            $('.ui.sidebar').sidebar('hide');
+            getBatidas( map );
+          });
+
+          $( ".viewPoints" ).click(function() {
+            $('.ui.sidebar').sidebar('hide');
+
+            getPoints( map );
+          });
+
+          $('.accordion').accordion({selector: {trigger: '.title'}});
+
+          var onOpen = false;
+          var iconName = '';
+          $('.iconMapSearch').popup({
+            position: 'right center',
+            inline: true,
+            on: 'hover',
+            exclusive: true,
+            hoverable: true,
+            html: '<span></span>',
+            variation: 'wide',
+            delay: {
+              show: 400,
+              hide: 400
+            },
+            onVisible: function( el ){
+              onOpen = true;
+            },
+            onHide: function ( el ) {
+              return !$('.prompt').is(':focus');
+            },
+            onShow: function ( el ) {
+              var actualIcon = 'map';
+              var isOpen = false;
+              var popup = this;
+                  popup.html('' +
+                    '<div class="ui multiple icon dropdown button"><i class="map icon iconReplace"></i>' +
+                        '<div class="menu">' +
+                            '<!--div class="header"><i class="money icon"></i>Bank</div-->' +
+                            '<div class="item"><i class="money icon"></i>Bancos</div>' +
+                            '<div class="item"><i class="Plane icon"></i>Aeroportos</div>' +
+                            '<div class="item"><i class="Taxi icon"></i>Taxi</div>' +
+                            '<div class="ui divider"></div>' +
+                            '<div class="item">Settings</div>' +
+                            '<div class="item">' +
+                                '<i class="dropdown icon"></i>' +
+                                '<span class="text">Upload Settings</span>' +
+                                '<div class="menu">' +
+                                    '<div class="item"><i class="check icon"></i>Convert Uploaded Files to PDF</div>' +
+                                    '<div class="item"><i class="check icon"></i>Digitize Text from Uploaded Files</div>' +
+                                '</div>' +
+                            '</div>' +
+                          '<div class="item">Manage Apps</div>' +
+                          '<div class="item">Keyboard Shortcuts</div>' +
+                          '<div class="item">Help</div>' +
+                          '</div>' +
+                        '</div>' +
+                        '<div class="ui search">' +
+                            '<div class="ui icon input">' +
+                                '<input class="prompt" type="text" placeholder="Search GitHub">' +
+                                '<i class="search icon"></i>' +
+                        '</div>' +
+                    '</div>');
+                  $('.dropdown').dropdown({
+                    action: 'hide'
+                  }).on('click', function(e){
+                      //$(this).parent('.dropdown').dropdown('clear');
+                      //console.log(e);
+
+                      isOpen = !isOpen;
+                      if( isOpen == true ){
+                          onOpen = true;
+                          return;
+                      }
+
+                      onOpen = false;
+                      var menuIsOpen = /([\r\n])/;
+                      var exp = /^(.*?i\s+class=")(\S+)(.*)/;
+                      var str = e.target.outerHTML + '';
+
+                      $( '.iconReplace' ).removeClass( actualIcon );
+                      actualIcon = str.replace( exp, '$2' );
+                      $( '.iconReplace' ).addClass( actualIcon );
+
+                      $( '.prompt' ).focus();
+
+
+
+
+
+
+
+
+                      $('.ui.search').search({
+                          type          : 'category',
+                          minCharacters : 3,
+                          apiSettings   : {
+                              onResponse: function(githubResponse) {
+                                  var
+                                          response = {
+                                              results : {}
+                                          }
+                                          ;
+                                  // translate GitHub API response to work with search
+                                  $.each(githubResponse.items, function(index, item) {
+                                      var
+                                              language   = item.language || 'Unknown',
+                                              maxResults = 8
+                                              ;
+                                      if(index >= maxResults) {
+                                          return false;
+                                      }
+                                      // create new language category
+                                      if(response.results[language] === undefined) {
+                                          response.results[language] = {
+                                              name    : language,
+                                              results : []
+                                          };
+                                      }
+                                      // add result to category
+                                      response.results[language].results.push({
+                                          title       : item.name,
+                                          description : item.description,
+                                          url         : item.html_url
+                                      });
+                                  });
+                                  return response;
+                              },
+                              //url: '//api.github.com/search/repositories?q={query}'
+                              url: '//api.github.com/search/repositories?q=' + actualIcon
+                          }
+                      });
+                  });
+            }
+          }).popup('show');
+
+
+          $('.iconMapSearch').click( function(){
+            //$('.ui.sidebar').sidebar('show');
+            $('.iconMapSearch').popup('hide');
+          });
+
+          $('.test').click( function(){
+
+          });
+
+
+
+
+        });
+
+
+
+
+    </script>
+  </head>
+  <style>
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+
+    .smallButton{
+      width:29px !important;
+      height: 33px !important;
+    }
+    .smallButton.borda{
+      border: #bebebe !important;
+      border-style: solid !important;
+      border-width: 0.5px 0px 0.5px 0px !important;
+    }
+    .ui.search {
+        font-size: 0.9em;
+    }
+    .ui.popup > .ui.search > .results > .category  {
+        width: 100%;
+    }
+    .ui.popup > .ui.search > .results > .category > .result  {
+        width: 249px;
+        height: 100%;
+        text-align: left;
+    }
+    .ui.popup {
+        width: 265px;
+    }
+    .ui.popup > .ui.dropdown {
+        width: 35px;
+        height: 34px;
+        float: left;
+        border-radius: 500rem 0rem 0rem 500rem !important;
+    }
+    .ui.popup > .ui.search {
+        float: left;
+    }
+    .ui.popup > .ui.search > .input > .prompt {
+        border-radius: 0rem 500rem 500rem 0rem !important;
+    }
+
+  </style>
+  <body>
+
+  <div class="ui sidebar write vertical menu">
+    <div class="control-content" style="margin: 50px 15px;">
+      <h3 class="ui header">Painel de controle.</h3>
+      <p class="control-content content">
+        Esta é uma demonstração da ferramenta de mapas e suas possibilidades.
+      </p>
+    </div>
+    <div class="ui styled fluid accordion">
+      <div class="title">
+        <i class="dropdown icon"></i>
+        Cerca virtual
+      </div>
+      <div class="content">
+        <p class="transition hidden">A cerca virtual é uma ferramenta usada para delimitar uma área de ação e pode ser usada como alarme ou controle de área onde eventos acontecem.</p>
+        <p class="transition hidden">Para esta demonstração, a cerca virtual vai ser usada como ferramenta de busca, procurando por locais de trabalho cadastrados pelo cliente ou batidas feitas por seus funcionários.</p>
+
+        <p class="transition hidden">Quais tipos de informações você gostaria de ver dentro da cerca virtual?</p>
+
+        <p class="transition hidden">
+          <button class="ui primary button getPoints">
+            Ad. cerca
+          </button>
+          <br>
+          <br>
+          O que você deseja ver?
+          <br>
+          <br>
+          <button class="ui disabled button viewBatidas">
+            Batidas
+          </button>
+          <button class="ui disabled button viewPoints">
+            Locais
+          </button>
+        </p>
+      </div>
+      <div class="title">
+        <i class="dropdown icon"></i>
+        O que tem de bom aqui?
+      </div>
+      <div class="content">
+        <p class="transition hidden">A ferramenta de mapas pode trazer muitas informações importantes na hora de se planejar um negócio.</p>
+        <p class="transition hidden">Uma dessas informações é poder saber tudo o que se tem nas redondezas. Para isto, mantenha o mouse pressionado e desenhe um retângulo, para pesquisar em uma determinada área do mapa.</p>
+        <p class="transition hidden">
+          <button class="ui primary button addRectangle">
+            Pesquisa
+          </button>
+        </p>
+      </div>
+      <div class="title">
+        <i class="dropdown icon"></i>
+        How do you acquire a dog?
+      </div>
+      <div class="content">
+        <p class="transition hidden">Three common ways for a prospective owner to acquire a dog is from pet shops, private owners, or shelters.</p>
+        <p class="transition hidden">A pet shop may be the most convenient way to buy a dog. Buying a dog from a private owner allows you to assess the pedigree and upbringing of your dog before choosing to take it home. Lastly, finding your dog from a shelter, helps give a good home to a dog who may not find one so readily.</p>
+      </div>
+    </div>
+
+
+  </div>
+  <div class="pusher">
+    <div id="map"></div>
+  </div>
+  </body>
+</html>
+
+
+<div class="ui modal getPointsEventOk">
+  <i class="close icon"></i>
+  <div class="header">
+    Polígono adicionado
+  </div>
+  <div class="image content">
+    <div class="ui medium image">
+      <i class="massive object group icon"></i>
+    </div>
+    <div class="description">
+      <div class="ui header">Um novo polígono foi adicionado ao banco de dados.</div>
+      <p>Este polígono foi adicionado com sucesso ao banco de dados, e de agora em diante, ele pode ser usado para
+        monitorar a ocorrência de eventos.</p>
+    </div>
+  </div>
+  <div class="actions">
+    <div class="ui positive right labeled icon button getPointsEventOkPositive">
+      Ok, entendi.
+      <i class="checkmark icon"></i>
+    </div>
+  </div>
+</div>
+
+<div class="ui modal addMarkerEventOk">
+  <i class="close icon"></i>
+  <div class="header">
+    Evento registrado
+  </div>
+  <div class="image content">
+    <div class="ui medium image">
+      <i class="massive object group icon"></i>
+    </div>
+    <div class="description">
+      <div class="ui header">Um novo evento foi registrado no banco de dados</div>
+      <p>Todo evento pode ser referenciado tanto no tempo quanto no espaço, assim, pode-se gerar relatórios de
+        ocorrências para todos os eventos que aconteceram dentro de um determinado período de tempo, usando-se datas, e
+        espaço, usando-se <b>cercas virtuais</b>.</p>
+      <p>Ou seja, pode-se ser gerado um relatório de todos os eventos registrados na cerca virtual <b>Corporate Park</b>
+        no dia 22 de novembro de 2016 as 8:00h as 12:00h</p>
+    </div>
+  </div>
+  <div class="actions">
+    <div class="ui positive right labeled icon button addMarkerEventOkPositive">
+      Ok, entendi.
+      <i class="checkmark icon"></i>
+    </div>
+  </div>
+</div>
+
+
+{{end}}
