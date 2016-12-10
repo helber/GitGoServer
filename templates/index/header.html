@@ -68,9 +68,14 @@
     <script src="./static/js/Leaflet.draw/docs/examples/libs/leaflet.snap.js"></script>
     <script src="/static/js/Leaflet.draw/docs/examples/libs/leaflet.geometryutil.js"></script>
 
+    <script src="/static/js/index/stateMachine.js"></script>
+    <script src="/static/js/index/map.js"></script>
+    <script src="/static/js/index/map.pt-br.js"></script>
+    <script src="/static/js/index/search.js"></script>
+
     <script type="text/javascript">
-      var map;
-      var polygon;
+
+      //var polygon;
 
       var getPointsEventOkPositive = false;
 
@@ -204,123 +209,14 @@
         });
       }
 
-      function onMapEvent( event, type ){
-        console.log( "event:", event );
-        console.log( "type:", type );
-        console.log( "dataToSend:", dataToSend )
-      }
-
       $( document ).ready(
         function() {
 
-          // tradução
-          // https://leaflet.github.io/Leaflet.draw/docs/leaflet-draw-latest.html
-          L.drawLocal = {
-            draw: {
-              toolbar: {
-                actions: {
-                  title: 'Cancelar o desenho',
-                  text: 'Cancelar'
-                },
-                finish: {
-                  title: 'Terminar o desenho',
-                  text: 'Terminar'
-                },
-                undo: {
-                  title: 'Apagar o último ponto adicionado',
-                  text: 'Apagar o último ponto'
-                },
-                buttons: {
-                  polyline: 'Desenhar uma linha',
-                  polygon: 'Desenhar um polígono',
-                  rectangle: 'Desenhar um retangulo',
-                  circle: 'Desenhar um círculo',
-                  marker: 'Adicionar uma marca'
-                }
-              },
-              handlers: {
-                circle: {
-                  tooltip: {
-                    start: 'Clique e arraste para desenhar um círculo'
-                  },
-                  radius: 'Radianos'
-                },
-                marker: {
-                  tooltip: {
-                    start: 'Clique no mapa para adicionar uma marca'
-                  }
-                },
-                polygon: {
-                  tooltip: {
-                    start: 'Clique para começar a desenhar o polígono',
-                    cont: 'Clique no próximo ponto para continuar',
-                    end: 'Clique no próximo ponto para continuar, ou em cima do primeiro ponto adicionado para terminar'
-                  }
-                },
-                polyline: {
-                  error: '<strong>Erro:</strong> as linhas que formam o polígono não podem se cruzar',
-                  tooltip: {
-                    start: 'Clique para começar a desenhar uma linha',
-                    cont: 'Clique no próximo ponto para continuar',
-                    end: 'Clique no próximo ponto para continuar, ou em cima do último ponto adicionado para terminar'
-                  }
-                },
-                rectangle: {
-                  tooltip: {
-                    start: 'Clique e arraste para desenhar um retângulo'
-                  }
-                },
-                simpleshape: {
-                  tooltip: {
-                    end: 'Solte o mouse para parar de desenhar'
-                  }
-                }
-              }
-            },
-            edit: {
-              toolbar: {
-                actions: {
-                  save: {
-                    title: 'Salvar as mudanças',
-                    text: 'Salvar'
-                  },
-                  cancel: {
-                    title: 'Cancelar a edição e apagar todas as mudanças',
-                    text: 'Cancelar'
-                  }
-                },
-                buttons: {
-                  edit: 'Editar',
-                  editDisabled: 'Não há o que editar',
-                  remove: 'Apagar',
-                  removeDisabled: 'Não há o que apagar'
-                }
-              },
-              handlers: {
-                edit: {
-                  tooltip: {
-                    text: 'Arraste os pontos ou a marca para editar',
-                    subtext: 'Clique em cancelar para desfazer'
-                  }
-                },
-                remove: {
-                  tooltip: {
-                    text: 'Clique no desenho ou na marca para remover'
-                  }
-                }
-              }
-            }
-          };
+          mapOnDocumentReady();
+          gOsmServerOnSearchOnDocumentReady();
+          gOsmServerOnSearchRegisterFunc();
 
-          // cria o mapa
-          var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  osmAttrib = '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                  osm = L.tileLayer(osmUrl, {maxZoom: 19, attribution: osmAttrib}),
-                  map = new L.Map('map', {layers: [osm], center: new L.LatLng( -27.50737, -48.51300 ), zoom: 18 });
 
-          // barra de ferramentas
-          var drawnItems = new L.FeatureGroup();
-          map.addLayer( drawnItems );
           /*
           // original
           var polygon = L.polygon([
@@ -456,251 +352,13 @@
           // Set the title to show on the polygon button
           //L.drawLocal.draw.toolbar.buttons.polygon = 'Draw a sexy polygon!';
 
-          // Barra personalizada
-          var optionsControl =  L.Control.extend({
-            options: {
-              position: 'topleft'
-            },
-            onAdd: function (map) {
-              var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom ui small vertical icon buttons');
-              $(container).html('<button class="ui basic button smallButton relatroio"><i class="Search icon iconMapSearch"></i></button>' +
-                      '<button class="ui basic button smallButton cadastro"><i class="flag icon"></i></button>');
-              container.style.backgroundColor = '#fafafa';
-              return container;
-            }
-          });
-          map.addControl( new optionsControl() );
-
-          // Barra personalizada
-          var optionsControl =  L.Control.extend({
-            options: {
-              position: 'topleft'
-            },
-            onAdd: function (map) {
-              var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom ui small vertical icon buttons');
-              $(container).html('<button class="ui basic button smallButton relatroio"><i class="Search icon"></i></button>' +
-                      '<button class="ui basic button iconMapSearch smallButton borda cadastro"><i class="flag icon"></i></button><button class="ui basic button iconMapSearch smallButton cadastro"><i class="flag icon"></i></button>');
-              container.style.backgroundColor = '#fafafa';
-              return container;
-            }
-          });
-          //map.addControl( new optionsControl() );
-
-          // Barra de desenho
-          var drawControl = new L.Control.Draw({
-            position: 'topleft',
-            edit: {
-              featureGroup: drawnItems,
-              remove: true
-            }
-          });
-
-
-          //
-          var guideLayers = [];
-          drawControl.setDrawingOptions({
-            polyline: { guideLayers: guideLayers },
-            polygon: { guideLayers: guideLayers, snapDistance: 3 },
-            //marker: { guideLayers: guideLayers, snapVertices: false },
-            //rectangle: false,
-            //circle: false
-          });
-
-            map.addControl(drawControl);
 
 
 
 
 
 
-          // Prepara os desenhos do mapa para envio
-          // Polygon; Rectangle; Circle; Marker | String Layer that was just created. The type of layer this is. One of:
-          // polyline; polygon; rectangle; circle; marker Triggered when a new vector or marker has been created.
-          map.on('draw:created', function(e) {
-          //map.on(L.Draw.Event.CREATED, function (e) {
-            var type = e.layerType,
-                    layer = e.layer;
 
-            //https://en.wikipedia.org/wiki/GeoJSON
-            var geoData = layer.toGeoJSON();
-            var inputCoordinates;
-            var coordinateList = [];
-
-            if ( type == "polygon" ) {
-              inputCoordinates = geoData.geometry;
-
-              for( var i in inputCoordinates.coordinates ){
-                for( var c in inputCoordinates.coordinates[i] ){
-                  coordinateList.push([
-                    inputCoordinates.coordinates[i][c][0],
-                    inputCoordinates.coordinates[i][c][1]
-                  ]);
-                }
-              }
-            }
-            else if ( type == "marker" ) {
-              inputCoordinates = geoData.geometry.coordinates;
-              coordinateList = [
-                inputCoordinates[0],
-                inputCoordinates[1]
-              ];
-            }
-            else if ( type == "rectangle" ) {
-              inputCoordinates = geoData.geometry.coordinates[0];
-
-              //<bottom left coordinates>
-              coordinateList.push([
-                inputCoordinates[0][0],
-                inputCoordinates[0][1]
-              ]);
-              //<upper right coordinates>
-              coordinateList.push([
-                inputCoordinates[2][0],
-                inputCoordinates[2][1]
-              ]);
-            }
-            else if ( type == "polyline" ) {
-              coordinateList = geoData.geometry.coordinates;
-            }
-            else if ( type == "circle" ) {
-              coordinateList = [
-                geoData.geometry.coordinates[0],
-                geoData.geometry.coordinates[1],
-                layer.options.radius
-              ];
-            }
-
-            dataToSend.PointsList.push( coordinateList );
-            dataToSend.Type.push( type );
-
-            onMapEvent( 'added', type );
-
-            drawnItems.addLayer(layer);
-          });
-
-          map.on('click', function(e) {
-            if( onOpen == true ){
-              return;
-            }
-
-            if( !$('.prompt').is(':focus') ){
-              $('.iconMapSearch').popup('hide');
-            }
-          });
-
-          map.on('zoomlevelschange', function( Event ) {
-            $('.iconMapSearch').popup('hide');
-          });
-
-          map.on('resize', function( ResizeEvent ) {
-            $('.iconMapSearch').popup('hide');
-          });
-
-          map.on('unload', function( Event ) {
-            $('.iconMapSearch').popup('hide');
-          });
-
-          map.on('viewreset', function( Event ) {
-            $('.iconMapSearch').popup('hide');
-          });
-
-          map.on('load', function( Event ) {
-            $('.iconMapSearch').popup('hide');
-          });
-
-          map.on('zoomstart', function( Event ) {
-            $('.iconMapSearch').popup('hide');
-          });
-
-          map.on('movestart', function( Event ) {
-            $('.iconMapSearch').popup('hide');
-          });
-
-          map.on('zoom', function( Event ) {
-            $('.iconMapSearch').popup('hide');
-          });
-
-          map.on('move', function( Event ) {
-            $('.iconMapSearch').popup('hide');
-          });
-
-          map.on('zoomend', function( Event ) {
-            $('.iconMapSearch').popup('hide');
-          });
-
-          map.on('moveend', function( Event ) {
-            $('.iconMapSearch').popup('hide');
-          });
-
-          // List of all layers just edited on the map. Triggered when layers in the FeatureGroup; initialised with the
-          // plugin; have been edited and saved.
-          map.on('draw:edited', function(e) {
-            $('.iconMapSearch').popup('hide');
-          });
-
-          // List of all layers just removed from the map. Triggered when layers have been removed (and saved) from the
-          // FeatureGroup.
-          map.on('draw:deleted', function(e) {
-            $('.iconMapSearch').popup('hide');
-          });
-
-          // The type of layer this is. One of:polyline; polygon; rectangle; circle; marker Triggered when the user has
-          // chosen to draw a particular vector or marker.
-          map.on('draw:drawstart', function(e) {
-            $('.iconMapSearch').popup('hide');
-          });
-
-          // The type of layer this is. One of: polyline; polygon; rectangle; circle; marker Triggered when the user has
-          // finished a particular vector or marker.
-          map.on('draw:drawstop', function(e) {
-            $('.iconMapSearch').popup('hide');
-          });
-
-          // List of all layers just being added from the map. Triggered when a vertex is created on a polyline or
-          // polygon.
-          map.on('draw:drawvertex', function(e) {
-            $('.iconMapSearch').popup('hide');
-          });
-
-          // The type of edit this is. One of: edit Triggered when the user starts edit mode by clicking the edit tool
-          // button.
-          map.on('draw:editstart', function(e) {
-            $('.iconMapSearch').popup('hide');
-          });
-
-          // Layer that was just moved. Triggered as the user moves a rectangle; circle or marker.
-          map.on('draw:editmove', function(e) {
-            $('.iconMapSearch').popup('hide');
-          });
-
-          // Layer that was just moved. Triggered as the user resizes a rectangle or circle.
-          map.on('draw:editresize', function(e) {
-            $('.iconMapSearch').popup('hide');
-          });
-
-          // List of all layers just being edited from the map. Triggered when a vertex is edited on a polyline or
-          // polygon.
-          map.on('draw:editvertex', function(e) {
-            $('.iconMapSearch').popup('hide');
-          });
-
-          // The type of edit this is. One of: edit Triggered when the user has finshed editing (edit mode) and saves
-          // edits.
-          map.on('draw:editstop', function(e) {
-            $('.iconMapSearch').popup('hide');
-          });
-
-          // The type of edit this is. One of: remove Triggered when the user starts remove mode by clicking the remove
-          // tool button.
-          map.on('draw:deletestart', function(e) {
-            $('.iconMapSearch').popup('hide');
-          });
-
-          // The type of edit this is. One of: remove Triggered when the user has finished removing shapes (remove mode)
-          // and saves.
-          map.on('draw:deletestop', function(e) {
-            $('.iconMapSearch').popup('hide');
-          });
 
           /*coordinate = new L.Draw.Polygon(map, {
             showArea: true,
@@ -710,7 +368,7 @@
             }
           });*/
 
-          //$(".leaflet-draw-toolbar").hide();
+
           //$(".leaflet-bar").hide();
           //$(".leaflet-draw-toolbar-top").hide();
 
@@ -721,168 +379,56 @@
           //$(".leaflet-draw-draw-rectangle").hide();
           //$(".leaflet-draw-draw-marker").hide();
 
-          $( ".getPoints" ).click(function() {
-            $('.ui.sidebar').sidebar('hide');
-            //$(".leaflet-draw-draw-polygon").show();
-            drawControl._toolbars[L.DrawToolbar.TYPE]._modes.polygon.handler.enable()
+          //$( ".getPoints" ).click(function() {
+          //  $('.ui.sidebar').sidebar('hide');
+          //  //$(".leaflet-draw-draw-polygon").show();
+          //  drawControl._toolbars[L.DrawToolbar.TYPE]._modes.polygon.handler.enable()
+          //});
+
+          //$( ".viewBatidas" ).click(function() {
+          //  $('.ui.sidebar').sidebar('hide');
+          //  getBatidas( map );
+          //});
+
+          //$( ".viewPoints" ).click(function() {
+          //  $('.ui.sidebar').sidebar('hide');
+          //
+          //  getPoints( map );
+          //});
+
+          //$('.accordion').accordion({selector: {trigger: '.title'}});
+
+
+
+
+
+
+
+
+
+
+
+
+
+          $('.mapPanelModify').click( function() {
+            $(".leaflet-draw-toolbar").show();
+            $(".mapPanelSaveCancelButtons").show();
+            $(".panelControlButtons").hide();
+          });//panelControlMainButtons
+
+          $('.mapPanelClose').click( function(){
+            $(".leaflet-draw-toolbar").hide();
+            $(".panelCancelButtons").hide();
+            $(".mapPanelSaveCancelButtons").show();
           });
 
-          $( ".viewBatidas" ).click(function() {
-            $('.ui.sidebar').sidebar('hide');
-            getBatidas( map );
+          $('.mapPanelSearch').click( function(){
+            //$('.mapPanelSearch').popup('show');
           });
 
-          $( ".viewPoints" ).click(function() {
-            $('.ui.sidebar').sidebar('hide');
-
-            getPoints( map );
-          });
-
-          $('.accordion').accordion({selector: {trigger: '.title'}});
-
-          var onOpen = false;
-          var iconName = '';
-          $('.iconMapSearch').popup({
-            position: 'right center',
-            inline: true,
-            on: 'hover',
-            exclusive: true,
-            hoverable: true,
-            html: '<span></span>',
-            variation: 'wide',
-            delay: {
-              show: 400,
-              hide: 400
-            },
-            onVisible: function( el ){
-              onOpen = true;
-            },
-            onHide: function ( el ) {
-              return !$('.prompt').is(':focus');
-            },
-            onShow: function ( el ) {
-              var actualIcon = 'map';
-              var isOpen = false;
-              var popup = this;
-                  popup.html('' +
-                    '<div class="ui multiple icon dropdown button"><i class="map icon iconReplace"></i>' +
-                        '<div class="menu">' +
-                            '<!--div class="header"><i class="money icon"></i>Bank</div-->' +
-                            '<div class="item"><i class="money icon"></i>Bancos</div>' +
-                            '<div class="item"><i class="Plane icon"></i>Aeroportos</div>' +
-                            '<div class="item"><i class="Taxi icon"></i>Taxi</div>' +
-                            '<div class="ui divider"></div>' +
-                            '<div class="item">Settings</div>' +
-                            '<div class="item">' +
-                                '<i class="dropdown icon"></i>' +
-                                '<span class="text">Upload Settings</span>' +
-                                '<div class="menu">' +
-                                    '<div class="item"><i class="check icon"></i>Convert Uploaded Files to PDF</div>' +
-                                    '<div class="item"><i class="check icon"></i>Digitize Text from Uploaded Files</div>' +
-                                '</div>' +
-                            '</div>' +
-                          '<div class="item">Manage Apps</div>' +
-                          '<div class="item">Keyboard Shortcuts</div>' +
-                          '<div class="item">Help</div>' +
-                          '</div>' +
-                        '</div>' +
-                        '<div class="ui search">' +
-                            '<div class="ui icon input">' +
-                                '<input class="prompt" type="text" placeholder="Search GitHub">' +
-                                '<i class="search icon"></i>' +
-                        '</div>' +
-                    '</div>');
-                  $('.dropdown').dropdown({
-                    action: 'hide'
-                  }).on('click', function(e){
-                      //$(this).parent('.dropdown').dropdown('clear');
-                      //console.log(e);
-
-                      isOpen = !isOpen;
-                      if( isOpen == true ){
-                          onOpen = true;
-                          return;
-                      }
-
-                      onOpen = false;
-                      var menuIsOpen = /([\r\n])/;
-                      var exp = /^(.*?i\s+class=")(\S+)(.*)/;
-                      var str = e.target.outerHTML + '';
-
-                      $( '.iconReplace' ).removeClass( actualIcon );
-                      actualIcon = str.replace( exp, '$2' );
-                      $( '.iconReplace' ).addClass( actualIcon );
-
-                      $( '.prompt' ).focus();
-
-
-
-
-
-
-
-
-                      $('.ui.search').search({
-                          type          : 'category',
-                          minCharacters : 3,
-                          apiSettings   : {
-                              onResponse: function(githubResponse) {
-                                  var
-                                          response = {
-                                              results : {}
-                                          }
-                                          ;
-                                  // translate GitHub API response to work with search
-                                  $.each(githubResponse.items, function(index, item) {
-                                      var
-                                              language   = item.language || 'Unknown',
-                                              maxResults = 8
-                                              ;
-                                      if(index >= maxResults) {
-                                          return false;
-                                      }
-                                      // create new language category
-                                      if(response.results[language] === undefined) {
-                                          response.results[language] = {
-                                              name    : language,
-                                              results : []
-                                          };
-                                      }
-                                      // add result to category
-                                      response.results[language].results.push({
-                                          title       : item.name,
-                                          description : item.description,
-                                          url         : item.html_url
-                                      });
-                                  });
-                                  return response;
-                              },
-                              //url: '//api.github.com/search/repositories?q={query}'
-                              url: '//api.github.com/search/repositories?q=' + actualIcon
-                          }
-                      });
-                  });
-            }
-          }).popup('show');
-
-
-          $('.iconMapSearch').click( function(){
-            //$('.ui.sidebar').sidebar('show');
-            $('.iconMapSearch').popup('hide');
-          });
-
-          $('.test').click( function(){
-
-          });
-
-
-
+          $(".leaflet-draw-toolbar").hide();
 
         });
-
-
-
-
     </script>
   </head>
   <style>
@@ -898,7 +444,7 @@
     .smallButton.borda{
       border: #bebebe !important;
       border-style: solid !important;
-      border-width: 0.5px 0px 0.5px 0px !important;
+      border-width: 0.0px 0px 0.5px 0px !important;
     }
     .ui.search {
         font-size: 0.9em;
