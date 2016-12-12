@@ -1,9 +1,19 @@
 var gOsmServerMap;
+var gOsmServerDataToSend = [];
 
+function mapOnDocumentHideAll(){
+  $(".leaflet-draw-toolbar").hide();
+  $(".mapPanelSaveCancelButtons").hide();
+}
 
+function mapOnDocumentModifyClick(){
+  $(".leaflet-draw-toolbar").show();
+  $(".mapPanelSaveCancelButtons").show();
+  $(".panelControlMainButtons").hide();
+}
 
-function onMapEvent( event ){
-
+function mapOnDocumentRegisterFunc(){
+  StateMachine.AddEvent( 'map:modifyClick', mapOnDocumentModifyClick );
 }
 
 function mapOnDocumentReady(){
@@ -26,17 +36,17 @@ function mapOnDocumentReady(){
       var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom ui small vertical icon buttons panelControlMainButtons');
       $(container).html(
         '<button class="ui basic button smallButton borda mapPanelSearch">' +
-        '<i class="Search icon iconMapSearch"></i>' +
+          '<i class="Search icon iconMapSearch"></i>' +
         '</button>' +
         '<button class="ui basic button smallButton borda mapPanelMaximize">' +
-        '<i class="Maximize icon"></i>' +
+          '<i class="Maximize icon"></i>' +
         '</button>' +
         '<button class="ui basic button smallButton borda mapPanelModify">' +
-        '<i class="Object Group icon"></i>' +
-        '</button>' +
-        '<button class="ui basic button smallButton mapPanelConfigure">' +
-        '<i class="Configure icon"></i>' +
+          '<i class="Object Group icon"></i>' +
         '</button>'
+        //'<button class="ui basic button smallButton mapPanelConfigure">' +
+        //  '<i class="Configure icon"></i>' +
+        //'</button>'
       );
       container.style.backgroundColor = '#fafafa';
       return container;
@@ -53,10 +63,10 @@ function mapOnDocumentReady(){
       var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom ui small vertical icon buttons mapPanelSaveCancelButtons');
       $(container).html(
         '<button class="ui basic button smallButton borda mapPanelClose">' +
-        '<i class="Remove icon"></i>' +
+          '<i class="Remove icon"></i>' +
         '</button>' +
         '<button class="ui basic button smallButton mapPanelSave">' +
-        '<i class="Save icon"></i>' +
+          '<i class="Save icon"></i>' +
         '</button>'
       );
       container.style.backgroundColor = '#fafafa';
@@ -77,7 +87,7 @@ function mapOnDocumentReady(){
   var guideLayers = [];
   drawControl.setDrawingOptions({
     polyline: { guideLayers: guideLayers },
-    polygon: { guideLayers: guideLayers, snapDistance: 3 },
+    polygon: { guideLayers: guideLayers, snapDistance: 3 }
     //marker: { guideLayers: guideLayers, snapVertices: false },
     //rectangle: false,
     //circle: false
@@ -87,11 +97,9 @@ function mapOnDocumentReady(){
   // Polygon; Rectangle; Circle; Marker | String Layer that was just created. The type of layer this is. One of:
   // polyline; polygon; rectangle; circle; marker Triggered when a new vector or marker has been created.
   gOsmServerMap.on('draw:created', function(e) {
-
     var type = e.layerType,
       layer = e.layer;
 
-    //https://en.wikipedia.org/wiki/GeoJSON
     var geoData = layer.toGeoJSON();
     var inputCoordinates;
     var coordinateList = [];
@@ -118,16 +126,9 @@ function mapOnDocumentReady(){
     else if ( type == "rectangle" ) {
       inputCoordinates = geoData.geometry.coordinates[0];
 
-      //<bottom left coordinates>
-      coordinateList.push([
-        inputCoordinates[0][0],
-        inputCoordinates[0][1]
-      ]);
-      //<upper right coordinates>
-      coordinateList.push([
-        inputCoordinates[2][0],
-        inputCoordinates[2][1]
-      ]);
+      //<bottom left coordinates> key 0
+      //<upper right coordinates> key 2
+      coordinateList = inputCoordinates;
     }
     else if ( type == "polyline" ) {
       coordinateList = geoData.geometry.coordinates;
@@ -140,11 +141,15 @@ function mapOnDocumentReady(){
       ];
     }
 
-    dataToSend.PointsList.push( coordinateList );
-    dataToSend.Type.push( type );
+    gOsmServerDataToSend.push({
+      PointsList: coordinateList,
+      Type: type,
+      //IdEmpresa: idEmpresa,
+      Id: IdUnique
+    });
 
     StateMachine.Run( 'map:added' );
-
+    layer["IdUnique"] = IdUnique ++;
     drawnItems.addLayer(layer);
   });
 
@@ -193,18 +198,104 @@ function mapOnDocumentReady(){
   });
 
   gOsmServerMap.on('moveend', function( Event ) {
-    onMapEvent( 'map:moveend' );
+    StateMachine.Run( 'map:moveend' );
   });
 
   // List of all layers just edited on the map. Triggered when layers in the FeatureGroup; initialised with the
   // plugin; have been edited and saved.
   gOsmServerMap.on('draw:edited', function(e) {
+    var type = e.layerType,
+      layer = e.layer;
+
+    var geoData;
+    var inputCoordinates;
+    var coordinateList;
+    var id;
+
+    for( var layerKey in e.layers._layers ) {
+      layerKey = parseInt( layerKey );
+
+      for ( var sendKey in gOsmServerDataToSend) {
+        sendKey = parseInt( sendKey );
+        if ( gOsmServerDataToSend[sendKey].Id == e.layers._layers[layerKey].IdUnique ) {
+          type = gOsmServerDataToSend[sendKey].Type;
+          break;
+        }
+      }
+
+      id = e.layers._layers[layerKey].IdUnique;
+      geoData = e.layers._layers[layerKey].toGeoJSON();
+      coordinateList = [];
+
+      if (type == "polygon") {
+        inputCoordinates = geoData.geometry;
+
+        for (var coordinateKey in inputCoordinates.coordinates) {
+          for (var c in inputCoordinates.coordinates[coordinateKey]) {
+            coordinateList.push([
+              inputCoordinates.coordinates[coordinateKey][c][0],
+              inputCoordinates.coordinates[coordinateKey][c][1]
+            ]);
+          }
+        }
+      }
+      else if (type == "marker") {
+        inputCoordinates = geoData.geometry.coordinates;
+        coordinateList = [
+          inputCoordinates[0],
+          inputCoordinates[1]
+        ];
+      }
+      else if (type == "rectangle") {
+        inputCoordinates = geoData.geometry.coordinates[0];
+
+        //<bottom left coordinates> key 0
+        //<upper right coordinates> key 2
+        coordinateList = inputCoordinates;
+      }
+      else if (type == "polyline") {
+        coordinateList = geoData.geometry.coordinates;
+      }
+      else if (type == "circle") {
+        coordinateList = [
+          geoData.geometry.coordinates[0],
+          geoData.geometry.coordinates[1],
+          e.layers._layers[layerKey]._mRadius
+        ];
+      }
+
+      for ( var sendKey in gOsmServerDataToSend) {
+        sendKey = parseInt( sendKey );
+        if ( gOsmServerDataToSend[sendKey].Id == e.layers._layers[layerKey].IdUnique ) {
+          gOsmServerDataToSend[sendKey].PointsList = coordinateList;
+          break;
+        }
+      }
+    }
     StateMachine.Run( 'map:draw:edited' );
   });
 
   // List of all layers just removed from the map. Triggered when layers have been removed (and saved) from the
   // FeatureGroup.
   gOsmServerMap.on('draw:deleted', function(e) {
+    var type = e.layerType;
+
+    for( var layerKey in e.layers._layers ) {
+      for ( var sendKey in gOsmServerDataToSend) {
+        sendKey = parseInt( sendKey );
+        if ( gOsmServerDataToSend[sendKey].Id == e.layers._layers[layerKey].IdUnique ) {
+          delete gOsmServerDataToSend[sendKey];
+        }
+      }
+    }
+
+    var newData = [];
+    for( var i in gOsmServerDataToSend ){
+      if( typeof gOsmServerDataToSend[ i ] == "object" ){
+        newData.push( gOsmServerDataToSend[ i ] );
+      }
+    }
+    gOsmServerDataToSend = newData;
     StateMachine.Run( 'map:draw:deleted' );
   });
 
@@ -305,6 +396,33 @@ function mapOnDocumentReady(){
     onVisible: function( el ){
       StateMachine.Run( 'map:popup:mapPanelSave' );
     }
+  });
+
+  $('.mapPanelModify').click( function() {
+    console.log( 'mapPanelModify' );
+    StateMachine.Run( 'map:modifyClick' );
+  });
+
+  $('.mapPanelClose').click( function(){
+    console.log( 'mapPanelClose' );
+    //$(".leaflet-draw-toolbar").hide();
+    //$(".panelCancelButtons").hide();
+    //$(".mapPanelSaveCancelButtons").show();
+  });
+
+  $('.mapPanelSearch').click( function(){
+    console.log( 'mapPanelSearch' );
+    //$('.mapPanelSearch').popup('show');
+  });
+
+  $('.mapPanelSave').click( function(){
+    console.log( 'mapPanelSave' );
+    //$('.mapPanelSearch').popup('show');
+  });
+
+  $('.mapPanelMaximize').click( function(){
+    console.log( 'mapPanelMaximize' );
+    //$('.mapPanelSearch').popup('show');
   });
 
   gOsmServerMap.addControl(drawControl);
