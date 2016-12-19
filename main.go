@@ -17,6 +17,8 @@ import (
   "github.com/helmutkemper/gOsmServer/leaflet"
   "gopkg.in/mgo.v2/bson"
   "github.com/helmutkemper/gOsmServer/semantic/smLinks"
+  "github.com/helmutkemper/gOsm"
+  "fmt"
 )
 
 type RoutesStt []restFul.RouteStt
@@ -25,6 +27,34 @@ var Routes RoutesStt
 
 func init(){
   Routes = RoutesStt{
+    restFul.RouteStt{
+      Name: "import1",
+      Method: "GET",
+      Pattern: "/import",
+      HandlerFunc: Import,
+    },
+    restFul.RouteStt{
+      Name: "import2",
+      Method: "GET",
+      Pattern: "import",
+      HandlerFunc: Import,
+    },
+
+    restFul.RouteStt{
+      Name: "statistic1",
+      Method: "GET",
+      Pattern: "/statistic",
+      HandlerFunc: Statistics,
+    },
+    restFul.RouteStt{
+      Name: "statistic2",
+      Method: "GET",
+      Pattern: "statistic",
+      HandlerFunc: Statistics,
+    },
+
+
+
     restFul.RouteStt{
       Name: "Index",
       Method: "GET",
@@ -130,9 +160,25 @@ func Semantic(w http.ResponseWriter, r *http.Request) {
   t.Execute( nil )
 }
 
+func Import(w http.ResponseWriter, r *http.Request) {
+  t0 := time.Now()
 
+  db.Connect( "127.0.0.1", "brasil" )
 
+  gOsm.StatisticsEnable( true )
+  e := gOsm.ParserOsmXml( "/home/hkemper/Desktop/importMap/south-america-latest.osm" )
+  if e != nil {
+    panic( e )
+  }
 
+  t1 := time.Now()
+  fmt.Printf("Total time: %v\n", t1.Sub(t0))
+}
+
+func Statistics(w http.ResponseWriter, r *http.Request) {
+  output := restFul.JSonOutStt{}
+  output.ToOutput( 1, nil, gOsm.GetStatus(), w )
+}
 
 
 
