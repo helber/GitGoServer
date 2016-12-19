@@ -24,45 +24,32 @@ import (
 type RoutesStt []restFul.RouteStt
 
 var Routes RoutesStt
+var AddMapChannel chan string
 
 func init(){
+  AddMapChannel = make( chan string, 20 )
+
   Routes = RoutesStt{
     restFul.RouteStt{
-      Name: "import1",
+      Name: "import",
       Method: "GET",
       Pattern: "/import",
       HandlerFunc: Import,
     },
     restFul.RouteStt{
-      Name: "import2",
-      Method: "GET",
-      Pattern: "import",
-      HandlerFunc: Import,
-    },
-
-    restFul.RouteStt{
-      Name: "statistic1",
+      Name: "statistic",
       Method: "GET",
       Pattern: "/statistic",
       HandlerFunc: Statistics,
     },
     restFul.RouteStt{
-      Name: "statistic2",
-      Method: "GET",
-      Pattern: "statistic",
-      HandlerFunc: Statistics,
-    },
-
-
-
-    restFul.RouteStt{
-      Name: "Index",
+      Name: "Index1",
       Method: "GET",
       Pattern: "/",
       HandlerFunc: Index,
     },
     restFul.RouteStt{
-      Name: "Index",
+      Name: "Index2",
       Method: "GET",
       Pattern: "",
       HandlerFunc: Index,
@@ -94,21 +81,10 @@ func init(){
     restFul.RouteStt{
       Name: "getPoints",
       Method: "POST",
-      Pattern: "/getPoints/",
-      HandlerFunc: leaflet.GetPoints,
-    },
-    restFul.RouteStt{
-      Name: "getPoints",
-      Method: "POST",
       Pattern: "/getPoints",
       HandlerFunc: leaflet.GetPoints,
     },
-    restFul.RouteStt{
-      Name: "getBatidas",
-      Method: "POST",
-      Pattern: "/getBatidas/",
-      HandlerFunc: leaflet.GetBatidas,
-    },
+    //todo remover batidas do código
     restFul.RouteStt{
       Name: "getBatidas",
       Method: "POST",
@@ -119,12 +95,6 @@ func init(){
       Name: "getPro",
       Method: "POST",
       Pattern: "/getProx",
-      HandlerFunc: leaflet.GetProximidades,
-    },
-    restFul.RouteStt{
-      Name: "getPro",
-      Method: "POST",
-      Pattern: "/getPro/",
       HandlerFunc: leaflet.GetProximidades,
     },
 
