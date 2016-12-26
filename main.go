@@ -56,9 +56,27 @@ func init(){
     },
     restFul.RouteStt{
       Name: "DownloadGeoFabrik",
-      Method: "GET",
-      Pattern: "/downloadgeodata",
+      Method: "POST",
+      Pattern: "/geodatadownload",
       HandlerFunc: install.DownloadMapData,
+    },
+    restFul.RouteStt{
+      Name: "UpdateDownloadGeoFabrik",
+      Method: "GET",
+      Pattern: "/updategeodatadownload",
+      HandlerFunc: install.UploadDownloadMapData,
+    },
+    restFul.RouteStt{
+      Name: "ProgressDownloadGeoFabrik",
+      Method: "GET",
+      Pattern: "/progressgeodatadownload",
+      HandlerFunc: install.ProgressDownloadMapData,
+    },
+    restFul.RouteStt{
+      Name: "ProgressDownloadOsm",
+      Method: "GET",
+      Pattern: "/progressdownloadosm",
+      HandlerFunc: install.ProgressDownloadOsm,
     },
     restFul.RouteStt{
       Name: "gpsCreate",
