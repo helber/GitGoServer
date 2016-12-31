@@ -11,12 +11,12 @@ import (
   "github.com/gorilla/mux"
   "github.com/gorilla/sessions"
   "time"
-  "github.com/helmutkemper/gOsmServer/smt"
+  "github.com/helmutkemper/GoSemanticUI/smt"
   "github.com/helmutkemper/gOsmServer/Install"
-  "github.com/helmutkemper/gOsmServer/smt/smtTemplate"
+  "github.com/helmutkemper/GoSemanticUI/smt/smtTemplate"
   "github.com/helmutkemper/gOsmServer/leaflet"
   "gopkg.in/mgo.v2/bson"
-  "github.com/helmutkemper/gOsmServer/semantic/smLinks"
+  "github.com/helmutkemper/GoSemanticUI/semantic/smLinks"
   "github.com/helmutkemper/gOsm"
   "fmt"
 )
@@ -101,13 +101,6 @@ func init(){
       Method: "POST",
       Pattern: "/getPoints",
       HandlerFunc: leaflet.GetPoints,
-    },
-    //todo remover batidas do código
-    restFul.RouteStt{
-      Name: "getBatidas",
-      Method: "POST",
-      Pattern: "/getBatidas",
-      HandlerFunc: leaflet.GetBatidas,
     },
     restFul.RouteStt{
       Name: "getPro",
@@ -227,10 +220,21 @@ func Index(w http.ResponseWriter, r *http.Request) {
     Name: "index",
     Out: w,
   }
-  t.ParserFiles(
-    "./templates/index/header.html",
-  )
-  t.ExecuteTemplate( "header", nil )
+
+  var icon smt.Icon = smt.Icon{
+    Name: smt.ICON_NAME_ADD_CIRCLE,
+    Variations: []smt.Variation{ smt.ICON_VARIATION_BORDERED },
+    Color: smt.COLOR_BLUE,
+    Size: smt.SIZE_BIG,
+  }
+
+  t.ParserString( icon.Get() )
+  //t.Execute( icon )
+  //t.ParserFiles(
+  //  "./templates/index/header.html",
+  //)
+  //t.ExecuteTemplate( "header", nil )
+  t.ExecuteTemplate( "icon", icon )
 
 }
 
