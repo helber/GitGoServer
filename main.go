@@ -221,7 +221,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
     Out: w,
   }
 
-  var icon smt.Icon = smt.Icon{
+  /*var icon smt.Icon = smt.Icon{
     Name: smt.ICON_NAME_ADD_CIRCLE,
     Variations: []smt.Variation{ smt.ICON_VARIATION_BORDERED },
     Color: smt.COLOR_BLUE,
@@ -229,12 +229,43 @@ func Index(w http.ResponseWriter, r *http.Request) {
   }
 
   t.ParserString( icon.Get() )
+  t.ExecuteTemplate( "icon", icon )*/
+
+  var button smt.Button = smt.Button{
+    Label: "Ok",
+    Primary: true,
+    ContentHidden: smt.Content{
+      RightIcon: true,
+      Text: "Mundo",
+      Icon: smt.Icon{
+        Name: smt.ICON_NAME_ADD_CIRCLE,
+        Variations: []smt.Variation{ smt.ICON_VARIATION_BORDERED },
+        Color: smt.COLOR_BLUE,
+        Size: smt.SIZE_NORMAL,
+      },
+    },
+    ContentVisible: smt.Content{
+      RightIcon: false,
+      Text: "Olá",
+      Icon: smt.Icon{
+        Name: smt.ICON_NAME_ADD_CIRCLE,
+        Variations: []smt.Variation{smt.ICON_VARIATION_BORDERED },
+        Color: smt.COLOR_BLUE,
+        Size: smt.SIZE_NORMAL,
+      },
+    },
+  }
+
+  t.ParserString( button.String() )
+  t.ExecuteTemplate( "button", button )
+
+
   //t.Execute( icon )
   //t.ParserFiles(
   //  "./templates/index/header.html",
   //)
   //t.ExecuteTemplate( "header", nil )
-  t.ExecuteTemplate( "icon", icon )
+
 
 }
 
