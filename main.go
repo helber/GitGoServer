@@ -16,9 +16,7 @@ import (
   "github.com/helmutkemper/GoSemanticUI/smt/smtTemplate"
   "github.com/helmutkemper/gOsmServer/leaflet"
   "gopkg.in/mgo.v2/bson"
-  "github.com/helmutkemper/GoSemanticUI/semantic/smLinks"
   "github.com/helmutkemper/gOsm"
-  "fmt"
 )
 
 type RoutesStt []restFul.RouteStt
@@ -31,53 +29,55 @@ func init(){
 
   Routes = RoutesStt{
     restFul.RouteStt{
-      Name: "import",
-      Method: "GET",
-      Pattern: "/import",
-      HandlerFunc: Import,
-    },
-    restFul.RouteStt{
       Name: "statistic",
       Method: "GET",
-      Pattern: "/statistic",
-      HandlerFunc: Statistics,
+      Pattern: "/parserratio",
+      HandlerFunc: ParserRatio,
     },
     restFul.RouteStt{
-      Name: "Index1",
+      Name: "Index",
       Method: "GET",
       Pattern: "/",
       HandlerFunc: Index,
     },
-    restFul.RouteStt{
-      Name: "Index2",
-      Method: "GET",
-      Pattern: "",
-      HandlerFunc: Index,
-    },
+
+    // Download osm xml from geofabrik
+    // json to send: { "continent": string, "name": string }
+    // Ex.: { "continent": "south-america", "name": "Brazil" }
     restFul.RouteStt{
       Name: "DownloadGeoFabrik",
       Method: "POST",
       Pattern: "/geodatadownload",
       HandlerFunc: install.DownloadMapData,
     },
+
+    // Atualiza os dados do banco com as informações dos mapas da geo fabrik
     restFul.RouteStt{
       Name: "UpdateDownloadGeoFabrik",
       Method: "GET",
       Pattern: "/updategeodatadownload",
-      HandlerFunc: install.UploadDownloadMapData,
+      HandlerFunc: install.UpdateGeoFabrikMapListToDownload,
     },
+
+    // Mostra os dados colhidos por install.UpdateGeoFabrikMapListToDownload a medida que os mesmos ficam prontos
+    // todo "IdMongo": "", ??????????????
     restFul.RouteStt{
       Name: "ProgressDownloadGeoFabrik",
       Method: "GET",
       Pattern: "/progressgeodatadownload",
       HandlerFunc: install.ProgressDownloadMapData,
     },
+
+    // Monitora o download do arquivo de mapas escolhido
     restFul.RouteStt{
       Name: "ProgressDownloadOsm",
       Method: "GET",
       Pattern: "/progressdownloadosm",
-      HandlerFunc: install.ProgressDownloadOsm,
+      HandlerFunc: install.ProgressDownloadOsmFile,
     },
+
+
+
     restFul.RouteStt{
       Name: "gpsCreate",
       Method: "POST",
@@ -108,19 +108,6 @@ func init(){
       Pattern: "/getProx",
       HandlerFunc: leaflet.GetProximidades,
     },
-
-
-
-
-
-
-
-    restFul.RouteStt{
-      Name: "se",
-      Method: "GET",
-      Pattern: "/se",
-      HandlerFunc: Semantic,
-    },
   }
 
   store.Options = &sessions.Options{
@@ -132,31 +119,7 @@ func init(){
 }
 var store = sessions.NewCookieStore([]byte("something-very-secret"))
 
-func Semantic(w http.ResponseWriter, r *http.Request) {
-  t := smtTemplate.Template{
-    Name: "semantic",
-    Out: w,
-  }
-  t.ParserString( smLinks.GetLinks() )
-  t.Execute( nil )
-}
-
-func Import(w http.ResponseWriter, r *http.Request) {
-  t0 := time.Now()
-
-  db.Connect( "127.0.0.1", "brasil" )
-
-  gOsm.StatisticsEnable( true )
-  e := gOsm.ParserOsmXml( "/home/hkemper/Desktop/importMap/south-america-latest.osm" )
-  if e != nil {
-    panic( e )
-  }
-
-  t1 := time.Now()
-  fmt.Printf("Total time: %v\n", t1.Sub(t0))
-}
-
-func Statistics(w http.ResponseWriter, r *http.Request) {
+func ParserRatio(w http.ResponseWriter, r *http.Request) {
   output := restFul.JSonOutStt{}
   output.ToOutput( 1, nil, gOsm.GetStatus(), w )
 }
