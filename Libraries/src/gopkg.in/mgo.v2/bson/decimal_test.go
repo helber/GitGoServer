@@ -33,9 +33,9 @@ import (
 	"regexp"
 	"strings"
 
-	"gopkg.in/mgo.v2/bson"
+	"github.com/helmutkemper/mgo/bson"
 
-	. "gopkg.in/check.v1"
+	. "github.com/helmutkemper/check"
 )
 
 // --------------------------------------------------------------------------

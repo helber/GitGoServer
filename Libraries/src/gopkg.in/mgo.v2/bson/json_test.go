@@ -1,9 +1,9 @@
 package bson_test
 
 import (
-	"gopkg.in/mgo.v2/bson"
+	"github.com/helmutkemper/mgo/bson"
 
-	. "gopkg.in/check.v1"
+	. "github.com/helmutkemper/check"
 	"reflect"
 	"strings"
 	"time"

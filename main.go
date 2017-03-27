@@ -46,14 +46,14 @@ func init(){
       Name: "DownloadGeoFabrik",
       Method: "POST",
       Pattern: "/geodatadownload",
-      HandlerFunc: install.DownloadMapData,
+      HandlerFunc: install.DownloadGeoFabrikMapData,
     },
 
     // Atualiza os dados do banco com as informações dos mapas da geo fabrik
     restFul.RouteStt{
       Name: "UpdateDownloadGeoFabrik",
       Method: "GET",
-      Pattern: "/updategeodatadownload",
+      Pattern: "/updategeofabrikdatadownload",
       HandlerFunc: install.UpdateGeoFabrikMapListToDownload,
     },
 
@@ -74,15 +74,12 @@ func init(){
       HandlerFunc: install.ProgressDownloadOsmFile,
     },
 
-
     restFul.RouteStt{
       Name: "ProgressDownloadOsm",
       Method: "GET",
       Pattern: "/memory",
       HandlerFunc: MemoryAlloc,
     },
-
-
 
     restFul.RouteStt{
       Name: "gpsCreate",
@@ -114,6 +111,15 @@ func init(){
       Pattern: "/getProx",
       HandlerFunc: leaflet.GetProximidades,
     },
+
+
+
+    restFul.RouteStt{
+      Name: "ibge",
+      Method: "GET",
+      Pattern: "/ibge",
+      HandlerFunc: install.UpdateIbgeMapListToDownload,
+    },
   }
 
   store.Options = &sessions.Options{
@@ -129,37 +135,6 @@ func ParserRatio(w http.ResponseWriter, r *http.Request) {
   output := restFul.JSonOutStt{}
   output.ToOutput( 1, nil, gOsm.GetStatus(), w )
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 func MemoryAlloc(w http.ResponseWriter, r *http.Request) {
   var mem runtime.MemStats
