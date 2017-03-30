@@ -14,8 +14,8 @@ import (
   "github.com/helmutkemper/gOsmServer/Install"
   "github.com/helmutkemper/gOsmServer/leaflet"
   "github.com/helmutkemper/gOsm"
-  "github.com/helmutkemper/gOsmServer/setupProject"
   "github.com/helmutkemper/gOsmServer/information"
+  "github.com/helmutkemper/gOsmServer/setupProject"
 )
 
 type RoutesStt            []restFul.RouteStt
