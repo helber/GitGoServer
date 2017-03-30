@@ -1,7 +1,7 @@
 package main
 
 import (
-  "log"
+  log "github.com/helmutkemper/seelog"
   "net/http"
   "github.com/helmutkemper/gOsmServer/restFul"
   "github.com/helmutkemper/gOsm/db"
@@ -14,13 +14,16 @@ import (
   "github.com/helmutkemper/gOsmServer/Install"
   "github.com/helmutkemper/gOsmServer/leaflet"
   "github.com/helmutkemper/gOsm"
-  "runtime"
+  "github.com/helmutkemper/gOsmServer/setupProject"
+  "github.com/helmutkemper/gOsmServer/information"
 )
 
-type RoutesStt []restFul.RouteStt
+type RoutesStt            []restFul.RouteStt
 
-var Routes RoutesStt
-var AddMapChannel chan string
+var Routes                RoutesStt
+var AddMapChannel         chan string
+
+var setupConfig           setupProject.Configuration
 
 func init(){
   AddMapChannel = make( chan string, 20 )
@@ -40,13 +43,14 @@ func init(){
     },*/
 
     // Download osm xml from geofabrik
+    // Download osm xml from ibge
     // json to send: { "continent": string, "name": string }
     // Ex.: { "continent": "south-america", "name": "Brazil" }
     restFul.RouteStt{
-      Name: "DownloadGeoFabrik",
+      Name: "DownloadGeoData",
       Method: "POST",
       Pattern: "/geodatadownload",
-      HandlerFunc: install.DownloadGeoFabrikMapData,
+      HandlerFunc: install.DownloadMapData,
     },
 
     // Atualiza os dados do banco com as informações dos mapas da geo fabrik
@@ -75,10 +79,10 @@ func init(){
     },
 
     restFul.RouteStt{
-      Name: "ProgressDownloadOsm",
+      Name: "MemoryAlloc",
       Method: "GET",
       Pattern: "/memory",
-      HandlerFunc: MemoryAlloc,
+      HandlerFunc: information.MemoryAlloc,
     },
 
     restFul.RouteStt{
@@ -111,6 +115,13 @@ func init(){
       Pattern: "/getProx",
       HandlerFunc: leaflet.GetProximidades,
     },
+    restFul.RouteStt{
+      Name:        "reconfigure",
+      Method:      "GET",
+      Pattern:     "/reconfigure",
+      HandlerFunc: setupProject.Reload,
+    },
+
 
 
 
@@ -136,14 +147,6 @@ func ParserRatio(w http.ResponseWriter, r *http.Request) {
   output.ToOutput( 1, nil, gOsm.GetStatus(), w )
 }
 
-func MemoryAlloc(w http.ResponseWriter, r *http.Request) {
-  var mem runtime.MemStats
-  runtime.ReadMemStats(&mem)
-
-  output := restFul.JSonOutStt{}
-  output.ToOutput( 1, nil, mem, w )
-}
-
 func Index(w http.ResponseWriter, r *http.Request) {
 
 }
@@ -153,6 +156,9 @@ func main() {
   db.Connect( "127.0.0.1", "brasil" )
 
   var dir string
+
+  setupConfig = setupProject.Configuration{}
+  setupConfig.LoadConfig()
 
   flag.StringVar( &dir, "dir", "./static", "the directory to serve files from." )
   flag.Parse()
@@ -173,7 +179,7 @@ func main() {
   // This will serve files under http://domain.com/static/<filename>
   router.PathPrefix( "/static"  ).Handler( http.StripPrefix( "/static",  http.FileServer( http.Dir( dir ) ) ) )
   router.PathPrefix( "/static/" ).Handler( http.StripPrefix( "/static/", http.FileServer( http.Dir( dir ) ) ) )
-  log.Fatal(http.ListenAndServe(":8082", router))
+  log.Critical(http.ListenAndServe(":8082", router))
   //context.ClearHandler(http.DefaultServeMux)
 }
 
@@ -183,7 +189,7 @@ func Logger(inner http.Handler, name string) http.Handler {
 
     inner.ServeHTTP(w, r)
 
-    log.Printf(
+    log.Infof(
       "%s\t%s\t%s\t%s",
       r.Method,
       r.RequestURI,
