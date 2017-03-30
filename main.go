@@ -23,8 +23,6 @@ type RoutesStt            []restFul.RouteStt
 var Routes                RoutesStt
 var AddMapChannel         chan string
 
-var setupConfig           setupProject.Configuration
-
 func init(){
   AddMapChannel = make( chan string, 20 )
 
@@ -75,7 +73,7 @@ func init(){
       Name: "ProgressDownloadOsm",
       Method: "GET",
       Pattern: "/progressdownloadosm",
-      HandlerFunc: install.ProgressDownloadOsmFile,
+      HandlerFunc: install.ProgressDownloadFile,
     },
 
     restFul.RouteStt{
@@ -157,8 +155,8 @@ func main() {
 
   var dir string
 
-  setupConfig = setupProject.Configuration{}
-  setupConfig.LoadConfig()
+  setupProject.Config = setupProject.Configuration{}
+  setupProject.Config.LoadConfig()
 
   flag.StringVar( &dir, "dir", "./static", "the directory to serve files from." )
   flag.Parse()
