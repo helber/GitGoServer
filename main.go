@@ -1,5 +1,7 @@
 package main
 
+// todo: https://github.com/helmutkemper/mafsa
+
 import (
   log "github.com/helmutkemper/seelog"
   "net/http"
@@ -59,7 +61,17 @@ func init(){
       HandlerFunc: install.UpdateGeoFabrikMapListToDownload,
     },
 
-    // Mostra os dados colhidos por install.UpdateGeoFabrikMapListToDownload a medida que os mesmos ficam prontos
+    // Atualiza os dados do banco com as informações dos mapas da geo fabrik
+    restFul.RouteStt{
+      Name: "ibge",
+      Method: "GET",
+      Pattern: "/updateibgedatadownload",
+      HandlerFunc: install.UpdateIbgeMapListToDownload,
+    },
+
+    // Mostra os dados colhidos por install.UpdateGeoFabrikMapListToDownload
+    // a medida que os mesmos ficam prontos
+    // funciona bem para o geofabrik e para o ibge
     // todo "IdMongo": "", ??????????????
     restFul.RouteStt{
       Name: "ProgressDownloadGeoFabrik",
@@ -69,6 +81,7 @@ func init(){
     },
 
     // Monitora o download do arquivo de mapas escolhido
+    // funciona bem para o geofabrik e não funciona para o ibge por ser ftp
     restFul.RouteStt{
       Name: "ProgressDownloadOsm",
       Method: "GET",
@@ -118,16 +131,6 @@ func init(){
       Method:      "GET",
       Pattern:     "/reconfigure",
       HandlerFunc: setupProject.Reload,
-    },
-
-
-
-
-    restFul.RouteStt{
-      Name: "ibge",
-      Method: "GET",
-      Pattern: "/ibge",
-      HandlerFunc: install.UpdateIbgeMapListToDownload,
     },
   }
 
