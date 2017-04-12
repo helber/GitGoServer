@@ -19,7 +19,6 @@ import (
   "github.com/helmutkemper/gOsmServer/information"
   "github.com/helmutkemper/gOsmServer/setupProject"
   "html/template"
-  "github.com/helmutkemper/gOsm/geoMath"
 )
 
 type RoutesStt            []restFul.RouteStt
@@ -167,8 +166,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 }
 
 func Polygons(w http.ResponseWriter, r *http.Request) {
-  p := geoMath.PolygonListStt{}
-  p.F
+
 }
 
 func main() {
