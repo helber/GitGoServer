@@ -18,6 +18,8 @@ import (
   "github.com/helmutkemper/gOsm"
   "github.com/helmutkemper/gOsmServer/information"
   "github.com/helmutkemper/gOsmServer/setupProject"
+  "html/template"
+  "github.com/helmutkemper/gOsm/geoMath"
 )
 
 type RoutesStt            []restFul.RouteStt
@@ -132,6 +134,16 @@ func init(){
       Pattern:     "/reconfigure",
       HandlerFunc: setupProject.Reload,
     },
+
+
+
+
+    restFul.RouteStt{
+      Name:        "index",
+      Method:      "GET",
+      Pattern:     "/",
+      HandlerFunc: Index,
+    },
   }
 
   store.Options = &sessions.Options{
@@ -149,7 +161,14 @@ func ParserRatio(w http.ResponseWriter, r *http.Request) {
 }
 
 func Index(w http.ResponseWriter, r *http.Request) {
+  t := template.New("some template") // Create a template.
+  t, _ = t.ParseFiles("./templates/index/index.html")  // Parse template file.
+  t.ExecuteTemplate(w, "index", nil)  // merge.
+}
 
+func Polygons(w http.ResponseWriter, r *http.Request) {
+  p := geoMath.PolygonListStt{}
+  p.F
 }
 
 func main() {
