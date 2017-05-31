@@ -28,20 +28,51 @@ var AddMapChannel         chan string
 
 func init(){
   AddMapChannel = make( chan string, 20 )
+}
 
+var store *sessions.CookieStore
+
+func ParserRatio(w http.ResponseWriter, r *http.Request) {
+  output := restFul.JSonOutStt{}
+  output.ToOutput( 1, nil, gOsm.GetStatus(), w )
+}
+
+func Index(w http.ResponseWriter, r *http.Request) {
+  t := template.New("some template") // Create a template.
+  t, _ = t.ParseFiles("./templates/index/index.html")  // Parse template file.
+  t.ExecuteTemplate(w, "index", nil)  // merge.
+}
+
+func Polygons(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func main() {
+
+  // db connect
+  db.Connect( "127.0.0.1", "brasil" )
+
+  // configuration from database
+  setupProject.Config = setupProject.Configuration{}
+  setupProject.Config.LoadConfig()
+
+  // server pages
   Routes = RoutesStt{
+    // index
+    restFul.RouteStt{
+      Name:        "index",
+      Method:      "GET",
+      Pattern:     "/",
+      HandlerFunc: Index,
+    },
+
+    // Mostra o percentual dos dados processados
     restFul.RouteStt{
       Name: "statistic",
       Method: "GET",
       Pattern: "/parserratio",
       HandlerFunc: ParserRatio,
     },
-    /*restFul.RouteStt{
-      Name: "Index",
-      Method: "GET",
-      Pattern: "/",
-      HandlerFunc: Index,
-    },*/
 
     // Download osm xml from geofabrik
     // Download osm xml from ibge
@@ -62,7 +93,7 @@ func init(){
       HandlerFunc: install.UpdateGeoFabrikMapListToDownload,
     },
 
-    // Atualiza os dados do banco com as informações dos mapas da geo fabrik
+    // Atualiza os dados do banco com as informações dos mapas do IBGE
     restFul.RouteStt{
       Name: "ibge",
       Method: "GET",
@@ -90,6 +121,7 @@ func init(){
       HandlerFunc: install.ProgressDownloadFile,
     },
 
+    // Mostra a alocação de memória
     restFul.RouteStt{
       Name: "MemoryAlloc",
       Method: "GET",
@@ -127,59 +159,26 @@ func init(){
       Pattern: "/getProx",
       HandlerFunc: leaflet.GetProximidades,
     },
+
+    // Recarrega as configurações do sistema
     restFul.RouteStt{
       Name:        "reconfigure",
       Method:      "GET",
       Pattern:     "/reconfigure",
       HandlerFunc: setupProject.Reload,
     },
-
-
-
-
-    restFul.RouteStt{
-      Name:        "index",
-      Method:      "GET",
-      Pattern:     "/",
-      HandlerFunc: Index,
-    },
   }
 
+
+  store = sessions.NewCookieStore([]byte( setupProject.Config.Server.CookieName ))
   store.Options = &sessions.Options{
-    //Domain:   "localhost",
-    Path:     "/",
-    MaxAge:   3600 * 8, // 8 hours
-    HttpOnly: true,
+    Path: setupProject.Config.Server.Path,
+    Domain: setupProject.Config.Server.Domain,
+    MaxAge: setupProject.Config.Server.MaxAge,
+    Secure: setupProject.Config.Server.Secure,
+    HttpOnly: setupProject.Config.Server.HttpOnly,
   }
-}
-var store = sessions.NewCookieStore([]byte("something-very-secret"))
 
-func ParserRatio(w http.ResponseWriter, r *http.Request) {
-  output := restFul.JSonOutStt{}
-  output.ToOutput( 1, nil, gOsm.GetStatus(), w )
-}
-
-func Index(w http.ResponseWriter, r *http.Request) {
-  t := template.New("some template") // Create a template.
-  t, _ = t.ParseFiles("./templates/index/index.html")  // Parse template file.
-  t.ExecuteTemplate(w, "index", nil)  // merge.
-}
-
-func Polygons(w http.ResponseWriter, r *http.Request) {
-
-}
-
-func main() {
-
-  db.Connect( "127.0.0.1", "brasil" )
-
-  var dir string
-
-  setupProject.Config = setupProject.Configuration{}
-  setupProject.Config.LoadConfig()
-
-  flag.StringVar( &dir, "dir", "./static", "the directory to serve files from." )
-  flag.Parse()
   router := mux.NewRouter().StrictSlash( true )
   for _, route := range Routes {
     var handler http.Handler
@@ -195,10 +194,21 @@ func main() {
   }
 
   // This will serve files under http://domain.com/static/<filename>
-  router.PathPrefix( "/static"  ).Handler( http.StripPrefix( "/static",  http.FileServer( http.Dir( dir ) ) ) )
-  router.PathPrefix( "/static/" ).Handler( http.StripPrefix( "/static/", http.FileServer( http.Dir( dir ) ) ) )
-  //log.Critical( http.ListenAndServeTLS( ":8083", "server.crt", "server.key", router ) )
+  var dir string
+  flag.StringVar( &dir, "dir", setupProject.Config.Server.StaticFileSysPath, "the directory to serve files from." )
+  flag.Parse()
+
+  router.PathPrefix( setupProject.Config.Server.StaticServerPath  ).Handler( http.StripPrefix( setupProject.Config.Server.StaticServerPath,  http.FileServer( http.Dir( dir ) ) ) )
+
+  // For use certificated server ( https )
+  // openssl genrsa 1024 > host.key
+  // chmod 400 host.key
+  // openssl req -new -x509 -nodes -sha1 -days 365 -key host.key -out host.cert
+  //log.Critical( http.ListenAndServeTLS( ":8082", "host.crt", "host.key", router ) )
+
+  // For uncertificated server ( http )
   log.Critical(http.ListenAndServe(":8082", router))
+
   //context.ClearHandler(http.DefaultServeMux)
 }
 
