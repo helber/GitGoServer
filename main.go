@@ -56,6 +56,8 @@ func main() {
   setupProject.Config = setupProject.Configuration{}
   setupProject.Config.LoadConfig()
 
+  install.Initialize( setupProject.Config.Server.StaticFileSysPath )
+
   // server pages
   Routes = RoutesStt{
     // index
@@ -227,3 +229,4 @@ func Logger(inner http.Handler, name string) http.Handler {
     )
   })
 }
+
