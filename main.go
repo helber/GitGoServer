@@ -197,6 +197,7 @@ func main() {
   // This will serve files under http://domain.com/static/<filename>
   router.PathPrefix( "/static"  ).Handler( http.StripPrefix( "/static",  http.FileServer( http.Dir( dir ) ) ) )
   router.PathPrefix( "/static/" ).Handler( http.StripPrefix( "/static/", http.FileServer( http.Dir( dir ) ) ) )
+  //log.Critical( http.ListenAndServeTLS( ":8083", "server.crt", "server.key", router ) )
   log.Critical(http.ListenAndServe(":8082", router))
   //context.ClearHandler(http.DefaultServeMux)
 }
