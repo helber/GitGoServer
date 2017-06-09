@@ -44,12 +44,202 @@
   });
 
 
-  var data = [
-    {percentual: 33, icon: '\uf2c8', status: "temperatura", background: "#ff0000", color: "#FFFFFF", size: 40, dx:   0, dy:   0},
-    {percentual: 33, icon: '\uf2a3', status: "mãos", background: "#00ff00", color: "#FFFFFF", size: 40, dx: -20, dy: -20},
-    {percentual: 33, icon: '\uf243', status: "bateria", background: "#0000ff", color: "#FFFFFF", size: 40, dx: -30, dy:   0}
-  ];
+  /**
+   *
+   * @param setupObject = {
+   *  pie: {
+   *    mainIconSize: 40,
+   *    mainIcon: "\uf21c",
+   *    radiusOuterPx: 100,
+   *    radiusInnerPx: 50,
+   *    mainIconDX: -25,
+   *    mainIconDY: -20
+   *  }
+   * }
+   * @param dataObject
+   */
+  function visualCuePieLikeElement( setupObject, dataArrObject ){
 
+    if( setupObject[ "x" ] === undefined ){
+      setupObject[ "x" ] = 0;
+    }
+    if( setupObject[ "y" ] === undefined ){
+      setupObject[ "y" ] = 0;
+    }
+    if( setupObject[ "toolTipClass" ] === undefined ){
+      setupObject[ "toolTipClass" ] = "tooltip";
+    }
+    if( setupObject[ "angleStartDeg" ] === undefined ){
+      setupObject[ "angleStartDeg" ] = 0;
+    }
+    if( setupObject[ "angleEndDeg" ] === undefined ){
+      setupObject[ "angleEndDeg" ] = 360;
+    }
+    if( setupObject[ "toolTipEffectInDuration" ] === undefined ){
+      setupObject[ "toolTipEffectInDuration" ] = 100;
+    }
+    if( setupObject[ "toolTipEffectOutDuration" ] === undefined ){
+      setupObject[ "toolTipEffectOutDuration" ] = 500;
+    }
+    if( setupObject[ "toolTipOpacity" ] === undefined ){
+      setupObject[ "toolTipOpacity" ] = .8;
+    }
+    if( setupObject[ "toolTipDX" ] === undefined ){
+      setupObject[ "toolTipDX" ] = 0;
+    }
+    if( setupObject[ "toolTipDY" ] === undefined ){
+      setupObject[ "toolTipDY" ] = 0;
+    }
+    if( setupObject[ "toolTipFillColor" ] === undefined ){
+      setupObject[ "toolTipFillColor" ] = "#888888";
+    }
+    /*if( setupObject[ "mainIconSize" ] === undefined ){
+      setupObject[ "mainIconSize" ] = 80;
+    }*/
+    if( setupObject[ "mainIconColor" ] === undefined ){
+      setupObject[ "mainIconColor" ] = "#000000";
+    }
+    if( setupObject[ "mainIconDX" ] === undefined ){
+      setupObject[ "mainIconDX" ] = 0;
+    }
+    if( setupObject[ "mainIconDY" ] === undefined ){
+      setupObject[ "mainIconDY" ] = 0;
+    }
+    /*if( setupObject[ "mainIcon" ] === undefined ){
+      setupObject[ "mainIcon" ] = "\uf21c";
+    }*/
+
+    var donut = d3.pie()
+    .startAngle( setupObject[ "angleStartDeg" ] * ( Math.PI / 180 ) )
+    .endAngle( setupObject[ "angleEndDeg" ] * ( Math.PI / 180 ) );
+
+    var arc = d3.arc()
+    .innerRadius( setupObject[ "radiusInnerPx" ] )
+    .outerRadius( setupObject[ "radiusOuterPx" ] );
+
+    var div = d3.select( "body" ).append( "div" )
+    .attr( "class", setupObject[ "toolTipClass" ] )
+    .style( "opacity", 0 );
+
+    var vis = d3.select( "body" )
+    .append( "svg:svg" )
+    .data( [ dataArrObject ] )
+    .attr( "width", setupObject[ "radiusOuterPx" ] * 2 )
+    .attr( "height", setupObject[ "radiusOuterPx" ] * 2 );
+
+    var arcs = vis.selectAll( "g.arc" )
+    .data( donut.value(
+      function( d ) {
+        return d.percentual;
+      }
+    ))
+    .enter().append( "svg:g" )
+    .attr( "class", "arc" )
+    .attr( "transform", "translate(" + setupObject[ "radiusOuterPx" ] + "," + setupObject[ "radiusOuterPx" ] + ")" )
+    .on( "mousemove", function( d ) {
+      div.transition()
+      .duration( setupObject[ "toolTipEffectInDuration" ] )
+      .style( "opacity", setupObject[ "toolTipOpacity" ] );
+
+      div.html( d.data.status )
+      .style( "left", ( d3.event.pageX + setupObject[ "toolTipDX" ] ) + "px" )
+      .style( "top", ( d3.event.pageY + setupObject[ "toolTipDY" ] ) + "px" );
+    })
+    .on( "mouseout", function( d ) {
+      div.transition()
+      .duration( setupObject[ "toolTipEffectOutDuration" ] )
+      .style( "opacity", 0 );
+    });
+
+    arcs.append( "svg:path" )
+    .attr( "fill", function( d, i ) {
+      return d.data.background;
+    })
+    .attr( "d", arc );
+
+    arcs.append( "svg:foreignObject" )
+    .attr( "font-family", "FontAwesome" )
+    .attr( 'font-size', function( d ) {
+      return ( d.data.size ) + 'px'
+    })
+    .attr( 'color', function( d ) {
+      return d.data.color
+    })
+    .attr( "transform", function( d ) {
+      var textWidth = getTextWidth( d.data.icon, "FontAwesome" );
+      return "translate(" + ( arc.centroid( d )[ 0 ] - textWidth / 2 + d.data.dx ) + "," + ( arc.centroid( d )[ 1 ] - textWidth / 2 + d.data.dy ) + ")";
+    })
+    .attr( "text-anchor", function( d ) {
+      return ( d.endAngle + d.startAngle ) / 2 > Math.PI ? "end" : "start";
+    })
+    .text( function( d ) {
+      return d.data.icon;
+    })
+    .attr( 'pointer-events', 'none' );
+
+    vis.append( "circle" )
+    .attr( "cx", function( d ) {
+      return setupObject[ "radiusOuterPx" ];
+    })
+    .attr( "cy", function( d ) {
+      return setupObject[ "radiusOuterPx" ];
+    })
+    .attr( "r", setupObject[ "radiusInnerPx" ] )
+    .style( "fill", setupObject[ "toolTipFillColor" ] )
+    .on( "mousemove", function( d ) {
+      div.transition()
+      .duration( setupObject[ "toolTipEffectInDuration" ] )
+      .style( "opacity", setupObject[ "toolTipOpacity" ] );
+      div.html( "Olá mundo!" )
+      .style("left", ( d3.event.pageX + setupObject[ "toolTipDX" ] ) + "px")
+      .style("top", ( d3.event.pageY + setupObject[ "toolTipDY" ] ) + "px");
+    })
+    .on( "mouseout", function( d ) {
+      div.transition()
+      .duration( setupObject[ "toolTipEffectOutDuration" ] )
+      .style( "opacity", 0 );
+    });
+    vis.append( "svg:foreignObject" )
+    .attr( "font-family", "FontAwesome" )
+    .attr( 'font-size', function( d ) {
+      return ( setupObject[ "mainIconSize" ] ) + 'px'
+    })
+    .attr( 'pointer-events', 'none' )
+    .attr( 'color', function( d ) {
+      return setupObject[ "mainIconColor" ];
+    })
+    .attr("x", function( d ) {
+      return setupObject[ "radiusOuterPx" ] + setupObject[ "mainIconDX" ];
+    })
+    .attr("y", function( d ) {
+      return setupObject[ "radiusOuterPx" ] + setupObject[ "mainIconDY" ];
+    })
+    .text( setupObject[ "mainIcon" ] );
+
+    return vis;
+  }
+
+  var data = [
+    { percentual: 33, icon: '\uf2c8', status: "temperatura", background: "#ff0000", color: "#FFFFFF", size: 30, dx:   0, dy:  0 },
+    { percentual: 33, icon: '\uf2a3', status: "mãos",        background: "#00ff00", color: "#FFFFFF", size: 30, dx: -14, dy: -12 },
+    { percentual: 33, icon: '\uf243', status: "bateria",     background: "#0000ff", color: "#FFFFFF", size: 20, dx: -14, dy:  0 }
+  ];
+  var setup = {
+    mainIconSize: 40,
+    mainIcon: "\uf21c",
+    radiusOuterPx: 100,
+    radiusInnerPx: 50,
+    mainIconDX: -25,
+    mainIconDY: -20
+  };
+
+
+  var a = visualCuePieLikeElement( setup, data );
+  var b = visualCuePieLikeElement( setup, data );
+  var c = visualCuePieLikeElement( setup, data );
+
+  b.remove();
+/*
   var w = 400,
     h = 400,
     r = Math.min(w, h) / 2,
@@ -61,7 +251,6 @@
   .innerRadius(r * .5)
   .outerRadius(r);
 
-  // parse the date / time
   var div = d3.select("body").append("div")
   .attr("class", "tooltip")
   .style("opacity", 0);
@@ -99,17 +288,12 @@
   })
   .attr("d", arc);
 
-  var centroidX, centroidY;
-
-
   arcs.append("svg:foreignObject")
   .attr("font-family", "FontAwesome")
   .attr('font-size', function(d) { return ( d.data.size ) + 'px'} )
   .attr('color', function(d) { return d.data.color } )
   .attr("transform", function (d) {
     var textWidth = getTextWidth(d.data.icon, "FontAwesome");
-    centroidX = arc.centroid(d)[0];
-    centroidY = arc.centroid(d)[1];
     return "translate(" + (arc.centroid(d)[0] - textWidth/2 + d.data.dx) + "," + (arc.centroid(d)[1] - textWidth/2 + d.data.dy) + ")";
   })
   //.attr("dy", ".35em")
@@ -122,7 +306,6 @@
     return d.data.icon;
   })
   .attr('pointer-events', 'none' );
-
 
   vis.append("circle")
   .attr("cx", function(d) { return w/2; })
@@ -155,7 +338,7 @@
   } )
   //.attr("dy", ".35em")
   .text( '\uf21c' );
-
+*/
   function getTextWidth(text, font) {
     var canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
     var context = canvas.getContext("2d");
