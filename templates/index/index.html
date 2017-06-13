@@ -27,6 +27,13 @@
   <script src="https://d3js.org/d3-geo.v1.min.js"></script>
   <script src="https://openlayers.org/en/v4.2.0/build/ol.js" type="text/javascript"></script>
   <script src="https://d3js.org/d3-geo.v1.min.js"></script>
+
+  <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+  <script src="https://openlayers.org/en/v4.2.0/build/ol.js"></script>
+  <script src="https://d3js.org/topojson.v1.min.js"></script>
+
+  <script src="./static/js/visual.cue.d3js/util.js"></script>
+  <script src="./static/js/visual.cue.d3js/visualCuePie.js"></script>
   <title>OpenLayers example</title>
 </head>
 <body>
@@ -34,300 +41,89 @@
 <div id="d32"></div>
 <div id="map" class="map"></div>
 <script type="text/javascript">
-  var canvasFunction = function(extent, resolution, pixelRatio, size, projection) {
-    //console.log("extent:", extent);
-    //console.log("resolution:", resolution);
-    //console.log("pixelRatio:", pixelRatio);
-    //console.log("size:", size);
-    //console.log("projection:", projection);
-
-    var canvasWidth = size[0];
-    var canvasHeight = size[1];
-
-    var canvas = d3.select(document.createElement('canvas'));
-    canvas.attr('width', canvasWidth).attr('height', canvasHeight);
-
-    var context = canvas.node().getContext('2d');
-
-    var d3Projection = d3.geo.mercator().scale(1).translate([0, 0]);
-    var d3Path = d3.geo.path().projection(d3Projection);
-
-    var pixelBounds = d3Path.bounds(features);
-    var pixelBoundsWidth = pixelBounds[1][0] - pixelBounds[0][0];
-    var pixelBoundsHeight = pixelBounds[1][1] - pixelBounds[0][1];
-
-    var geoBounds = d3.geo.bounds(features);
-    var geoBoundsLeftBottom = ol.proj.transform(
-      geoBounds[0], 'EPSG:4326', projection);
-    var geoBoundsRightTop = ol.proj.transform(
-      geoBounds[1], 'EPSG:4326', projection);
-    var geoBoundsWidth = geoBoundsRightTop[0] - geoBoundsLeftBottom[0];
-    if (geoBoundsWidth < 0) {
-      geoBoundsWidth += ol.extent.getWidth(projection.getExtent());
-    }
-    var geoBoundsHeight = geoBoundsRightTop[1] - geoBoundsLeftBottom[1];
-
-    var widthResolution = geoBoundsWidth / pixelBoundsWidth;
-    var heightResolution = geoBoundsHeight / pixelBoundsHeight;
-    var r = Math.max(widthResolution, heightResolution);
-    var scale = r / (resolution / pixelRatio);
-
-    var center = ol.proj.transform(ol.extent.getCenter(extent),
-      projection, 'EPSG:4326');
-    d3Projection.scale(scale).center(center)
-    .translate([canvasWidth / 2, canvasHeight / 2]);
-    d3Path = d3Path.projection(d3Projection).context(context);
-    d3Path(features);
-    context.stroke();
-
-    return canvas[0][0];
-  };
-
-  var map = new ol.Map({
-    target: 'map',
-    layers: [
-      new ol.layer.Tile({
-        source: new ol.source.OSM()
-      })
-    ],
-    view: new ol.View({
-      center: ol.proj.fromLonLat([-48.464783,-27.4287986]),
-      zoom: 17
-    })
-  });
-
-  var layer = new ol.layer.Image({
-    source: new ol.source.ImageCanvas({
-      canvasFunction: canvasFunction,
-      projection: 'EPSG:3857'
-    })
-  });
-  map.addLayer(layer);
 
 
-  /**
-   *
-   * @param setupObject = {
-   *  pie: {
-   *    mainIconSize: 40,
-   *    mainIcon: "\uf21c",
-   *    radiusOuterPx: 100,
-   *    radiusInnerPx: 50,
-   *    mainIconDX: -25,
-   *    mainIconDY: -20
-   *  }
-   * }
-   * @param dataObject
-   */
-  function visualCuePieLikeElement( setupObject, dataArrObject ){
+  d3.json('https://openlayers.org/en/v4.2.0/examples/data/topojson/us.json', function(error, us) {
+    var features = topojson.feature(us, us.objects.counties);
+    var canvasFunction = function (extent, resolution, pixelRatio, size, projection) {
+      //console.log("extent:", extent);
+      //console.log("resolution:", resolution);
+      //console.log("pixelRatio:", pixelRatio);
+      //console.log("size:", size);
+      //console.log("projection:", projection);
 
-    if( setupObject[ "x" ] === undefined ){
-      setupObject[ "x" ] = 0;
-    }
-    if( setupObject[ "y" ] === undefined ){
-      setupObject[ "y" ] = 0;
-    }
-    if( setupObject[ "element" ] === undefined ){
-      setupObject[ "element" ] = "body";
-    }
-    if( setupObject[ "toolTipClass" ] === undefined ){
-      setupObject[ "toolTipClass" ] = "tooltip";
-    }
-    if( setupObject[ "angleStartDeg" ] === undefined ){
-      setupObject[ "angleStartDeg" ] = 0;
-    }
-    if( setupObject[ "angleEndDeg" ] === undefined ){
-      setupObject[ "angleEndDeg" ] = 360;
-    }
-    if( setupObject[ "toolTipEffectInDuration" ] === undefined ){
-      setupObject[ "toolTipEffectInDuration" ] = 100;
-    }
-    if( setupObject[ "toolTipEffectOutDuration" ] === undefined ){
-      setupObject[ "toolTipEffectOutDuration" ] = 500;
-    }
-    if( setupObject[ "toolTipOpacity" ] === undefined ){
-      setupObject[ "toolTipOpacity" ] = .8;
-    }
-    if( setupObject[ "toolTipDX" ] === undefined ){
-      setupObject[ "toolTipDX" ] = 0;
-    }
-    if( setupObject[ "toolTipDY" ] === undefined ){
-      setupObject[ "toolTipDY" ] = 0;
-    }
-    if( setupObject[ "toolTipFillColor" ] === undefined ){
-      setupObject[ "toolTipFillColor" ] = "#888888";
-    }
-    /*if( setupObject[ "mainIconSize" ] === undefined ){
-      setupObject[ "mainIconSize" ] = 80;
-    }*/
-    if( setupObject[ "mainIconColor" ] === undefined ){
-      setupObject[ "mainIconColor" ] = "#000000";
-    }
-    if( setupObject[ "mainIconDX" ] === undefined ){
-      setupObject[ "mainIconDX" ] = 0;
-    }
-    if( setupObject[ "mainIconDY" ] === undefined ){
-      setupObject[ "mainIconDY" ] = 0;
-    }
-    /*if( setupObject[ "mainIcon" ] === undefined ){
-      setupObject[ "mainIcon" ] = "\uf21c";
-    }*/
+      var canvasWidth = size[0];
+      var canvasHeight = size[1];
 
-    var donut = d3.pie()
-    .startAngle( setupObject[ "angleStartDeg" ] * ( Math.PI / 180 ) )
-    .endAngle( setupObject[ "angleEndDeg" ] * ( Math.PI / 180 ) );
+      var canvas = d3.select(document.createElement('canvas'));
+      canvas.attr('width', canvasWidth).attr('height', canvasHeight);
 
-    var arc = d3.arc()
-    .innerRadius( setupObject[ "radiusInnerPx" ] )
-    .outerRadius( setupObject[ "radiusOuterPx" ] );
+      var context = canvas.node().getContext('2d');
 
-    var div = d3.select( setupObject[ "element" ] ).append( "div" )
-    .attr( "class", setupObject[ "toolTipClass" ] )
-    .style( "opacity", 0 );
+      var d3Projection = d3.geoMercator().scale(1).translate([0, 0]);
+      var d3Path = d3.geoPath().projection(d3Projection);
 
-    var vis = d3.select( setupObject[ "element" ] )
-    .append( "svg:svg" )
-    .data( [ dataArrObject ] )
-    .attr( "width", setupObject[ "radiusOuterPx" ] * 2 )
-    .attr( "height", setupObject[ "radiusOuterPx" ] * 2 );
+      var pixelBounds = d3.geoBounds(features);
+      var pixelBoundsWidth = pixelBounds[1][0] - pixelBounds[0][0];
+      var pixelBoundsHeight = pixelBounds[1][1] - pixelBounds[0][1];
 
-    var arcs = vis.selectAll( "g.arc" )
-    .data( donut.value(
-      function( d ) {
-        return d.percentual;
+      var geoBounds = d3.geoBounds(features);
+      var geoBoundsLeftBottom = ol.proj.transform(
+        geoBounds[0], 'EPSG:4326', projection);
+      var geoBoundsRightTop = ol.proj.transform(
+        geoBounds[1], 'EPSG:4326', projection);
+      var geoBoundsWidth = geoBoundsRightTop[0] - geoBoundsLeftBottom[0];
+      if (geoBoundsWidth < 0) {
+        geoBoundsWidth += ol.extent.getWidth(projection.getExtent());
       }
-    ))
-    .enter().append( "svg:g" )
-    .attr( "class", "arc" )
-    .attr( "transform", "translate(" + ( setupObject[ "radiusOuterPx" ] + setupObject[ "x" ] ) + "," + ( setupObject[ "radiusOuterPx" ] + setupObject[ "y" ] ) + ")" )
-    .on( "mousemove", function( d ) {
-      div.transition()
-      .duration( setupObject[ "toolTipEffectInDuration" ] )
-      .style( "opacity", setupObject[ "toolTipOpacity" ] );
+      var geoBoundsHeight = geoBoundsRightTop[1] - geoBoundsLeftBottom[1];
 
-      div.html( d.data.status )
-      .style( "left", ( d3.event.pageX + setupObject[ "toolTipDX" ] ) + "px" )
-      .style( "top", ( d3.event.pageY + setupObject[ "toolTipDY" ] ) + "px" );
-    })
-    .on( "mouseout", function( d ) {
-      div.transition()
-      .duration( setupObject[ "toolTipEffectOutDuration" ] )
-      .style( "opacity", 0 );
-    });
+      var widthResolution = geoBoundsWidth / pixelBoundsWidth;
+      var heightResolution = geoBoundsHeight / pixelBoundsHeight;
+      var r = Math.max(widthResolution, heightResolution);
+      var scale = r / (resolution / pixelRatio);
 
-    arcs.append( "svg:path" )
-    .attr( "fill", function( d, i ) {
-      return d.data.background;
-    })
-    .attr( "d", arc );
+      var center = ol.proj.transform(ol.extent.getCenter(extent),
+        projection, 'EPSG:4326');
+      d3Projection.scale(scale).center(center)
+      .translate(canvasWidth / 2, canvasHeight / 2);
+      d3Path = d3Path.projection(d3Projection).context(context);
+      d3Path(features);
+      context.stroke();
 
-    arcs.append( "svg:foreignObject" )
-    .attr( "font-family", "FontAwesome" )
-    .attr( 'font-size', function( d ) {
-      return ( d.data.size ) + 'px'
-    })
-    .attr( 'color', function( d ) {
-      return d.data.color
-    })
-    .attr( "transform", function( d ) {
-      var textWidth = getTextWidth( d.data.icon, "FontAwesome" );
-      return "translate(" + ( arc.centroid( d )[ 0 ] - textWidth / 2 + d.data.dx ) + "," + ( arc.centroid( d )[ 1 ] - textWidth / 2 + d.data.dy ) + ")";
-    })
-    .attr( "text-anchor", function( d ) {
-      return ( d.endAngle + d.startAngle ) / 2 > Math.PI ? "end" : "start";
-    })
-    .text( function( d ) {
-      return d.data.icon;
-    })
-    .attr( 'pointer-events', 'none' );
-
-    vis.append( "circle" )
-    .attr( "cx", function( d ) {
-      return setupObject[ "radiusOuterPx" ] + setupObject[ "x" ];
-    })
-    .attr( "cy", function( d ) {
-      return setupObject[ "radiusOuterPx" ] + setupObject[ "y" ];
-    })
-    .attr( "r", setupObject[ "radiusInnerPx" ] )
-    .style( "fill", setupObject[ "toolTipFillColor" ] )
-    .on( "mousemove", function( d ) {
-      div.transition()
-      .duration( setupObject[ "toolTipEffectInDuration" ] )
-      .style( "opacity", setupObject[ "toolTipOpacity" ] );
-      div.html( "Olá mundo!" )
-      .style("left", ( d3.event.pageX + setupObject[ "toolTipDX" ] ) + "px")
-      .style("top", ( d3.event.pageY + setupObject[ "toolTipDY" ] ) + "px");
-    })
-    .on( "mouseout", function( d ) {
-      div.transition()
-      .duration( setupObject[ "toolTipEffectOutDuration" ] )
-      .style( "opacity", 0 );
-    });
-    vis.append( "svg:foreignObject" )
-    .attr( "font-family", "FontAwesome" )
-    .attr( 'font-size', function( d ) {
-      return ( setupObject[ "mainIconSize" ] ) + 'px'
-    })
-    .attr( 'pointer-events', 'none' )
-    .attr( 'color', function( d ) {
-      return setupObject[ "mainIconColor" ];
-    })
-    .attr("x", function( d ) {
-      return ( setupObject[ "radiusOuterPx" ] + setupObject[ "mainIconDX" ] + setupObject[ "x" ] );
-    })
-    .attr("y", function( d ) {
-      return ( setupObject[ "radiusOuterPx" ] + setupObject[ "mainIconDY" ] + setupObject[ "y" ] );
-    })
-    .text( setupObject[ "mainIcon" ] );
-
-    return {
-      vis: vis,
-      html: div
+      return canvas._groups[0][0];
     };
-  }
 
-  var data = [
-    { percentual: 33, icon: '\uf2c8', status: "temperatura", background: "#ff0000", color: "#FFFFFF", size: 30, dx:   0, dy:  0 },
-    { percentual: 33, icon: '\uf2a3', status: "mãos",        background: "#00ff00", color: "#FFFFFF", size: 30, dx: -14, dy: -12 },
-    { percentual: 33, icon: '\uf243', status: "bateria",     background: "#0000ff", color: "#FFFFFF", size: 20, dx: -14, dy:  0 }
-  ];
-  var setup = {
-    element: document.getElementById( "d31" ),
-    mainIconSize: 40,
-    mainIcon: "\uf21c",
-    radiusOuterPx: 100,
-    radiusInnerPx: 50,
-    mainIconDX: -25,
-    mainIconDY: -20
-  };
+    var map = new ol.Map({
+      target: 'map',
+      layers: [
+        new ol.layer.Tile({
+          source: new ol.source.OSM()
+        })
+      ],
+      view: new ol.View({
+        center: ol.proj.fromLonLat([-48.464783, -27.4287986]),
+        zoom: 17
+      })
+    });
+
+    var layer = new ol.layer.Image({
+      source: new ol.source.ImageCanvas({
+        canvasFunction: canvasFunction,
+        projection: 'EPSG:3857'
+      })
+    });
+    map.addLayer(layer);
+  });
 
 
-  var a = visualCuePieLikeElement( setup, data );
-  var b = visualCuePieLikeElement( setup, data );
 
-  var setup = {
-    element: document.getElementById( "d32" ),
-    mainIconSize: 40,
-    mainIcon: "\uf21c",
-    radiusOuterPx: 100,
-    radiusInnerPx: 50,
-    mainIconDX: -25,
-    mainIconDY: -20
-  };
 
-  var c = visualCuePieLikeElement( setup, data );
 
-  b.vis.remove();
 
-  function getTextWidth(text, font) {
-    var canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
-    var context = canvas.getContext("2d");
-    context.font = font;
-    var metrics = context.measureText(text);
-    return metrics.width;
-  }
 
 
 </script>
+<script src="./static/js/visual.cue.d3js/apagar.js"></script>
 </body>
 </html>{{end}}
