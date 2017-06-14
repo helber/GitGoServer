@@ -17,16 +17,4 @@ var setup = {
 var a = visualCuePieLikeElement( setup, data );
 var b = visualCuePieLikeElement( setup, data );
 
-var setup = {
-  element: document.getElementById( "d32" ),
-  mainIconSize: 40,
-  mainIcon: "\uf21c",
-  radiusOuterPx: 100,
-  radiusInnerPx: 50,
-  mainIconDX: -25,
-  mainIconDY: -20
-};
-
-var c = visualCuePieLikeElement( setup, data );
-
 b.vis.remove();
