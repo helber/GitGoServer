@@ -54,7 +54,7 @@ func main() {
   setupProject.Config = setupProject.Configuration{}
   setupProject.Config.LoadConfig()
 
-  install.Initialize( setupProject.Config.Server.StaticFileSysPath, setupProject.Config.Mafsa.SaveFilePath )
+  install.Initialize( setupProject.Config.Server.StaticFileSysPath )
 
   // server pages
   Routes = RoutesStt{
