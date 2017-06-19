@@ -78,6 +78,7 @@ func main() {
     // json to send: { "continent": string, "name": string }
     // Ex.: { "continent": "south-america", "name": "Brazil" }
     // Ex.: { "continent": "south-america", "name": "25-PB.kmz" }
+    // Ex.: { "continent": "south-america", "name": "42-SC.kmz" }
     restFul.RouteStt{
       Name: "DownloadGeoData",
       Method: "POST",
