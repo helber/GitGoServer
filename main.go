@@ -46,7 +46,6 @@ func Polygons(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-
   // db connect
   db.Connect( "127.0.0.1", "brasil" )
 
@@ -78,6 +77,7 @@ func main() {
     // Download osm xml from ibge
     // json to send: { "continent": string, "name": string }
     // Ex.: { "continent": "south-america", "name": "Brazil" }
+    // Ex.: { "continent": "south-america", "name": "25-PB.kmz" }
     restFul.RouteStt{
       Name: "DownloadGeoData",
       Method: "POST",
