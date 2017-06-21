@@ -17,6 +17,7 @@ import (
   "github.com/helmutkemper/gOsmServer/information"
   "github.com/helmutkemper/gOsmServer/setupProject"
   "html/template"
+  "github.com/helmutkemper/gOsmServer/ibge"
 )
 
 type RoutesStt            []restFul.RouteStt
@@ -41,8 +42,24 @@ func Index(w http.ResponseWriter, r *http.Request) {
   t.ExecuteTemplate(w, "index", nil)  // merge.
 }
 
-func Polygons(w http.ResponseWriter, r *http.Request) {
+func onLoadConfig() {
+  install.Initialize( setupProject.Config.Server.StaticFileSysPath )
 
+  ibge.FuzzySearchNeighborhoodClear()
+  ibge.FuzzySearchDistrictClear()
+  ibge.FuzzySearchCountyClear()
+
+  if setupProject.Config.Fuzzy.IbgeNeighborhoodInitialize == true {
+    ibge.FuzzySearchNeighborhoodInit()
+  }
+
+  if setupProject.Config.Fuzzy.IbgeDistrictInitialize == true {
+    ibge.FuzzySearchDistrictInit()
+  }
+
+  if setupProject.Config.Fuzzy.IbgeCountyInitialize == true {
+    ibge.FuzzySearchCountyInit()
+  }
 }
 
 func main() {
@@ -51,9 +68,10 @@ func main() {
 
   // configuration from database
   setupProject.Config = setupProject.Configuration{}
+  setupProject.Config.AddOnConfigFunc( onLoadConfig )
   setupProject.Config.LoadConfig()
 
-  install.Initialize( setupProject.Config.Server.StaticFileSysPath )
+
 
   // server pages
   Routes = RoutesStt{
@@ -167,6 +185,30 @@ func main() {
       Method:      "GET",
       Pattern:     "/reconfigure",
       HandlerFunc: setupProject.Reload,
+    },
+
+    // Procura pelo bairro
+    restFul.RouteStt{
+      Name:        "neighborhoodName",
+      Method:      "GET",
+      Pattern:     "/neighborhoodName/{search:.*}",
+      HandlerFunc: ibge.FuzzySearchNeighborhood,
+    },
+
+    // Procura pelo distrito
+    restFul.RouteStt{
+      Name:        "districtName",
+      Method:      "GET",
+      Pattern:     "/districtName/{search:.*}",
+      HandlerFunc: ibge.FuzzySearchDistrict,
+    },
+
+    // Procura pelo município
+    restFul.RouteStt{
+      Name:        "county",
+      Method:      "GET",
+      Pattern:     "/countyName/{search:.*}",
+      HandlerFunc: ibge.FuzzySearchCounty,
     },
   }
 
