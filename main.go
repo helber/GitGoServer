@@ -1,5 +1,8 @@
 package main
 
+//todo procurar bug Index2DMake
+//todo procurar por todos os tagNameLStt.InsertDistinct( collection ) e colocar no novo formato
+
 import (
   log "github.com/helmutkemper/seelog"
   "net/http"
