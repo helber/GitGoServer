@@ -1,6 +1,10 @@
 package main
 
+//todo completar PolygonListStt{} com as funções de banco
+//todo rever as chaves de PolygonListStt{} e Polygon{} tag e bbox devem ser adicionadas
+//todo remover func ParserRatio() do main
 //todo procurar por todos os tagNameLStt.InsertDistinct( collection ) e colocar no novo formato
+//todo server.gOkmz.parser.ParserThread - no final da função, adicionar o parser do geojson com o máximo de possibilidades possíveis.
 
 import (
   log "github.com/helmutkemper/seelog"
@@ -20,6 +24,9 @@ import (
   "github.com/helmutkemper/gOsmServer/setupProject"
   "html/template"
   "github.com/helmutkemper/gOsmServer/ibge"
+  "github.com/helmutkemper/gOsm/geoMath"
+  "github.com/helmutkemper/gOkmz/gOkmzConsts"
+  "github.com/helmutkemper/mgo/bson"
 )
 
 type RoutesStt            []restFul.RouteStt
@@ -42,6 +49,35 @@ func Index(w http.ResponseWriter, r *http.Request) {
   t := template.New("some template") // Create a template.
   t, _ = t.ParseFiles("./templates/index/index.html")  // Parse template file.
   t.ExecuteTemplate(w, "index", nil)  // merge.
+}
+
+func geoJSon(w http.ResponseWriter, r *http.Request) {
+
+  var polygon geoMath.PolygonListStt = geoMath.PolygonListStt{}
+  err := polygon.Find( gOkmzConsts.DB_IBGE_FILE_POLYGONS_COLLECTIONS, bson.M{ "$or": []bson.M{ { "tag.Distrito": "centro" }, { "tag.Distrito": "arnopolis" }, { "tag.Distrito": "alfredo wagner" }, { "tag.Distrito": "agronomica" }, { "tag.Municcpio": "abdon batista" }, { "tag.Distrito": "abelardo luz" }, { "tag.Distrito": "agrolandia" } } } )
+  //err := polygon.Find( gOkmzConsts.DB_IBGE_FILE_POLYGONS_COLLECTIONS, bson.M{} )
+  if err != nil {
+    log.Criticalf( "main.geoJSon.query.error: %v", err )
+  }
+  //botton left -28.112759, -49.369712
+  //upper right -27.092948, -48.144736
+
+
+  var multiPolygon geoMath.PolygonListStt = geoMath.PolygonListStt{}
+  multiPolygon.List = polygon.List
+
+  var geoJSon geoMath.GeoJSon = geoMath.GeoJSon{}
+  geoJSon.Init()
+  geoJSon.AddTag( "test", "ExampleGeoJSon_FindOne" )
+  geoJSon.AddGeoMathPolygonList( "01", &multiPolygon )
+  geoJSon.MakeBoundingBox()
+  geoJSon.ServerOut( w )
+  /*
+  geoJSon.Insert( consts.DB_TEST_GEOJSON_POLYGONS_COLLECTIONS, consts.DB_TEST_GEOJSON_POLYGONS_TAGS_COLLECTIONS )
+
+  var geoJSonDb geoMath.GeoJSon = geoMath.GeoJSon{}
+  geoJSonDb.FindOne( consts.DB_TEST_GEOJSON_POLYGONS_COLLECTIONS, bson.M{ "tag.test": "ExampleGeoJSon_FindOne" } )
+  */
 }
 
 func onLoadConfig() {
@@ -83,6 +119,14 @@ func main() {
       Method:      "GET",
       Pattern:     "/",
       HandlerFunc: Index,
+    },
+
+    // geoJSon
+    restFul.RouteStt{
+      Name:        "index",
+      Method:      "GET",
+      Pattern:     "/js",
+      HandlerFunc: geoJSon,
     },
 
     // Mostra o percentual dos dados processados

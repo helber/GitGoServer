@@ -435,7 +435,7 @@
       svg = d3.select(map.getPanes().overlayPane).append("svg");
       g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
-      d3.json("https://bost.ocks.org/mike/leaflet/us-states.json", function(error, collection) {
+      d3.json("./js", function(error, collection) {
         if (error) throw error;
 
         collectionGlobal = collection;
