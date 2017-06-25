@@ -1,11 +1,13 @@
 package main
 
+//todo verificar quais tipos do osm se encaixam em polygons para preparar geoJSon - prioridade
 //todo procurar por todos os `bson:"IdParser,omitempty"` e mudar para `bson:"idParser,omitempty"`
 //todo completar PolygonListStt{} com as funções de banco
 //todo rever as chaves de PolygonListStt{} e Polygon{} tag e bbox devem ser adicionadas
 //todo remover func ParserRatio() do main
 //todo procurar por todos os tagNameLStt.InsertDistinct( collection ) e colocar no novo formato
 //todo server.gOkmz.parser.ParserThread - no final da função, adicionar o parser do geojson com o máximo de possibilidades possíveis.
+//todo todos os InsertDistinct() devem retornar int 0 ou 1 caso o valor já exista. Ex. geoTypeTagKeyName.InsertDistinct
 
 import (
   log "github.com/helmutkemper/seelog"
