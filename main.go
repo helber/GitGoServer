@@ -1,5 +1,6 @@
 package main
 
+//todo procurar por todos os `bson:"IdParser,omitempty"` e mudar para `bson:"idParser,omitempty"`
 //todo completar PolygonListStt{} com as funções de banco
 //todo rever as chaves de PolygonListStt{} e Polygon{} tag e bbox devem ser adicionadas
 //todo remover func ParserRatio() do main
