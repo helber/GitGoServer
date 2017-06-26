@@ -57,7 +57,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 func geoJSon(w http.ResponseWriter, r *http.Request) {
 
   var polygon geoMath.PolygonListStt = geoMath.PolygonListStt{}
-  err := polygon.Find( gOkmzConsts.DB_IBGE_FILE_POLYGONS_COLLECTIONS, bson.M{ "$or": []bson.M{ { "tag.Distrito": "centro" }, { "tag.Distrito": "arnopolis" }, { "tag.Distrito": "alfredo wagner" }, { "tag.Distrito": "agronomica" }, { "tag.Municcpio": "abdon batista" }, { "tag.Distrito": "abelardo luz" }, { "tag.Distrito": "agrolandia" } } } )
+  err := polygon.Find( gOkmzConsts.DB_IBGE_FILE_POLYGONS_COLLECTIONS, bson.M{ "$or": []bson.M{ { "tag.district": "centro" }, { "tag.district": "arnopolis" }, { "tag.district": "alfredo wagner" }, { "tag.district": "agronomica" }, { "tag.county": "abdon batista" }, { "tag.district": "abelardo luz" }, { "tag.district": "agrolandia" } } } )
   //err := polygon.Find( gOkmzConsts.DB_IBGE_FILE_POLYGONS_COLLECTIONS, bson.M{} )
   if err != nil {
     log.Criticalf( "main.geoJSon.query.error: %v", err )
