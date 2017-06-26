@@ -1,6 +1,7 @@
 package main
 
 //todo verificar quais tipos do osm se encaixam em polygons para preparar geoJSon - prioridade
+//todo ./geodatadownload quando dá erro não retorna o json de erro padrão
 //todo procurar por todos os `bson:"IdParser,omitempty"` e mudar para `bson:"idParser,omitempty"`
 //todo completar PolygonListStt{} com as funções de banco
 //todo rever as chaves de PolygonListStt{} e Polygon{} tag e bbox devem ser adicionadas
@@ -30,6 +31,7 @@ import (
   "github.com/helmutkemper/gOsm/geoMath"
   "github.com/helmutkemper/gOkmz/gOkmzConsts"
   "github.com/helmutkemper/mgo/bson"
+  "github.com/helmutkemper/gOsm/consts"
 )
 
 type RoutesStt            []restFul.RouteStt
@@ -57,12 +59,11 @@ func Index(w http.ResponseWriter, r *http.Request) {
 func geoJSonDb(w http.ResponseWriter, r *http.Request) {
   var out geoMath.GeoJSonList = geoMath.GeoJSonList{}
 
-  out.FindFeatureJSonToServerOut( w, "ibgePolygonsGeoJSon",
-    bson.M{
-      "$or": []bson.M{
-        { "tag.neighborhood": "canasvieiras" },
-      },
-    } )
+  out.ServerOutFindFeature(
+    w,
+    consts.DB_TEST_GEOJSON_FEATURES_COLLECTIONS,
+    bson.M{},
+  )
 }
 
 func geoJSon(w http.ResponseWriter, r *http.Request) {
