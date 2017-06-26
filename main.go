@@ -54,6 +54,17 @@ func Index(w http.ResponseWriter, r *http.Request) {
   t.ExecuteTemplate(w, "index", nil)  // merge.
 }
 
+func geoJSonDb(w http.ResponseWriter, r *http.Request) {
+  var out geoMath.GeoJSonList = geoMath.GeoJSonList{}
+
+  out.FindFeatureJSonToServerOut( w, "ibgePolygonsGeoJSon",
+    bson.M{
+      "$or": []bson.M{
+        { "tag.neighborhood": "canasvieiras" },
+      },
+    } )
+}
+
 func geoJSon(w http.ResponseWriter, r *http.Request) {
 
   var polygon geoMath.PolygonListStt = geoMath.PolygonListStt{}
@@ -129,7 +140,7 @@ func main() {
       Name:        "index",
       Method:      "GET",
       Pattern:     "/js",
-      HandlerFunc: geoJSon,
+      HandlerFunc: geoJSonDb,
     },
 
     // Mostra o percentual dos dados processados
