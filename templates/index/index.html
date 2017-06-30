@@ -445,7 +445,12 @@
 
       feature = g.selectAll("path")
         .data(collection.features)
-        .enter().append("path");
+        .enter().append("path")
+      .attr( "fill", "#ff0000" )
+      .attr( "fill-opacity", 0.02 )
+      //.attr( "stroke-width", 2 )
+      .attr( "stroke", "#FF0000" );
+      //.attr( "opacity", 1 );
 
         map.on("viewreset", reset);
         reset();
@@ -470,7 +475,7 @@
         { percentual: 33, icon: '\uf243', status: "bateria",     background: "#0000ff", color: "#FFFFFF", size: 20, dx: -14, dy:  0 }
       ];
 
-      var c = visualCuePieLikeElement( setupLocal, dataLocal );
+      //var c = visualCuePieLikeElement( setupLocal, dataLocal );
 
       // barra de ferramentas
       //var drawnItems = new L.FeatureGroup();

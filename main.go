@@ -1,6 +1,7 @@
 package main
 
 //todo verificar quais tipos do osm se encaixam em polygons para preparar geoJSon - prioridade
+//todo rever todos os exemplos que usam pointList{}
 //todo ./geodatadownload quando dá erro não retorna o json de erro padrão
 //todo procurar por todos os `bson:"IdParser,omitempty"` e mudar para `bson:"idParser,omitempty"`
 //todo completar PolygonListStt{} com as funções de banco
@@ -62,7 +63,21 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
   out.ServerOutFindFeature(
     w,
     consts.DB_TEST_GEOJSON_FEATURES_COLLECTIONS,
-    bson.M{},
+    bson.M{
+      "$or": []bson.M{
+        {"tag.county":"florianopolis"},
+        {"tag.county":"canasvieiras"},
+        //{ "tag.neighborhood": "centro" },
+        //{ "tag.neighborhood": "agronomica" },
+        //{ "tag.neighborhood": "jose mendes" },
+        //{ "tag.neighborhood": "saco dos limoes" },
+        //{ "tag.neighborhood": "trindade" },
+        //{ "tag.neighborhood": "pantanal" },
+        //{ "tag.neighborhood": "corrego grande" },
+        //{ "tag.neighborhood": "santa monica" },
+        //{ "tag.neighborhood": "itacorubi" },
+      },
+    },
   )
 }
 

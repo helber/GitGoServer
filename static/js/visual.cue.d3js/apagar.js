@@ -14,7 +14,7 @@ var setup = {
 };
 
 
-var a = visualCuePieLikeElement( setup, data );
-var b = visualCuePieLikeElement( setup, data );
+//var a = visualCuePieLikeElement( setup, data );
+//var b = visualCuePieLikeElement( setup, data );
 
-b.vis.remove();
+//b.vis.remove();
