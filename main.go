@@ -66,7 +66,7 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
     bson.M{
       "$or": []bson.M{
         {"tag.county":"florianopolis"},
-        {"tag.county":"canasvieiras"},
+        //{"tag.county":"canasvieiras"},
         //{ "tag.neighborhood": "centro" },
         //{ "tag.neighborhood": "agronomica" },
         //{ "tag.neighborhood": "jose mendes" },
