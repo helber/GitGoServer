@@ -65,8 +65,32 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
     consts.DB_TEST_GEOJSON_FEATURES_COLLECTIONS,
     bson.M{
       "$or": []bson.M{
-        {"tag.county":"florianopolis"},
-        //{"tag.county":"canasvieiras"},
+        //{"tag.county":"florianopolis"},
+        {"tag.district":"canasvieiras"},
+        //{ "tag.neighborhood": "centro" },
+        //{ "tag.neighborhood": "agronomica" },
+        //{ "tag.neighborhood": "jose mendes" },
+        //{ "tag.neighborhood": "saco dos limoes" },
+        //{ "tag.neighborhood": "trindade" },
+        //{ "tag.neighborhood": "pantanal" },
+        //{ "tag.neighborhood": "corrego grande" },
+        //{ "tag.neighborhood": "santa monica" },
+        //{ "tag.neighborhood": "itacorubi" },
+      },
+    },
+  )
+}
+
+func geoJSonDbHull(w http.ResponseWriter, r *http.Request) {
+  var out geoMath.GeoJSonList = geoMath.GeoJSonList{}
+
+  out.ServerOutFindFeature(
+    w,
+    consts.DB_TEST_GEOJSON_CONCAVE_HULL_POLYGONS_COLLECTIONS,
+    bson.M{
+      "$or": []bson.M{
+        //{"tag.county":"florianopolis"},
+        {"tag.district":"canasvieiras"},
         //{ "tag.neighborhood": "centro" },
         //{ "tag.neighborhood": "agronomica" },
         //{ "tag.neighborhood": "jose mendes" },
@@ -153,10 +177,18 @@ func main() {
 
     // geoJSon
     restFul.RouteStt{
-      Name:        "index",
+      Name:        "js",
       Method:      "GET",
       Pattern:     "/js",
       HandlerFunc: geoJSonDb,
+    },
+
+    // geoJSon
+    restFul.RouteStt{
+      Name:        "jsHull",
+      Method:      "GET",
+      Pattern:     "/jsHull",
+      HandlerFunc: geoJSonDbHull,
     },
 
     // Mostra o percentual dos dados processados

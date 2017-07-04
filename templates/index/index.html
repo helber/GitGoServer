@@ -153,8 +153,8 @@
   var transform;
   var path;
   var collectionGlobal;
-  var svg;
-  var g;
+  var svg1,svg2;
+  var g1, g2;
   var feature;
   var polygon;
 
@@ -291,17 +291,17 @@
   }
 
   // Reposition the SVG to cover the features.
-  function reset() {
+  function reset() {return
     var bounds = path.bounds(collectionGlobal),
       topLeft = bounds[0],
       bottomRight = bounds[1];
 
-    svg .attr("width", bottomRight[0] - topLeft[0])
+    svg2 .attr("width", bottomRight[0] - topLeft[0])
     .attr("height", bottomRight[1] - topLeft[1])
     .style("left", topLeft[0] + "px")
     .style("top", topLeft[1] + "px");
 
-    g   .attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+    g1   .attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
 
     feature.attr("d", path);
   }
@@ -430,20 +430,24 @@
       var osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         osmAttrib = '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         osm = L.tileLayer(osmUrl, {maxZoom: 19, attribution: osmAttrib});
-        map = new L.Map('map', {layers: [osm], center: new L.LatLng( -27.50737, -48.51300 ), zoom: 18 });
+        map = new L.Map('map', {layers: [osm], center: new L.LatLng( -27.439052, -48.495719 ), zoom: 13 });
 
-      svg = d3.select(map.getPanes().overlayPane).append("svg");
-      g = svg.append("g").attr("class", "leaflet-zoom-hide");
+      svg1 = d3.select(map.getPanes().overlayPane).append("svg");
+      g1 = svg1.append("g").attr("class", "leaflet-zoom-hide");
+
+      svg2 = d3.select(map.getPanes().overlayPane).append("svg");
+      g2 = svg1.append("g").attr("class", "leaflet-zoom-hide");
+
 
       d3.json("./js", function(error, collection) {
         if (error) throw error;
 
-        collectionGlobal = collection;
+        //collectionGlobal = collection;
 
         transform = d3.geoTransform({point: projectPoint});
         path = d3.geoPath().projection(transform);
 
-      feature = g.selectAll("path")
+      feature = g1.selectAll("path")
         .data(collection.features)
         .enter().append("path")
       .attr( "fill", "#ff0000" )
@@ -452,8 +456,57 @@
       .attr( "stroke", "#FF0000" );
       //.attr( "opacity", 1 );
 
-        map.on("viewreset", reset);
-        reset();
+        //map.on("viewreset", reset);
+        //reset();
+
+        var bounds = path.bounds(collection),
+          topLeft = bounds[0],
+          bottomRight = bounds[1];
+
+        svg1.attr("width", bottomRight[0] - topLeft[0])
+        .attr("height", bottomRight[1] - topLeft[1])
+        .style("left", topLeft[0] + "px")
+        .style("top", topLeft[1] + "px");
+
+        g1.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+
+        feature.attr("d", path);
+
+
+      });
+
+      d3.json("./jsHull", function(error, collection) {
+        if (error) throw error;
+
+        //collectionGlobal = collection;
+
+        transform = d3.geoTransform({point: projectPoint});
+        path = d3.geoPath().projection(transform);
+
+        feature = g2.selectAll("path")
+        .data(collection.features)
+        .enter().append("path")
+        .attr( "fill", "#000000" )
+        .attr( "fill-opacity", 0.02 )
+        //.attr( "stroke-width", 2 )
+        .attr( "stroke", "#000000" );
+        //.attr( "opacity", 1 );
+
+        //map.on("viewreset", reset);
+        //reset();
+
+        var bounds = path.bounds(collection),
+          topLeft = bounds[0],
+          bottomRight = bounds[1];
+
+        svg2.attr("width", bottomRight[0] - topLeft[0])
+        .attr("height", bottomRight[1] - topLeft[1])
+        .style("left", topLeft[0] + "px")
+        .style("top", topLeft[1] + "px");
+
+        g2.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+
+        feature.attr("d", path);
 
 
       });
