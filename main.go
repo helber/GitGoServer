@@ -65,8 +65,8 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
     consts.DB_TEST_GEOJSON_FEATURES_COLLECTIONS,
     bson.M{
       "$or": []bson.M{
-        //{"tag.county":"florianopolis"},
-        {"tag.district":"canasvieiras"},
+        {"tag.county":"florianopolis"},
+        //{"tag.district":"canasvieiras"},
         //{ "tag.neighborhood": "centro" },
         //{ "tag.neighborhood": "agronomica" },
         //{ "tag.neighborhood": "jose mendes" },
@@ -89,8 +89,8 @@ func geoJSonDbHull(w http.ResponseWriter, r *http.Request) {
     consts.DB_TEST_GEOJSON_CONCAVE_HULL_POLYGONS_COLLECTIONS,
     bson.M{
       "$or": []bson.M{
-        //{"tag.county":"florianopolis"},
-        {"tag.district":"canasvieiras"},
+        {"tag.county":"florianopolis"},
+        //{"tag.district":"canasvieiras"},
         //{ "tag.neighborhood": "centro" },
         //{ "tag.neighborhood": "agronomica" },
         //{ "tag.neighborhood": "jose mendes" },
