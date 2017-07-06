@@ -47,9 +47,6 @@
   <script type="text/javascript" src="./static/js/Semantic-UI/dist/components/transition.js"></script>
   <script type="text/javascript" src="./static/js/Semantic-UI/dist/semantic.min.js"></script>
 
-  <link rel="stylesheet" href="/static/js/Leaflet.draw/docs/examples/libs/leaflet.css" />
-  <link rel="stylesheet" href="./static/js/Leleaflet/getProximidades.goaflet.draw/dist/leaflet.draw.css" />
-
   <script src="/static/js/Leaflet.draw/docs/examples/libs/leaflet-src.js"></script>
 
   <script src="./static/js/Leaflet.draw/src/Leaflet.draw.js"></script>
@@ -157,6 +154,8 @@
   var g1, g2;
   var feature;
   var polygon;
+
+  var p1;
 
   var getPointsEventOkPositive = false;
 
@@ -291,19 +290,8 @@
   }
 
   // Reposition the SVG to cover the features.
-  function reset() {return
-    var bounds = path.bounds(collectionGlobal),
-      topLeft = bounds[0],
-      bottomRight = bounds[1];
-
-    svg2 .attr("width", bottomRight[0] - topLeft[0])
-    .attr("height", bottomRight[1] - topLeft[1])
-    .style("left", topLeft[0] + "px")
-    .style("top", topLeft[1] + "px");
-
-    g1   .attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
-
-    feature.attr("d", path);
+  function reset() {
+    //p1.onChange();
   }
 
   // Use Leaflet to implement a D3 geometric transformation.
@@ -313,9 +301,11 @@
   }
 
   function onMapEvent( event, type ){
+    /*
     console.log( "event:", event );
     console.log( "type:", type );
     console.log( "dataToSend:", dataToSend )
+    */
   }
 
   function projectPoint(x, y) {
@@ -323,6 +313,102 @@
     this.stream.point(point.x, point.y);
   }
 
+  class MapDrawProjection{
+    constructor( map, url ){
+      this.svgMainRef = undefined;
+      this.svgGRef = undefined;
+      this.jsonData = undefined;
+      this.collection = undefined;
+      this.feature = undefined;
+      this.path = undefined;
+      this.map = undefined;
+
+      if( map !== undefined ){
+        this.setMap( map );
+      }
+
+      if( url !== undefined && map !== undefined ){
+        this.load( url );
+      }
+    }
+
+    setMap( map ){
+      this.map = map;
+
+      this.svgMainRef = d3.select( this.map.getPanes().overlayPane ).append( "svg" );
+      this.svgGRef = this.svgMainRef.append( "g" ).attr( "class", "leaflet-zoom-hide" );
+    }
+
+    setTransform( transform ){
+      this.transform = transform;
+    }
+
+    setSvgMainRef( svgMainRef ){
+      this.svgMainRef = svgMainRef;
+    }
+
+    setSvgGRef( svgGRef ){
+      this.svgGRef = svgGRef;
+    }
+
+    setJSon( jsonData ){
+      this.jsonData = jsonData;
+    }
+
+    setCollection( collection ){
+      this.collection = collection;
+    }
+
+    setFeature( feature ){
+      this.feature = feature;
+    }
+
+    setPath( path ){
+      this.path = path;
+    }
+
+    projectPoint( x, y ) {
+      var point = map.latLngToLayerPoint( new L.LatLng( y, x ) );
+      this.stream.point( point.x, point.y );
+    }
+
+    load( url ){
+      d3.json( url, function( error, collection ){} )
+      .on( 'load', this.__load.bind( this ) );
+    }
+
+    __load( collection ) {
+      this.collection = collection;
+      this.transform = d3.geoTransform({ point: this.projectPoint });
+      this.path = d3.geoPath().projection( this.transform );
+
+      this.feature = this.svgGRef.selectAll( "path" )
+      .data( collection.features )
+      .enter().append( "path" )
+      .attr( "fill", "#ff0000" )
+      .attr( "fill-opacity", 0.1 )
+      //.attr( "stroke-width", 2 )
+      //.attr( "stroke", "#FF0000" )
+      .attr( "opacity", 1 );
+
+      this.onChange();
+    }
+
+    onChange(){
+      var bounds = this.path.bounds( this.collection ),
+        topLeft = bounds[ 0 ],
+        bottomRight = bounds[ 1 ];
+
+      this.svgMainRef.attr( "width", bottomRight[ 0 ] - topLeft[ 0 ] )
+      .attr( "height", bottomRight[ 1 ] - topLeft[ 1 ] )
+      .style( "left", topLeft[ 0 ] + "px" )
+      .style( "top", topLeft[ 1 ] + "px" );
+
+      this.svgMainRef.attr( "transform", "translate(" + -topLeft[ 0 ] + "," + -topLeft[ 1 ] + ")");
+
+      this.feature.attr( "d", this.path );
+    }
+  }
 
   $( document ).ready(
     function() {
@@ -430,88 +516,10 @@
       var osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         osmAttrib = '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         osm = L.tileLayer(osmUrl, {maxZoom: 19, attribution: osmAttrib});
-        map = new L.Map('map', {layers: [osm], center: new L.LatLng( -27.439052, -48.495719 ), zoom: 13 });
+        map = new L.Map('map', {layers: [osm], center: new L.LatLng( -27.439052, -48.495719 ), zoom: 8 });
 
-      svg1 = d3.select(map.getPanes().overlayPane).append("svg");
-      g1 = svg1.append("g").attr("class", "leaflet-zoom-hide");
-
-      svg2 = d3.select(map.getPanes().overlayPane).append("svg");
-      g2 = svg1.append("g").attr("class", "leaflet-zoom-hide");
-
-
-      d3.json("./js", function(error, collection) {
-        if (error) throw error;
-
-        //collectionGlobal = collection;
-
-        transform = d3.geoTransform({point: projectPoint});
-        path = d3.geoPath().projection(transform);
-
-      feature = g1.selectAll("path")
-        .data(collection.features)
-        .enter().append("path")
-      .attr( "fill", "#ff0000" )
-      .attr( "fill-opacity", 0.02 )
-      //.attr( "stroke-width", 2 )
-      .attr( "stroke", "#FF0000" );
-      //.attr( "opacity", 1 );
-
-        //map.on("viewreset", reset);
-        //reset();
-
-        var bounds = path.bounds(collection),
-          topLeft = bounds[0],
-          bottomRight = bounds[1];
-
-        svg1.attr("width", bottomRight[0] - topLeft[0])
-        .attr("height", bottomRight[1] - topLeft[1])
-        .style("left", topLeft[0] + "px")
-        .style("top", topLeft[1] + "px");
-
-        g1.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
-
-        feature.attr("d", path);
-
-
-      });
-
-      d3.json("./jsHull", function(error, collection) {
-        if (error) throw error;
-
-        //collectionGlobal = collection;
-
-        transform = d3.geoTransform({point: projectPoint});
-        path = d3.geoPath().projection(transform);
-
-        feature = g2.selectAll("path")
-        .data(collection.features)
-        .enter().append("path")
-        .attr( "fill", "#000000" )
-        .attr( "fill-opacity", 0.02 )
-        //.attr( "stroke-width", 2 )
-        .attr( "stroke", "#000000" );
-        //.attr( "opacity", 1 );
-
-        //map.on("viewreset", reset);
-        //reset();
-
-        var bounds = path.bounds(collection),
-          topLeft = bounds[0],
-          bottomRight = bounds[1];
-
-        svg2.attr("width", bottomRight[0] - topLeft[0])
-        .attr("height", bottomRight[1] - topLeft[1])
-        .style("left", topLeft[0] + "px")
-        .style("top", topLeft[1] + "px");
-
-        g2.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
-
-        feature.attr("d", path);
-
-
-      });
-
-
+      //p1 = new MapDrawProjection( map, "./js" );
+/*
       var setupLocal = {
         //element: document.getElementById( "d32" ),
         element: map.getPanes().overlayPane,
@@ -527,7 +535,7 @@
         { percentual: 33, icon: '\uf2a3', status: "mãos",        background: "#00ff00", color: "#FFFFFF", size: 30, dx: -14, dy: -12 },
         { percentual: 33, icon: '\uf243', status: "bateria",     background: "#0000ff", color: "#FFFFFF", size: 20, dx: -14, dy:  0 }
       ];
-
+*/
       //var c = visualCuePieLikeElement( setupLocal, dataLocal );
 
       // barra de ferramentas
@@ -652,6 +660,7 @@
 
       });
       */
+
       map.on('zoomlevelschange', function( Event ) {
         onMapEvent( Event, 'zoomlevelschange' );
       });
@@ -674,7 +683,7 @@
 
       map.on('zoomstart', function( Event ) {
         onMapEvent( Event, 'zoomstart' );
-        reset();
+        //reset();
       });
 
       map.on('movestart', function( Event ) {
@@ -683,22 +692,22 @@
 
       map.on('zoom', function( Event ) {
         onMapEvent( Event, 'zoom' );
-        reset();
+        //reset();
       });
 
       map.on('move', function( Event ) {
         onMapEvent( Event, 'move' );
-        reset();
+        //reset();
       });
 
       map.on('zoomend', function( Event ) {
         onMapEvent( Event, 'zoomend' );
-        reset();
+        //reset();
       });
 
       map.on('moveend', function( Event ) {
         onMapEvent( Event, 'moveend' );
-        reset();
+        //reset();
       });
 
       // List of all layers just edited on the map. Triggered when layers in the FeatureGroup; initialised with the
@@ -792,6 +801,6 @@
     });
 
 </script>
-<script src="./static/js/visual.cue.d3js/apagar.js"></script>
+<!--script src="./static/js/visual.cue.d3js/apagar.js"></script-->
 </body>
 </html>{{end}}
