@@ -25,32 +25,41 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <link rel="stylesheet" type="text/css" href="./static/js/Semantic-UI/dist/semantic.css">
-  <link rel="stylesheet" type="text/css" href="./static/js/Semantic-UI/dist/components/reset.css">
-  <link rel="stylesheet" type="text/css" href="./static/js/Semantic-UI/dist/components/site.css">
-  <link rel="stylesheet" type="text/css" href="./static/js/Semantic-UI/dist/components/grid.css">
-  <link rel="stylesheet" type="text/css" href="./static/js/Semantic-UI/dist/components/icon.css">
-  <link rel="stylesheet" type="text/css" href="./static/js/Semantic-UI/dist/components/input.css">
-  <link rel="stylesheet" type="text/css" href="./static/js/Semantic-UI/dist/components/button.css">
-  <link rel="stylesheet" type="text/css" href="./static/js/Semantic-UI/dist/components/divider.css">
-  <link rel="stylesheet" type="text/css" href="./static/js/Semantic-UI/dist/components/label.css">
-  <link rel="stylesheet" type="text/css" href="./static/js/Semantic-UI/dist/components/dropdown.css">
-  <link rel="stylesheet" type="text/css" href="./static/js/Semantic-UI/dist/components/transition.css">
-  <link rel="stylesheet" type="text/css" href="./static/js/Semantic-UI/dist/components/popup.css">
-  <link rel="stylesheet" type="text/css" href="./static/js/Semantic-UI/dist/semantic.min.css" />
 
-  <script type="text/javascript" src="./static/js/jquery-3.1.1.min.js"></script>
+  <script src="./static/js/jquery.min.js"></script>
 
-  <script type="text/javascript" src="./static/js/iframe.js"></script>
-  <script type="text/javascript" src="./static/js/Semantic-UI/dist/components/popup.js"></script>
-  <script type="text/javascript" src="./static/js/Semantic-UI/dist/components/dropdown.js"></script>
-  <script type="text/javascript" src="./static/js/Semantic-UI/dist/components/transition.js"></script>
-  <script type="text/javascript" src="./static/js/Semantic-UI/dist/semantic.min.js"></script>
-
-  <script src="/static/js/Leaflet.draw/docs/examples/libs/leaflet-src.js"></script>
+  <script src="./static/js/Leaflet.draw/docs/examples/libs/leaflet-src.js"></script>
+  <link rel="stylesheet" href="./static/js/Leaflet.draw/docs/examples/libs/leaflet.css"/>
 
   <script src="./static/js/Leaflet.draw/src/Leaflet.draw.js"></script>
   <script src="./static/js/Leaflet.draw/src/Leaflet.Draw.Event.js"></script>
+  <link rel="stylesheet" href="./static/js/Leaflet.draw/src/leaflet.draw.css"/>
+
+  <script src="./static/js/Leaflet.draw/src/Toolbar.js"></script>
+  <script src="./static/js/Leaflet.draw/src/Tooltip.js"></script>
+
+  <script src="./static/js/Leaflet.draw/src/ext/GeometryUtil.js"></script>
+  <script src="./static/js/Leaflet.draw/src/ext/LatLngUtil.js"></script>
+  <script src="./static/js/Leaflet.draw/src/ext/LineUtil.Intersect.js"></script>
+  <script src="./static/js/Leaflet.draw/src/ext/Polygon.Intersect.js"></script>
+  <script src="./static/js/Leaflet.draw/src/ext/Polyline.Intersect.js"></script>
+  <script src="./static/js/Leaflet.draw/src/ext/TouchEvents.js"></script>
+
+  <script src="./static/js/Leaflet.draw/src/draw/DrawToolbar.js"></script>
+  <script src="./static/js/Leaflet.draw/src/draw/handler/Draw.Feature.js"></script>
+  <script src="./static/js/Leaflet.draw/src/draw/handler/Draw.SimpleShape.js"></script>
+  <script src="./static/js/Leaflet.draw/src/draw/handler/Draw.Polyline.js"></script>
+  <script src="./static/js/Leaflet.draw/src/draw/handler/Draw.Circle.js"></script>
+  <script src="./static/js/Leaflet.draw/src/draw/handler/Draw.Marker.js"></script>
+  <script src="./static/js/Leaflet.draw/src/draw/handler/Draw.Polygon.js"></script>
+  <script src="./static/js/Leaflet.draw/src/draw/handler/Draw.Rectangle.js"></script>
+
+
+  <script src="./static/js/Leaflet.draw/src/edit/EditToolbar.js"></script>
+  <script src="./static/js/Leaflet.draw/src/edit/handler/EditToolbar.Edit.js"></script>
+  <script src="./static/js/Leaflet.draw/src/edit/handler/EditToolbar.Delete.js"></script>
+
+  <script src="./static/js/Leaflet.draw/src/Control.Draw.js"></script>
 
   <script src="./static/js/Leaflet.draw/src/edit/handler/Edit.Poly.js"></script>
   <script src="./static/js/Leaflet.draw/src/edit/handler/Edit.SimpleShape.js"></script>
@@ -58,358 +67,68 @@
   <script src="./static/js/Leaflet.draw/src/edit/handler/Edit.Rectangle.js"></script>
   <script src="./static/js/Leaflet.draw/src/edit/handler/Edit.Marker.js"></script>
 
-  <script src="./static/js/Leaflet.draw/src/draw/handler/Draw.Feature.js"></script>
-  <script src="./static/js/Leaflet.draw/src/draw/handler/Draw.Polyline.js"></script>
-  <script src="./static/js/Leaflet.draw/src/draw/handler/Draw.Polygon.js"></script>
-  <script src="./static/js/Leaflet.draw/src/draw/handler/Draw.SimpleShape.js"></script>
-  <script src="./static/js/Leaflet.draw/src/draw/handler/Draw.Rectangle.js"></script>
-  <script src="./static/js/Leaflet.draw/src/draw/handler/Draw.Circle.js"></script>
-  <script src="./static/js/Leaflet.draw/src/draw/handler/Draw.Marker.js"></script>
 
-  <script src="./static/js/Leaflet.draw/src/ext/TouchEvents.js"></script>
-  <script src="./static/js/Leaflet.draw/src/ext/LatLngUtil.js"></script>
-  <script src="./static/js/Leaflet.draw/src/ext/GeometryUtil.js"></script>
-  <script src="./static/js/Leaflet.draw/src/ext/LineUtil.Intersect.js"></script>
-  <script src="./static/js/Leaflet.draw/src/ext/Polyline.Intersect.js"></script>
-  <script src="./static/js/Leaflet.draw/src/ext/Polygon.Intersect.js"></script>
 
-  <script src="./static/js/Leaflet.draw/src/Control.Draw.js"></script>
-  <script src="./static/js/Leaflet.draw/src/Tooltip.js"></script>
-  <script src="./static/js/Leaflet.draw/src/Toolbar.js"></script>
-
-  <script src="./static/js/Leaflet.draw/src/draw/DrawToolbar.js"></script>
-  <script src="./static/js/Leaflet.draw/src/edit/EditToolbar.js"></script>
-  <script src="./static/js/Leaflet.draw/src/edit/handler/EditToolbar.Edit.js"></script>
-  <script src="./static/js/Leaflet.draw/src/edit/handler/EditToolbar.Delete.js"></script>
-
-  <script src="./static/js/Leaflet.draw/docs/examples/libs/leaflet.snap.js"></script>
-  <script src="/static/js/Leaflet.draw/docs/examples/libs/leaflet.geometryutil.js"></script>
-
-  <script src="//d3js.org/d3.v4.min.js" charset="utf-8"></script>
-  <script src="https://d3js.org/topojson.v1.min.js"></script>
-
-  <script src="./static/js/visual.cue.d3js/util.js"></script>
-  <script src="./static/js/visual.cue.d3js/visualCuePie.js"></script>
   <title>OpenLayers example</title>
 
 
   <style>
     #map {
       width: 100%;
-      height: 100%;
+      height: 1000px;
     }
 
-    svg {
-      position: relative;
-    }
 
-    .smallButton{
-      width:29px !important;
-      height: 33px !important;
-    }
-    .smallButton.borda{
-      border: #bebebe !important;
-      border-style: solid !important;
-      border-width: 0.5px 0px 0.5px 0px !important;
-    }
-    .ui.search {
-      font-size: 0.9em;
-    }
-    .ui.popup > .ui.search > .results > .category  {
-      width: 100%;
-    }
-    .ui.popup > .ui.search > .results > .category > .result  {
-      width: 249px;
-      height: 100%;
-      text-align: left;
-    }
-    .ui.popup {
-      width: 265px;
-    }
-    .ui.popup > .ui.dropdown {
-      width: 35px;
-      height: 34px;
-      float: left;
-      border-radius: 500rem 0rem 0rem 500rem !important;
-    }
-    .ui.popup > .ui.search {
-      float: left;
-    }
-    .ui.popup > .ui.search > .input > .prompt {
-      border-radius: 0rem 500rem 500rem 0rem !important;
-    }
 
   </style>
 </head>
 <body>
-<div id="d31"></div>
-<div id="d32"></div>
 <div id="map" class="map"></div>
 <script type="text/javascript">
+
   var map;
-  var transform;
-  var path;
-  var collectionGlobal;
-  var svg1,svg2;
-  var g1, g2;
-  var feature;
-  var polygon;
-
-  var p1;
-
-  var getPointsEventOkPositive = false;
-
-  function uniqueId() {
-    var id = new Date().getTime().toString(16);
-
-    id = id.concat( Math.floor((1 + Math.random()) * 0xFFFFFFFFFFFFF).toString(16) );
-    id = id.concat( Math.floor((1 + Math.random()) * 0xFFFFFF).toString(16) );
-
-    return id
-  }
-
-  var empresas;
-  var batidas;
-
-  var dataToSend = {
+  var idUnique = 0;
+  var dataToSend = [];
+  /*var dataToSend = {
     PointsList: [],
     Type: []
-  };
-
-  function getBatidas ( map ){
-    $.ajax({
-      type: "POST",
-      url: "./getBatidas/",
-      data: JSON.stringify( dataToSend ),
-      success: function( data ){
-        console.log( "data:", data );
-        for( var i in data.Objects ){
-
-          var t = '<div class="ui cards">' +
-            '<div class="card">' +
-            '<div class="content">' +
-            '<img class="right floated mini ui image" src="./static/images/elliot.jpg">' +
-            '<div class="header">' +
-            data.Objects[i].Nome +
-            '</div>' +
-            '<div class="meta">' +
-            'Empresa: ' +
-            data.Objects[i].Empresa +
-            ' Matricula:  ' +
-            data.Objects[i].Matricula +
-            '</div>' +
-            '<div class="description">' +
-            data.Objects[i].Date +
-            '</div>' +
-            '</div>' +
-            '<div class="extra content">' +
-            '<div class="ui two buttons">' +
-            '<div class="ui basic blue button">Empresas</div>' +
-            '<div class="ui basic blue button">Proximidades</div>' +
-            '</div>' +
-            '</div>' +
-            '</div>';
-          var LeafIcon = L.Icon.extend({
-            options: {
-              shadowUrl: './static/js/Leaflet.draw/docs/examples/libs/images/marker-shadow.png'
-            }
-          });
-
-          var greenIcon = new LeafIcon({iconUrl: './static/js/Leaflet.draw/docs/examples/libs/images/marker-icon-red.png'});
-          L.marker([data.Objects[i].Loc[1], data.Objects[i].Loc[0]], {icon: greenIcon}).bindPopup(t).addTo(map);
-        }
-
-        $('.addPoint').removeClass('disabled');
-
-        if( getPointsEventOkPositive == false ) {
-          $('.getPointsEventOk').modal('show');
-
-          $('.getPointsEventOkPositive').click(function () {
-            getPointsEventOkPositive = true;
-            //console.log("getPointsEventOkPositive:",getPointsEventOkPositive);
-          });
-        }
-      },
-      dataType: "json"
-    });
-  }
-
-  function getPoints ( map ){
-    $.ajax({
-      type: "POST",
-      //url: "./getPoints/",
-      url: "./getPro/",
-      data: JSON.stringify( dataToSend ),
-      success: function( data ){
-        console.log( "data:", data );
-        for( var i in data.Objects ){
-
-          var text = "";
-
-          for( var t in data.Objects[i].Tag ){
-            text += "<b>" + t + ":</b> " + data.Objects[i].Tag[t] + "<br>";
-            //console.log( t, data.Objects[i].Tag[t] );
-          }
-
-
-          var t = '<div class="ui cards">' +
-            '<div class="card">' +
-            '<div class="content">' +
-            '<img class="right floated mini ui image" src="./static/images/elliot.jpg">' +
-            '<div class="header">' +
-            'Elliot Fu' +
-            '</div>' +
-            '<div class="meta">' +
-            'Friends of Veronika' +
-            '</div>' +
-            '<div class="description">' +
-            'Elliot requested permission to view your contact details' +
-            '</div>' +
-            '</div>' +
-            '<div class="extra content">' +
-            '<div class="ui two buttons">' +
-            '<div class="ui basic blue button">Approve</div>' +
-            '<div class="ui basic blue button">Decline</div>' +
-            '</div>' +
-            '</div>' +
-            '</div>';
-          L.marker([data.Objects[i].Loc[1], data.Objects[i].Loc[0]]).bindPopup(text).addTo(map);
-        }
-
-        if( getPointsEventOkPositive == false ) {
-          $('.getPointsEventOk').modal('show');
-
-          $('.getPointsEventOkPositive').click(function () {
-            getPointsEventOkPositive = true;
-            //console.log("getPointsEventOkPositive:",getPointsEventOkPositive);
-          });
-        }
-      },
-      dataType: "json"
-    });
-  }
-
-  // Reposition the SVG to cover the features.
-  function reset() {
-    //p1.onChange();
-  }
-
-  // Use Leaflet to implement a D3 geometric transformation.
-  function projectPoint(x, y) {
-    var point = map.latLngToLayerPoint(new L.LatLng(y, x));
-    this.stream.point(point.x, point.y);
-  }
+  };*/
 
   function onMapEvent( event, type ){
-    /*
-    console.log( "event:", event );
-    console.log( "type:", type );
-    console.log( "dataToSend:", dataToSend )
-    */
-  }
+    switch ( event ){
+      case "edited":
+      case "deleted":
+      case "added":
+      case "nameerror":
+      case "locationerror":
+      case "locationchange":
+      case "namechange":
 
-  function projectPoint(x, y) {
-    var point = map.latLngToLayerPoint(new L.LatLng(y, x));
-    this.stream.point(point.x, point.y);
-  }
+        break;
 
-  class MapDrawProjection{
-    constructor( map, url ){
-      this.svgMainRef = undefined;
-      this.svgGRef = undefined;
-      this.jsonData = undefined;
-      this.collection = undefined;
-      this.feature = undefined;
-      this.path = undefined;
-      this.map = undefined;
+      case "drawstart":
+      case "drawstop":
+      case "editstart":
+      case "editstop":
+      case "deletestart":
+      case "deletestop":
+        break;
 
-      if( map !== undefined ){
-        this.setMap( map );
-      }
+      case "sendok":
+        break;
 
-      if( url !== undefined && map !== undefined ){
-        this.load( url );
-      }
-    }
+      case "senderror":
+        break;
 
-    setMap( map ){
-      this.map = map;
+      case "sendclick":
+      case "emptydata":
+        break;
 
-      this.svgMainRef = d3.select( this.map.getPanes().overlayPane ).append( "svg" );
-      this.svgGRef = this.svgMainRef.append( "g" ).attr( "class", "leaflet-zoom-hide" );
-    }
-
-    setTransform( transform ){
-      this.transform = transform;
-    }
-
-    setSvgMainRef( svgMainRef ){
-      this.svgMainRef = svgMainRef;
-    }
-
-    setSvgGRef( svgGRef ){
-      this.svgGRef = svgGRef;
-    }
-
-    setJSon( jsonData ){
-      this.jsonData = jsonData;
-    }
-
-    setCollection( collection ){
-      this.collection = collection;
-    }
-
-    setFeature( feature ){
-      this.feature = feature;
-    }
-
-    setPath( path ){
-      this.path = path;
-    }
-
-    projectPoint( x, y ) {
-      var point = map.latLngToLayerPoint( new L.LatLng( y, x ) );
-      this.stream.point( point.x, point.y );
-    }
-
-    load( url ){
-      d3.json( url, function( error, collection ){} )
-      .on( 'load', this.__load.bind( this ) );
-    }
-
-    __load( collection ) {
-      this.collection = collection;
-      this.transform = d3.geoTransform({ point: this.projectPoint });
-      this.path = d3.geoPath().projection( this.transform );
-
-      this.feature = this.svgGRef.selectAll( "path" )
-      .data( collection.features )
-      .enter().append( "path" )
-      .attr( "fill", "#ff0000" )
-      .attr( "fill-opacity", 0.1 )
-      //.attr( "stroke-width", 2 )
-      //.attr( "stroke", "#FF0000" )
-      .attr( "opacity", 1 );
-
-      this.onChange();
-    }
-
-    onChange(){
-      var bounds = this.path.bounds( this.collection ),
-        topLeft = bounds[ 0 ],
-        bottomRight = bounds[ 1 ];
-
-      this.svgMainRef.attr( "width", bottomRight[ 0 ] - topLeft[ 0 ] )
-      .attr( "height", bottomRight[ 1 ] - topLeft[ 1 ] )
-      .style( "left", topLeft[ 0 ] + "px" )
-      .style( "top", topLeft[ 1 ] + "px" );
-
-      this.svgMainRef.attr( "transform", "translate(" + -topLeft[ 0 ] + "," + -topLeft[ 1 ] + ")");
-
-      this.feature.attr( "d", this.path );
+      case "cancelclick":
+        break;
     }
   }
-
+  
   $( document ).ready(
     function() {
 
@@ -432,8 +151,8 @@
             },
             buttons: {
               polyline: 'Desenhar uma linha',
-              polygon: 'Desenhar um polígono',
-              rectangle: 'Desenhar um retangulo',
+              polygon: 'Desenhar um polígono complexo com vários pontos',
+              rectangle: 'Desenhar uma área retangular simples',
               circle: 'Desenhar um círculo',
               marker: 'Adicionar uma marca'
             }
@@ -481,8 +200,8 @@
           toolbar: {
             actions: {
               save: {
-                title: 'Salvar as mudanças',
-                text: 'Salvar'
+                title: 'Concluir as mudanças',
+                text: 'Concluir'
               },
               cancel: {
                 title: 'Cancelar a edição e apagar todas as mudanças',
@@ -515,10 +234,360 @@
       // cria o mapa
       var osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         osmAttrib = '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        osm = L.tileLayer(osmUrl, {maxZoom: 19, attribution: osmAttrib});
-        map = new L.Map('map', {layers: [osm], center: new L.LatLng( -27.439052, -48.495719 ), zoom: 8 });
+        osm = L.tileLayer(osmUrl, {maxZoom: 19, attribution: osmAttrib}),
+        map = new L.Map('map', {layers: [osm], center: new L.LatLng( -16.59, -53.13 ), zoom: 4 });
 
-      //p1 = new MapDrawProjection( map, "./js" );
+      var drawnItems = new L.FeatureGroup();
+      map.addLayer( drawnItems );
+
+      var drawPolygon;
+      var groupToZoom = [];
+
+      //L.control.layers({}, {}, { position: 'topleft', collapsed: false }).addTo(map);
+      map.addControl(new L.Control.Draw({
+        edit: {
+          featureGroup: drawnItems,
+          poly: {
+            allowIntersection: false
+          }
+        },
+        draw: {
+          polygon: {
+            allowIntersection: false,
+            showArea: true
+          }
+        }
+      }));
+      map.on(L.Draw.Event.CREATED, function (event) {
+        var layer = event.layer;
+        drawnItems.addLayer(layer);
+      });
+
+
+
+
+      /*
+      var geoJSonData = undefined;
+      if( geoJSonData != undefined ) {
+        var dadosMapa = JSON.parse(geoJSonData);
+
+        for (var i in dadosMapa.location) {
+          i = parseInt(i);
+          dadosMapa.location[i] = decodeURIComponent(dadosMapa.location[i]);
+          dadosMapa.location[i] = dadosMapa.location[i].replace("dados[localizacao]=", "");
+        }
+
+        $("#localizacao").val(dadosMapa.location);
+        $("#localizacao").multiselect("refresh");
+        $("#localizacao").change(function () {
+          onMapEvent('locationchange', null);
+        });
+
+        $('#nome').val(dadosMapa.name);
+        $('#cod').val(dadosMapa.cod);
+        for (var i in dadosMapa.polygons) {
+          dataToSend.push(dadosMapa.polygons[i]);
+          switch (dadosMapa.polygons[i].Type) {
+            case "circle":
+              drawPolygon = L.circle([dadosMapa.polygons[i].PointsList[1], dadosMapa.polygons[i].PointsList[0]], {radius: dadosMapa.polygons[i].PointsList[2]}).addTo(map);
+              drawPolygon["idUnique"] = parseInt(dadosMapa.polygons[i].idUnique);
+              drawnItems.addLayer(drawPolygon);
+              groupToZoom.push(drawPolygon);
+              break;
+
+            case "rectangle":
+              drawPolygon = L.rectangle([[dadosMapa.polygons[i].PointsList[0][1], dadosMapa.polygons[i].PointsList[0][0]], [dadosMapa.polygons[i].PointsList[2][1], dadosMapa.polygons[i].PointsList[2][0]]]).addTo(map);
+              drawPolygon["idUnique"] = parseInt(dadosMapa.polygons[i].idUnique);
+              drawnItems.addLayer(drawPolygon);
+              groupToZoom.push(drawPolygon);
+              break;
+
+            case "polygon":
+              var latlngs = [];
+              for (var k in dadosMapa.polygons[i].PointsList) {
+                latlngs.push([dadosMapa.polygons[i].PointsList[k][1], dadosMapa.polygons[i].PointsList[k][0]]);
+              }
+              drawPolygon = L.polygon(latlngs).addTo(map);
+              drawPolygon["idUnique"] = parseInt(dadosMapa.polygons[i].idUnique);
+              drawnItems.addLayer(drawPolygon);
+              groupToZoom.push(drawPolygon);
+              break;
+          }
+          idUnique = Math.max(idUnique, parseInt(dadosMapa.polygons[i].idUnique));
+        }
+        idUnique += 1;
+
+        if (groupToZoom.length > 0) {
+          var group = new L.featureGroup(groupToZoom);
+          map.fitBounds(group.getBounds());
+        }
+      }
+      */
+
+
+      // List of all layers just edited on the map. Triggered when layers in the FeatureGroup; initialised with the
+      // plugin; have been edited and saved.
+      map.on('draw:edited', function(e) {
+        var type = e.layerType,
+          layer = e.layer;
+
+        var geoData;
+        var inputCoordinates;
+        var coordinateList;
+        var id;
+
+        for( var layerKey in e.layers._layers ) {
+
+          for ( var sendKey in dataToSend) {
+            sendKey = parseInt( sendKey );
+            if ( dataToSend[sendKey].idUnique == e.layers._layers[layerKey].idUnique ) {
+              type = dataToSend[sendKey].Type;
+              break;
+            }
+          }
+
+          layerKey = parseInt( layerKey );
+          id = e.layers._layers[layerKey].idUnique;
+          geoData = e.layers._layers[layerKey].toGeoJSON();
+          coordinateList = [];
+
+          if (type == "polygon") {
+            inputCoordinates = geoData.geometry;
+
+            for (var coordinateKey in inputCoordinates.coordinates) {
+              for (var c in inputCoordinates.coordinates[coordinateKey]) {
+                coordinateList.push([
+                  inputCoordinates.coordinates[coordinateKey][c][0],
+                  inputCoordinates.coordinates[coordinateKey][c][1]
+                ]);
+              }
+            }
+          }
+          else if (type == "marker") {
+            inputCoordinates = geoData.geometry.coordinates;
+            coordinateList = [
+              inputCoordinates[0],
+              inputCoordinates[1]
+            ];
+          }
+          else if (type == "rectangle") {
+            inputCoordinates = geoData.geometry.coordinates[0];
+
+            //<bottom left coordinates> key 0
+            //<upper right coordinates> key 2
+            coordinateList = inputCoordinates;
+          }
+          else if (type == "polyline") {
+            coordinateList = geoData.geometry.coordinates;
+          }
+          else if (type == "circle") {
+            coordinateList = [
+              geoData.geometry.coordinates[0],
+              geoData.geometry.coordinates[1],
+              e.layers._layers[layerKey]._mRadius
+            ];
+          }
+
+          for ( var sendKey in dataToSend) {
+            sendKey = parseInt( sendKey );
+            if ( dataToSend[sendKey].idUnique == e.layers._layers[layerKey].idUnique ) {
+              dataToSend[sendKey].PointsList = coordinateList;
+              break;
+            }
+          }
+        }
+
+        onMapEvent( 'edited', type );
+      });
+
+      map.on('draw:deleted', function(e) {
+        var type = e.layerType;
+
+        for( var layerKey in e.layers._layers ) {
+          layerKey = parseInt( layerKey );
+          for ( var sendKey in dataToSend) {
+            sendKey = parseInt( sendKey );
+            if ( parseInt( dataToSend[sendKey].idUnique ) == e.layers._layers[layerKey].idUnique ) {
+              delete dataToSend[sendKey];
+            }
+          }
+        }
+
+        var newData = [];
+        for( var i in dataToSend ){
+          i = parseInt( i );
+          if( typeof dataToSend[ i ] == "object" ){
+            newData.push( dataToSend[ i ] );
+          }
+        }
+
+        dataToSend = newData;
+
+        if( dataToSend.length == 0 ){
+          ahg.msg_err(_('A cerca deve ter no mínimo um elemento.'));
+          onMapEvent( 'emptydata', null );
+          return;
+        }
+
+        onMapEvent( 'deleted', type );
+      });
+
+      map.on('draw:created', function(e) {
+        var type = e.layerType,
+          layer = e.layer;
+
+        var geoData = layer.toGeoJSON();
+        var inputCoordinates;
+        var coordinateList = [];
+
+        if ( type == "polygon" ) {
+          inputCoordinates = geoData.geometry;
+
+          for( var i in inputCoordinates.coordinates ){
+            for( var c in inputCoordinates.coordinates[i] ){
+              coordinateList.push([
+                inputCoordinates.coordinates[i][c][0],
+                inputCoordinates.coordinates[i][c][1]
+              ]);
+            }
+          }
+        }
+        else if ( type == "marker" ) {
+          inputCoordinates = geoData.geometry.coordinates;
+          coordinateList = [
+            inputCoordinates[0],
+            inputCoordinates[1]
+          ];
+        }
+        else if ( type == "rectangle" ) {
+          inputCoordinates = geoData.geometry.coordinates[0];
+
+          //<bottom left coordinates> key 0
+          //<upper right coordinates> key 2
+          coordinateList = inputCoordinates;
+        }
+        else if ( type == "polyline" ) {
+          coordinateList = geoData.geometry.coordinates;
+        }
+        else if ( type == "circle" ) {
+          coordinateList = [
+            geoData.geometry.coordinates[0],
+            geoData.geometry.coordinates[1],
+            layer.options.radius
+          ];
+        }
+
+        dataToSend.push({
+          PointsList: coordinateList,
+          Type: type,
+          //IdEmpresa: idEmpresa,
+          idUnique: idUnique
+        });
+
+        layer["idUnique"] = idUnique ++;
+        drawnItems.addLayer(layer);
+
+        onMapEvent( 'added', type );
+      });
+
+
+      // The type of layer this is. One of:polyline; polygon; rectangle; circle; marker Triggered when the user has
+      // chosen to draw a particular vector or marker.
+      map.on('draw:drawstart', function(e) {
+        onMapEvent( 'drawstart', null );
+      });
+
+      // The type of layer this is. One of: polyline; polygon; rectangle; circle; marker Triggered when the user has
+      // finished a particular vector or marker.
+      map.on('draw:drawstop', function(e) {
+        onMapEvent( 'drawstop', null );
+      });
+
+      // The type of edit this is. One of: edit Triggered when the user starts edit mode by clicking the edit tool
+      // button.
+      map.on('draw:editstart', function(e) {
+        onMapEvent( 'editstart', null );
+      });
+
+      // The type of edit this is. One of: edit Triggered when the user has finshed editing (edit mode) and saves
+      // edits.
+      map.on('draw:editstop', function(e) {
+        onMapEvent( 'editstop', null );
+      });
+
+      // The type of edit this is. One of: remove Triggered when the user starts remove mode by clicking the remove
+      // tool button.
+      map.on('draw:deletestart', function(e) {
+        onMapEvent( 'deletestart', null );
+      });
+
+      // The type of edit this is. One of: remove Triggered when the user has finished removing shapes (remove mode)
+      // and saves.
+      map.on('draw:deletestop', function(e) {
+        onMapEvent( 'deletestop', null );
+      });
+
+
+
+
+      /*
+      L.control.layers({
+        'osm': osm.addTo(map),
+        "google": L.tileLayer('http://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}', {
+          attribution: 'google'
+        })
+      }, { 'drawlayer': drawnItems }, { position: 'topleft', collapsed: true }).addTo(map);
+      map.addControl(new L.Control.Draw({
+        edit: {
+          featureGroup: drawnItems,
+          poly: {
+            allowIntersection: false
+          }
+        },
+        draw: {
+          polygon: {
+            allowIntersection: false,
+            showArea: true
+          }
+        }
+      }));
+      */
+
+
+
+//https://gist.github.com/teaforthecat/cd54345e6c0f80de7845
+      $.ajax({
+        type: "GET",
+        //url: "./getPoints/",
+        url: "./js",
+        //data: JSON.stringify( dataToSend ),
+        success: function( data ){
+          //console.log( "data:", data );
+          L.geoJSON(data, {
+            pointToLayer: function(geoJsonPoint, latlng) {
+              console.log("geoJsonPoint:", geoJsonPoint);
+              return L.marker(latlng);
+            },
+            filter: function (feature) {
+              return true;
+              //return featureLine.properties.style;
+            },
+            onEachFeature: function(featureLine, layer) {
+              console.log(layer);
+            }
+          }).addTo(map);
+
+          var editableLayers = new L.FeatureGroup([data]);
+          map.addLayer(editableLayers);
+        },
+        dataType: "json"
+      });
+
+
+
+
+
+
 /*
       var setupLocal = {
         //element: document.getElementById( "d32" ),
@@ -543,35 +612,9 @@
       //map.addLayer( drawnItems );
 
       // Barra personalizada
-      /*var optionsControl =  L.Control.extend({
-        options: {
-          position: 'topleft'
-        },
-        onAdd: function (map) {
-          var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom ui small vertical icon buttons');
-          $(container).html('<button class="ui basic button smallButton relatroio"><i class="Search icon iconMapSearch"></i></button>' +
-            '<button class="ui basic button smallButton cadastro"><i class="flag icon"></i></button>');
-          container.style.backgroundColor = '#fafafa';
-          return container;
-        }
-      });
-      map.addControl( new optionsControl() );
 
-      // Barra personalizada
-      var optionsControl =  L.Control.extend({
-        options: {
-          position: 'topleft'
-        },
-        onAdd: function (map) {
-          var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom ui small vertical icon buttons');
-          $(container).html('<button class="ui basic button smallButton relatroio"><i class="Search icon"></i></button>' +
-            '<button class="ui basic button iconMapSearch smallButton borda cadastro"><i class="flag icon"></i></button><button class="ui basic button iconMapSearch smallButton cadastro"><i class="flag icon"></i></button>');
-          container.style.backgroundColor = '#fafafa';
-          return container;
-        }
-      });
-      map.addControl( new optionsControl() );
-
+      //map.addControl( new optionsControl() );
+/*
       // Barra de desenho
       var drawControl = new L.Control.Draw({
         position: 'topleft',
@@ -580,27 +623,29 @@
           remove: true
         }
       });
-
+*/
 
       //
-      var guideLayers = [];
-      drawControl.setDrawingOptions({
+      //var guideLayers = [];
+      /*drawControl.setDrawingOptions({
         polyline: { guideLayers: guideLayers },
         polygon: { guideLayers: guideLayers, snapDistance: 3 }
       });
 
-      map.addControl(drawControl);
+      map.addControl(drawControl);*/
 
       // Prepara os desenhos do mapa para envio
       // Polygon; Rectangle; Circle; Marker | String Layer that was just created. The type of layer this is. One of:
       // polyline; polygon; rectangle; circle; marker Triggered when a new vector or marker has been created.
-      map.on('draw:created', function(e) {
-        //map.on(L.Draw.Event.CREATED, function (e) {
+      /*
+      map.on('load', function(e) {
+        onMapEvent( 'draw:created', type );
+      //map.on(L.Draw.Event.CREATED, function (e) {
         var type = e.layerType,
           layer = e.layer;
 
         //https://en.wikipedia.org/wiki/GeoJSON
-        var geoData = layer.toGeoJSON();
+        //var geoData = layer.toGeoJSON();
         var inputCoordinates;
         var coordinateList = [];
 
@@ -654,12 +699,11 @@
         onMapEvent( 'added', type );
 
         drawnItems.addLayer(layer);
-      });
+      });*/
 
-      map.on('click', function(e) {
-
+      map.on('click', function(Event) {
+        onMapEvent( Event, 'click' );
       });
-      */
 
       map.on('zoomlevelschange', function( Event ) {
         onMapEvent( Event, 'zoomlevelschange' );
@@ -683,7 +727,7 @@
 
       map.on('zoomstart', function( Event ) {
         onMapEvent( Event, 'zoomstart' );
-        //reset();
+
       });
 
       map.on('movestart', function( Event ) {
@@ -692,22 +736,22 @@
 
       map.on('zoom', function( Event ) {
         onMapEvent( Event, 'zoom' );
-        //reset();
+
       });
 
       map.on('move', function( Event ) {
         onMapEvent( Event, 'move' );
-        //reset();
+
       });
 
       map.on('zoomend', function( Event ) {
         onMapEvent( Event, 'zoomend' );
-        //reset();
+
       });
 
       map.on('moveend', function( Event ) {
         onMapEvent( Event, 'moveend' );
-        //reset();
+
       });
 
       // List of all layers just edited on the map. Triggered when layers in the FeatureGroup; initialised with the
