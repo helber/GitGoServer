@@ -562,23 +562,34 @@
         url: "./js",
         //data: JSON.stringify( dataToSend ),
         success: function( data ){
-          //console.log( "data:", data );
-          L.geoJSON(data, {
-            pointToLayer: function(geoJsonPoint, latlng) {
-              console.log("geoJsonPoint:", geoJsonPoint);
-              return L.marker(latlng);
-            },
-            filter: function (feature) {
-              return true;
-              //return featureLine.properties.style;
-            },
-            onEachFeature: function(featureLine, layer) {
-              console.log(layer);
-            }
-          }).addTo(map);
+          var latlngs;
 
-          var editableLayers = new L.FeatureGroup([data]);
-          map.addLayer(editableLayers);
+          for( var i in data.features ){
+            i = parseInt( i );
+
+            switch( data.features[ i ].geometry.type ){
+                case "MultiPolygon":
+                    for( var p in data.features[ i ].geometry.coordinates ){
+                        p = parseInt( p );
+
+                        for( var k in data.features[ i ].geometry.coordinates[ p ] ) {
+                            k = parseInt( k );
+                            latlngs = [];
+
+                            for( var z in data.features[ i ].geometry.coordinates[ p ][ k ] ){
+                                z = parseInt( z );
+                                latlngs.push( [ data.features[ i ].geometry.coordinates[ p ][ k ][ z ][ 1 ], data.features[ i ].geometry.coordinates[ p ][ k ][ z ][ 0 ] ] );
+                            }
+
+                            drawPolygon = L.polygon( [latlngs] ).addTo( map );
+                            drawnItems.addLayer( drawPolygon );
+                        }
+
+
+                    }
+            }
+          }
+
         },
         dataType: "json"
       });
