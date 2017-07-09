@@ -320,7 +320,6 @@ func main() {
     },
   }
 
-
   store = sessions.NewCookieStore([]byte( setupProject.Config.Server.CookieName ))
   store.Options = &sessions.Options{
     Path: setupProject.Config.Server.Path,
@@ -328,6 +327,14 @@ func main() {
     MaxAge: setupProject.Config.Server.MaxAge,
     Secure: setupProject.Config.Server.Secure,
     HttpOnly: setupProject.Config.Server.HttpOnly,
+  }
+
+  if setupProject.Config.Ibge.MakeConvexHull == false && setupProject.Config.Ibge.MakeGeoJSonConvexHull == true {
+    log.Critical( "For 'setupProject.Config.Ibge.MakeGeoJSonConvexHull' to be true, 'setupProject.Config.Ibge.MakeConvexHull' must be true" )
+  }
+
+  if setupProject.Config.Ibge.MakeConcaveHull == false && setupProject.Config.Ibge.MakeGeoJSonConcaveHull == true {
+    log.Critical( "For 'setupProject.Config.Ibge.MakeGeoJSonConcaveHull' to be true, 'setupProject.Config.Ibge.MakeConcaveHull' must be true" )
   }
 
   router := mux.NewRouter().StrictSlash( true )
