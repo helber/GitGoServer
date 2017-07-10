@@ -33,6 +33,7 @@ import (
   "github.com/helmutkemper/gOkmz/gOkmzConsts"
   "github.com/helmutkemper/mgo/bson"
   "github.com/helmutkemper/gOsm/consts"
+  "github.com/helmutkemper/gOkmz"
 )
 
 type RoutesStt            []restFul.RouteStt
@@ -163,7 +164,9 @@ func main() {
   setupProject.Config.AddOnConfigFunc( onLoadConfig )
   setupProject.Config.LoadConfig()
 
-
+  gOkmz.EnableGeoJSon( setupProject.Config.Ibge.MakeGeoJSon )
+  gOkmz.EnableConcaveHull( setupProject.Config.Ibge.MakeConcaveHull, setupProject.Config.Ibge.MakeGeoJSonConcaveHull )
+  gOkmz.EnableConvexHull( setupProject.Config.Ibge.MakeConcaveHull, setupProject.Config.Ibge.MakeConvexHullDistance, setupProject.Config.Ibge.MakeGeoJSonConvexHull )
 
   // server pages
   Routes = RoutesStt{
