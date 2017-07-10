@@ -1,6 +1,6 @@
 package main
 
-//todo verificar quais tipos do osm se encaixam em polygons para preparar geoJSon - prioridade
+//todo idParser do gOsm e do gOkmz estão errados - prioridade
 //todo rever todos os exemplos que usam pointList{}
 //todo ./geodatadownload quando dá erro não retorna o json de erro padrão
 //todo procurar por todos os `bson:"IdParser,omitempty"` e mudar para `bson:"idParser,omitempty"`
