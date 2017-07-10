@@ -1,6 +1,20 @@
 package main
 
+/*
+<tag k="admin_level" v="9"/>
+<tag k="boundary" v="administrative"/>
+<tag k="name" v="Canasvieiras"/>
+<tag k="source" v="PMF, IBGE"/>
+<tag k="type" v="boundary"/>
+<tag k="wikipedia" v="pt:Canasvieiras"/>
+ */
+
+//todo rever chaves do banco - urgente
 //todo idParser do gOsm e do gOkmz estão errados - prioridade
+//todo fazer um método para apagar downloads - prioridade
+//todo o servidor deveria ser dividido em dois, um para o painel de controle, sem timeout e outro para o usuário, com timeout.
+//todo tem status para descomprimindo o arquivo?
+//todo install.FileDownloadTyp colocar se o download é ibge ou geofabrik
 //todo rever todos os exemplos que usam pointList{}
 //todo ./geodatadownload quando dá erro não retorna o json de erro padrão
 //todo procurar por todos os `bson:"IdParser,omitempty"` e mudar para `bson:"idParser,omitempty"`
@@ -65,8 +79,8 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
     w,
     consts.DB_TEST_GEOJSON_FEATURES_COLLECTIONS,
     bson.M{
-      "$or": []bson.M{
-        {"tag.county":"florianopolis"},
+      //"$and": []bson.M{
+        //{"tag.county":"florianopolis"},
         //{"tag.district":"canasvieiras"},
         //{ "tag.neighborhood": "centro" },
         //{ "tag.neighborhood": "agronomica" },
@@ -77,7 +91,7 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
         //{ "tag.neighborhood": "corrego grande" },
         //{ "tag.neighborhood": "santa monica" },
         //{ "tag.neighborhood": "itacorubi" },
-      },
+      //},
     },
   )
 }
@@ -107,6 +121,11 @@ func geoJSonDbHull(w http.ResponseWriter, r *http.Request) {
 }
 
 func geoJSon(w http.ResponseWriter, r *http.Request) {
+
+  gOsm.StatisticsEnable( true )
+  gOsm.ParserOsmXml( "/home/kemper/Documents/ahgora/importMap/brazil-latest.osm" )
+  return
+
 
   var polygon geoMath.PolygonListStt = geoMath.PolygonListStt{}
   err := polygon.Find( gOkmzConsts.DB_IBGE_FILE_POLYGONS_COLLECTIONS, bson.M{ "$or": []bson.M{ { "tag.district": "centro" }, { "tag.district": "arnopolis" }, { "tag.district": "alfredo wagner" }, { "tag.district": "agronomica" }, { "tag.county": "abdon batista" }, { "tag.district": "abelardo luz" }, { "tag.district": "agrolandia" } } } )
@@ -157,7 +176,7 @@ func onLoadConfig() {
 
 func main() {
   // db connect
-  db.Connect( "127.0.0.1", "brasil" )
+  db.Connect( "127.0.0.1", "20170610" )
 
   // configuration from database
   setupProject.Config = setupProject.Configuration{}
@@ -176,6 +195,14 @@ func main() {
       Method:      "GET",
       Pattern:     "/",
       HandlerFunc: Index,
+    },
+
+    // geoJSon
+    restFul.RouteStt{
+      Name:        "js",
+      Method:      "GET",
+      Pattern:     "/bolivia",
+      HandlerFunc: geoJSon,
     },
 
     // geoJSon
