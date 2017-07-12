@@ -9,7 +9,7 @@ package main
 <tag k="wikipedia" v="pt:Canasvieiras"/>
 
 {"tag.name": "Canasvieiras", "tag.place": "suburb"}
-
+{"tag.admin_level":"8", "tag.boundary":"administrative","tag.type":"boundary"}
 {"tag.admin_level": "9", "tag.boundary": "administrative", "tag.type":"boundary",  "tag.name": "Canasvieiras"}
  */
 
@@ -209,7 +209,7 @@ func onLoadConfig() {
 
 func main() {
   // db connect
-  db.Connect( "127.0.0.1", "20170611" )
+  db.Connect( "127.0.0.1", "20170610" )
 
   // configuration from database
   setupProject.Config = setupProject.Configuration{}
