@@ -14,6 +14,7 @@ package main
  */
 
 //todo rever chaves do banco - urgente
+//todo ibge polygons deve ter a distância entre os pontos
 //todo geogson tem que ter box para banco com os 4 pontos, tem que ter o tipo original ( node way e relação ), centroid ou ponto na forma de loc - urgente
 //todo separar tag - urgente
 //todo box tem que ter os quatro pontos - urgente
