@@ -14,8 +14,12 @@ package main
  */
 
 //todo rever chaves do banco - urgente
+//todo geogson tem que ter box para banco com os 4 pontos, tem que ter o tipo original ( node way e relação ), centroid ou ponto na forma de loc - urgente
+//todo separar tag - urgente
+//todo box tem que ter os quatro pontos - urgente
 //todo idParser do gOsm e do gOkmz estão errados - prioridade
 //todo fazer um método para apagar downloads - prioridade
+//todo enable statistic false gera contagem negativa
 //todo o servidor deveria ser dividido em dois, um para o painel de controle, sem timeout e outro para o usuário, com timeout.
 //todo tem status para descomprimindo o arquivo?
 //todo install.FileDownloadTyp colocar se o download é ibge ou geofabrik
@@ -83,8 +87,31 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
     w,
     consts.DB_GOSM_GEOJSON_FEATURES_COLLECTIONS,
     bson.M{
-      "tag.admin_level": "10",
-      //"$and": []bson.M{
+      "$or": []bson.M{
+        {"id": 434941249},
+        {"id": 133753590},
+        {"id": 310550789},
+        {"id": 310551766},
+        {"id": 310550784},
+        {"id": 314050681},
+        {"id": 314050686},
+        {"id": 310566770},
+        {"id": 311603286},
+        {"id": 310566772},
+        {"id": 120030903},
+        {"id": 120030900},
+        {"id": 435887346},
+        {"id": 435887353},
+        {"id": 435887368},
+        {"id": 435887352},
+        {"id": 435887357},
+        {"id": 119756326},
+        {"id": 434301946},
+        {"id": 434301947},
+        {"id": 433028918},
+        {"id": 435887355},
+        {"id": 435887356},
+        {"id": 314051120},
         //{"tag.county":"florianopolis"},
         //{"tag.district":"canasvieiras"},
         //{ "tag.neighborhood": "centro" },
@@ -96,8 +123,8 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
         //{ "tag.neighborhood": "corrego grande" },
         //{ "tag.neighborhood": "santa monica" },
         //{ "tag.neighborhood": "itacorubi" },
-      //},
-    }, 20,
+      },
+    },
   )
 }
 
@@ -127,8 +154,9 @@ func geoJSonDbHull(w http.ResponseWriter, r *http.Request) {
 
 func geoJSon(w http.ResponseWriter, r *http.Request) {
 
-  gOsm.StatisticsEnable( true )
-  gOsm.ParserOsmXml( "/home/hkemper/Documents/Copy/sites/brazil-latest.osm" )
+  gOsm.StatisticsEnable( false )
+  //gOsm.ParserOsmXml( "/home/hkemper/Documents/Copy/sites/brazil-latest.osm" )
+  gOsm.ParserOsmXml( "/home/kemper/Documents/ahgora/importMap/brazil-latest.osm" )
   return
 
 
@@ -181,7 +209,7 @@ func onLoadConfig() {
 
 func main() {
   // db connect
-  db.Connect( "127.0.0.1", "20170610" )
+  db.Connect( "127.0.0.1", "20170611" )
 
   // configuration from database
   setupProject.Config = setupProject.Configuration{}
