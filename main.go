@@ -87,6 +87,8 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
     w,
     consts.DB_GOSM_GEOJSON_FEATURES_COLLECTIONS,
     bson.M{
+      "tag.admin_level":"8","tag.boundary":"administrative",
+      /*
       "$or": []bson.M{
         {"id": 434941249},
         {"id": 133753590},
@@ -124,7 +126,8 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
         //{ "tag.neighborhood": "santa monica" },
         //{ "tag.neighborhood": "itacorubi" },
       },
-    },
+      */
+    }, 300,
   )
 }
 
