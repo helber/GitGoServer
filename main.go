@@ -7,6 +7,10 @@ package main
 <tag k="source" v="PMF, IBGE"/>
 <tag k="type" v="boundary"/>
 <tag k="wikipedia" v="pt:Canasvieiras"/>
+
+{"tag.name": "Canasvieiras", "tag.place": "suburb"}
+
+{"tag.admin_level": "9", "tag.boundary": "administrative", "tag.type":"boundary",  "tag.name": "Canasvieiras"}
  */
 
 //todo rever chaves do banco - urgente
@@ -77,8 +81,9 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
 
   out.ServerOutFindFeature(
     w,
-    consts.DB_TEST_GEOJSON_FEATURES_COLLECTIONS,
+    consts.DB_GOSM_GEOJSON_FEATURES_COLLECTIONS,
     bson.M{
+      "tag.admin_level": "10",
       //"$and": []bson.M{
         //{"tag.county":"florianopolis"},
         //{"tag.district":"canasvieiras"},
@@ -92,7 +97,7 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
         //{ "tag.neighborhood": "santa monica" },
         //{ "tag.neighborhood": "itacorubi" },
       //},
-    },
+    }, 20,
   )
 }
 
@@ -123,7 +128,7 @@ func geoJSonDbHull(w http.ResponseWriter, r *http.Request) {
 func geoJSon(w http.ResponseWriter, r *http.Request) {
 
   gOsm.StatisticsEnable( true )
-  gOsm.ParserOsmXml( "/home/kemper/Documents/ahgora/importMap/brazil-latest.osm" )
+  gOsm.ParserOsmXml( "/home/hkemper/Documents/Copy/sites/brazil-latest.osm" )
   return
 
 
@@ -209,7 +214,7 @@ func main() {
     restFul.RouteStt{
       Name:        "js",
       Method:      "GET",
-      Pattern:     "/js",
+      Pattern:     "/js.js",
       HandlerFunc: geoJSonDb,
     },
 

@@ -559,7 +559,7 @@
       $.ajax({
         type: "GET",
         //url: "./getPoints/",
-        url: "./js",
+        url: "./js.js",
         //data: JSON.stringify( dataToSend ),
         success: function( data ){
           var latlngs;
@@ -585,6 +585,8 @@
                             drawnItems.addLayer( drawPolygon );
                         }
                     }
+                default:
+                    L.geoJSON(data).addTo(map);
             }
           }
 
