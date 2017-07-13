@@ -162,7 +162,7 @@ func geoJSonDbHull(w http.ResponseWriter, r *http.Request) {
 func geoJSon(w http.ResponseWriter, r *http.Request) {
 
   gOsm.StatisticsEnable( false )
-  gOsm.ParserOsmXml( "/home/hkemper/Documents/Copy/sites/brazil-latest.osm" )
+  gOsm.ParserOsmXml( "/home/kemper/Desktop/relation.osm" )
   //gOsm.ParserOsmXml( "/home/kemper/Documents/ahgora/importMap/brazil-latest.osm" )
   return
 
@@ -216,7 +216,7 @@ func onLoadConfig() {
 
 func main() {
   // db connect
-  db.Connect( "127.0.0.1", "20170610" )
+  db.Connect( "127.0.0.1", "20170613" )
 
   // configuration from database
   setupProject.Config = setupProject.Configuration{}
