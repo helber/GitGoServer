@@ -20,6 +20,9 @@ package main
 //todo box tem que ter os quatro pontos - urgente
 //todo idParser do gOsm e do gOkmz estão errados - prioridade
 //todo fazer um método para apagar downloads - prioridade
+//todo checkBounds() deve virar global
+//todo rever os testes de geoTypePolygon
+//todo criar a interface para todos os geoTypes
 //todo enable statistic false gera contagem negativa
 //todo o servidor deveria ser dividido em dois, um para o painel de controle, sem timeout e outro para o usuário, com timeout.
 //todo tem status para descomprimindo o arquivo?
@@ -159,8 +162,8 @@ func geoJSonDbHull(w http.ResponseWriter, r *http.Request) {
 func geoJSon(w http.ResponseWriter, r *http.Request) {
 
   gOsm.StatisticsEnable( false )
-  //gOsm.ParserOsmXml( "/home/hkemper/Documents/Copy/sites/brazil-latest.osm" )
-  gOsm.ParserOsmXml( "/home/kemper/Documents/ahgora/importMap/brazil-latest.osm" )
+  gOsm.ParserOsmXml( "/home/hkemper/Documents/Copy/sites/brazil-latest.osm" )
+  //gOsm.ParserOsmXml( "/home/kemper/Documents/ahgora/importMap/brazil-latest.osm" )
   return
 
 
