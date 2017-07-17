@@ -20,6 +20,7 @@ package main
 //todo box tem que ter os quatro pontos - urgente
 //todo idParser do gOsm e do gOkmz estão errados - prioridade
 //todo fazer um método para apagar downloads - prioridade
+//todo 'if bson.IsObjectIdHex( RelationAStt.IdMongo.String() ) == false' para todos os tipos no insert
 //todo checkBounds() deve virar global
 //todo rever os testes de geoTypePolygon
 //todo criar a interface para todos os geoTypes
@@ -91,7 +92,7 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
     w,
     consts.DB_GOSM_GEOJSON_FEATURES_COLLECTIONS,
     bson.M{
-      "tag.admin_level":"8","tag.boundary":"administrative",
+      "id":23881143,
       /*
       "$or": []bson.M{
         {"id": 434941249},
@@ -131,7 +132,7 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
         //{ "tag.neighborhood": "itacorubi" },
       },
       */
-    }, 300,
+    },
   )
 }
 
@@ -162,7 +163,7 @@ func geoJSonDbHull(w http.ResponseWriter, r *http.Request) {
 func geoJSon(w http.ResponseWriter, r *http.Request) {
 
   gOsm.StatisticsEnable( false )
-  gOsm.ParserOsmXml( "/home/kemper/Desktop/relation.osm" )
+  gOsm.ParserOsmXml( "/home/hkemper/Documents/Copy/sites/brazil-latest.osm" )
   //gOsm.ParserOsmXml( "/home/kemper/Documents/ahgora/importMap/brazil-latest.osm" )
   return
 
@@ -216,7 +217,7 @@ func onLoadConfig() {
 
 func main() {
   // db connect
-  db.Connect( "127.0.0.1", "20170613" )
+  db.Connect( "127.0.0.1", "20170610" )
 
   // configuration from database
   setupProject.Config = setupProject.Configuration{}
@@ -363,6 +364,20 @@ func main() {
       Method:      "GET",
       Pattern:     "/reconfigure",
       HandlerFunc: setupProject.Reload,
+    },
+
+    restFul.RouteStt{
+      Name:        "reconfigure",
+      Method:      "GET",
+      Pattern:     "/loggeron",
+      HandlerFunc: setupProject.LogOn,
+    },
+
+    restFul.RouteStt{
+      Name:        "reconfigure",
+      Method:      "GET",
+      Pattern:     "/loggeroff",
+      HandlerFunc: setupProject.LogOff,
     },
 
     // Procura pelo bairro
