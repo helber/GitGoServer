@@ -90,35 +90,37 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
 
   out.ServerOutFindFeature(
     w,
-    consts.DB_GOSM_GEOJSON_FEATURES_COLLECTIONS,
+    consts.DB_OSM_FILE_WAYS_COLLECTIONS,
     bson.M{
-      "id":23881143,
-      /*
       "$or": []bson.M{
-        {"id": 434941249},
-        {"id": 133753590},
-        {"id": 310550789},
-        {"id": 310551766},
-        {"id": 310550784},
-        {"id": 314050681},
-        {"id": 314050686},
-        {"id": 310566770},
-        {"id": 311603286},
-        {"id": 310566772},
-        {"id": 120030903},
-        {"id": 120030900},
-        {"id": 435887346},
-        {"id": 435887353},
-        {"id": 435887368},
-        {"id": 435887352},
-        {"id": 435887357},
-        {"id": 119756326},
-        {"id": 434301946},
-        {"id": 434301947},
-        {"id": 433028918},
-        {"id": 435887355},
-        {"id": 435887356},
-        {"id": 314051120},
+      {"id": 434941249},
+      {"id": 133753590},
+      {"id": 310550789},
+      {"id": 503473805},
+      {"id": 503473806},
+      {"id": 310551766},
+      {"id": 310550784},
+      {"id": 314050681},
+      {"id": 314050686},
+      {"id": 310566770},
+      {"id": 311603286},
+      {"id": 310566772},
+      {"id": 120030903},
+      {"id": 120030900},
+      {"id": 435887346},
+      {"id": 435887353},
+      {"id": 435887368},
+      {"id": 435887352},
+      {"id": 435887357},
+      {"id": 119756326},
+      {"id": 480107869},
+      {"id": 434301946},
+      {"id": 480107870},
+      {"id": 434301947},
+      {"id": 433028918},
+      {"id": 435887355},
+      {"id": 435887356},
+      {"id": 314051120},
         //{"tag.county":"florianopolis"},
         //{"tag.district":"canasvieiras"},
         //{ "tag.neighborhood": "centro" },
@@ -131,7 +133,6 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
         //{ "tag.neighborhood": "santa monica" },
         //{ "tag.neighborhood": "itacorubi" },
       },
-      */
     },
   )
 }
@@ -163,7 +164,7 @@ func geoJSonDbHull(w http.ResponseWriter, r *http.Request) {
 func geoJSon(w http.ResponseWriter, r *http.Request) {
 
   gOsm.StatisticsEnable( false )
-  gOsm.ParserOsmXml( "/home/hkemper/brazil-latest.osm" )
+  gOsm.ParserOsmXml( "/home/hkemper/Desktop/brasil_novo/brazil-latest.osm" )
   //gOsm.ParserOsmXml( "/home/kemper/Documents/ahgora/importMap/brazil-latest.osm" )
   return
 
