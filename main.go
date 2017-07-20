@@ -93,6 +93,7 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
     consts.DB_OSM_FILE_WAYS_COLLECTIONS,
     bson.M{
       "$or": []bson.M{
+        /* canas
       {"id": 434941249},
       {"id": 133753590},
       {"id": 310550789},
@@ -121,7 +122,13 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
       {"id": 435887355},
       {"id": 435887356},
       {"id": 314051120},
-        //{"tag.county":"florianopolis"},
+      canas */
+      {"id": 220363869},
+      {"id": 42847251},
+      {"id": 227166223},
+      {"id": 220363871},
+
+      //{"tag.county":"florianopolis"},
         //{"tag.district":"canasvieiras"},
         //{ "tag.neighborhood": "centro" },
         //{ "tag.neighborhood": "agronomica" },

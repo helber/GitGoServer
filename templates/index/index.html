@@ -567,7 +567,8 @@
           for( var i in data.features ){
             i = parseInt( i );
 
-            switch( data.features[ i ].geometry.type ){
+            //{"type":"FeatureCollection","features":[{"IdParser":"","type":"FeatureCollection","features":[{"type":"Feature","id":"119756326","properties":{"natural":"coastline"},"geometry":
+            switch( data.features[ i ].features[0].geometry.type ){
                 case "MultiPolygon":
                     for( var p in data.features[ i ].geometry.coordinates ){
                         p = parseInt( p );
