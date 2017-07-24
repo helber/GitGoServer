@@ -563,12 +563,13 @@
         //data: JSON.stringify( dataToSend ),
         success: function( data ){
           var latlngs;
+          var groupToZoom = [];
 
           for( var i in data.features ){
             i = parseInt( i );
 
             //{"type":"FeatureCollection","features":[{"IdParser":"","type":"FeatureCollection","features":[{"type":"Feature","id":"119756326","properties":{"natural":"coastline"},"geometry":
-            switch( data.features[ i ].features[0].geometry.type ){
+            switch( data.features[ i ].geometry.type ){
                 case "MultiPolygon":
                     for( var p in data.features[ i ].geometry.coordinates ){
                         p = parseInt( p );
@@ -583,13 +584,20 @@
                             }
 
                             drawPolygon = L.polygon( [latlngs] ).addTo( map );
+                            groupToZoom.push( drawPolygon );
                             drawnItems.addLayer( drawPolygon );
                         }
                     }
                 default:
-                    L.geoJSON(data).addTo(map);
+                    drawPolygon = L.geoJSON(data).addTo(map);
+                    groupToZoom.push( drawPolygon );
             }
           }
+
+            if (groupToZoom.length > 0) {
+                var group = new L.featureGroup(groupToZoom);
+                map.fitBounds(group.getBounds());
+            }
 
         },
         dataType: "json"

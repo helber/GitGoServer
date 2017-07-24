@@ -86,62 +86,93 @@ func Index(w http.ResponseWriter, r *http.Request) {
 }
 
 func geoJSonDb(w http.ResponseWriter, r *http.Request) {
-  var out geoMath.GeoJSonList = geoMath.GeoJSonList{}
 
-  out.ServerOutFindFeature(
-    w,
+  output := restFul.JSonOutStt{}
+  output.ToGeoJSonStart( w )
+
+  way := geoMath.WayListStt{}
+  way.Find(
     consts.DB_OSM_FILE_WAYS_COLLECTIONS,
     bson.M{
       "$or": []bson.M{
-        /* canas
-      {"id": 434941249},
-      {"id": 133753590},
-      {"id": 310550789},
-      {"id": 503473805},
-      {"id": 503473806},
-      {"id": 310551766},
-      {"id": 310550784},
-      {"id": 314050681},
-      {"id": 314050686},
-      {"id": 310566770},
-      {"id": 311603286},
-      {"id": 310566772},
-      {"id": 120030903},
-      {"id": 120030900},
-      {"id": 435887346},
-      {"id": 435887353},
-      {"id": 435887368},
-      {"id": 435887352},
-      {"id": 435887357},
-      {"id": 119756326},
-      {"id": 480107869},
-      {"id": 434301946},
-      {"id": 480107870},
-      {"id": 434301947},
-      {"id": 433028918},
-      {"id": 435887355},
-      {"id": 435887356},
-      {"id": 314051120},
-      canas */
-      {"id": 220363869},
-      {"id": 42847251},
-      {"id": 227166223},
-      {"id": 220363871},
-
-      //{"tag.county":"florianopolis"},
-        //{"tag.district":"canasvieiras"},
-        //{ "tag.neighborhood": "centro" },
-        //{ "tag.neighborhood": "agronomica" },
-        //{ "tag.neighborhood": "jose mendes" },
-        //{ "tag.neighborhood": "saco dos limoes" },
-        //{ "tag.neighborhood": "trindade" },
-        //{ "tag.neighborhood": "pantanal" },
-        //{ "tag.neighborhood": "corrego grande" },
-        //{ "tag.neighborhood": "santa monica" },
-        //{ "tag.neighborhood": "itacorubi" },
+        {"id": 251168142},
+        {"id": 44105035},
+        {"id": 172361480},
+        {"id": 44105032},
+        {"id": 319339797},
+        {"id": 432820859},
+        {"id": 439249246},
+        {"id": 387043986},
+        {"id": 37994350},
+        {"id": 37981497},
+        {"id": 37981496},
+        {"id": 166744426},
+        {"id": 246515206},
+        {"id": 246515207},
+        {"id": 35130332},
+        {"id": 310451333},
+        {"id": 251339229},
+        {"id": 317460506},
+        {"id": 246515204},
+        {"id": 246515210},
+        {"id": 161609412},
+        {"id": 161609393},
+        {"id": 142812127},
+        {"id": 251339219},
+        {"id": 251339228},
+        {"id": 251339226},
+        {"id": 161609362},
+        {"id": 161609329},
+        {"id": 161609316},
+        {"id": 203830411},
+        {"id": 133900601},
+        {"id": 203830419},
+        {"id": 203830404},
+        {"id": 203830402},
+        {"id": 35136467},
+        {"id": 35136957},
+        {"id": 387038965},
+        {"id": 385774383},
+        {"id": 385774384},
+        {"id": 387244260},
+        {"id": 319339790},
+        {"id": 44105032},
+        {"id": 172361480},
+        {"id": 166744442},
       },
     },
   )
+  output.ToGeoJSonFeatures( way, w )
+
+
+  w.Write( []byte( "," ) )
+
+  point := geoMath.PointListStt{}
+  point.Find(
+    consts.DB_OSM_FILE_NODES_COLLECTIONS,
+    bson.M{
+      "$or": []bson.M{
+        {"id": 2461093347},
+        {"id": 1833402006},
+        {"id": 1833402022},
+        {"id": 1833402023},
+        {"id": 1833401972},
+        {"id": 2422161954},
+        {"id": 2422161955},
+        {"id": 2422161961},
+        {"id": 2422162005},
+        {"id": 2422161960},
+        {"id": 2422162017},
+        {"id": 2178991489},
+        {"id": 2422162021},
+      },
+    },
+  )
+  output.ToGeoJSonFeatures( point, w )
+
+
+  output.ToGeoJSonEnd( w )
+
 }
 
 func geoJSonDbHull(w http.ResponseWriter, r *http.Request) {
@@ -171,7 +202,7 @@ func geoJSonDbHull(w http.ResponseWriter, r *http.Request) {
 func geoJSon(w http.ResponseWriter, r *http.Request) {
 
   gOsm.StatisticsEnable( false )
-  gOsm.ParserOsmXml( "/home/hkemper/Desktop/brasil_novo/brazil-latest.osm" )
+  gOsm.ParserOsmXml( "/home/hkemper/Desktop/brasil_novo/brazil-latest-nodes.osm" )
   //gOsm.ParserOsmXml( "/home/kemper/Documents/ahgora/importMap/brazil-latest.osm" )
   return
 
