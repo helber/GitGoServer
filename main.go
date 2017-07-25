@@ -92,6 +92,10 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
   output := restFul.JSonOutStt{}
   output.ToGeoJSonStart( w )
 
+  rel := geoMath.RelationStt{}
+  rel.FindOne( consts.DB_OSM_FILE_RELATIONS_COLLECTIONS, bson.M{"id": 242643 } )
+  output.ToGeoJSonFeatures( rel, w )
+  /*
   way := geoMath.WayListStt{}
   way.Find(
     consts.DB_OSM_FILE_WAYS_COLLECTIONS,
@@ -146,7 +150,6 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
   )
   output.ToGeoJSonFeatures( way, w )
 
-
   w.Write( []byte( "," ) )
 
   point := geoMath.PointListStt{}
@@ -171,7 +174,7 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
     },
   )
   output.ToGeoJSonFeatures( point, w )
-
+  */
 
   output.ToGeoJSonEnd( w )
 
