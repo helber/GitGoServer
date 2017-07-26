@@ -240,7 +240,7 @@ func geoJSon(w http.ResponseWriter, r *http.Request) {
 }
 
 func onLoadConfig() {
-  install.Initialize( setupProject.Config.Server.StaticFileSysPath )
+  install.Initialize( setupProject.Config.Server.StaticFileSysPath, setupProject.Config.Server.OsmApiDownloadPath )
 
   ibge.FuzzySearchNeighborhoodClear()
   ibge.FuzzySearchDistrictClear()
