@@ -1,5 +1,22 @@
 package main
 
+
+
+
+////////////////seguir a relacao de id 11980, dá pau na sub relacao de id 1362232
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
 <tag k="admin_level" v="9"/>
 <tag k="boundary" v="administrative"/>
@@ -63,6 +80,7 @@ import (
   "github.com/helmutkemper/mgo/bson"
   "github.com/helmutkemper/gOsm/consts"
   "github.com/helmutkemper/gOkmz"
+  "strconv"
 )
 
 type RoutesStt            []restFul.RouteStt
@@ -88,12 +106,20 @@ func Index(w http.ResponseWriter, r *http.Request) {
 }
 
 func geoJSonDb(w http.ResponseWriter, r *http.Request) {
+  vars := mux.Vars(r)
+
+  var id int
+  var err error
+
+  if id, err = strconv.Atoi(vars["id"]); err != nil {
+    panic(err)
+  }
 
   output := restFul.JSonOutStt{}
   output.ToGeoJSonStart( w )
 
   rel := geoMath.RelationStt{}
-  rel.FindOne( consts.DB_OSM_FILE_RELATIONS_COLLECTIONS, bson.M{"id": 242643 } )
+  rel.FindOne( consts.DB_OSM_FILE_RELATIONS_COLLECTIONS, bson.M{"id": id } )
   output.ToGeoJSonFeatures( rel, w )
   /*
   way := geoMath.WayListStt{}
@@ -294,7 +320,7 @@ func main() {
     restFul.RouteStt{
       Name:        "js",
       Method:      "GET",
-      Pattern:     "/js.js",
+      Pattern:     "/js.js/{id:[0-9]{1,23}}",
       HandlerFunc: geoJSonDb,
     },
 
