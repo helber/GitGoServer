@@ -4,6 +4,7 @@ package main
 
 
 ////////////////seguir a relacao de id 11980, dá pau na sub relacao de id 1362232
+/////////////// relation id 6515 faz um poligono estranho
 
 
 
@@ -387,6 +388,13 @@ func main() {
       Method: "GET",
       Pattern: "/progressdownloadosm",
       HandlerFunc: install.ProgressDownloadFile,
+    },
+
+    restFul.RouteStt{
+      Name: "DownloadWayByOsmApi",
+      Method: "GET",
+      Pattern: "/osm/download/way/{id:[0-9]{1,23}}",
+      HandlerFunc: install.DownloadWayByOsmApi,
     },
 
     // Mostra a alocação de memória
