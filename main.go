@@ -1,29 +1,7 @@
 package main
 
-import (
-  "net/http"
-  "github.com/helmutkemper/gOsm/geoMath"
-  "github.com/helmutkemper/gOsm/consts"
-  "github.com/helmutkemper/mgo/bson"
-  "github.com/helmutkemper/gOsm"
-  "github.com/helmutkemper/gOkmz/gOkmzConsts"
-  "log"
-  "github.com/helmutkemper/gOsmServer/Install"
-  "github.com/helmutkemper/gOsmServer/ibge"
-  "github.com/helmutkemper/gOsm/db"
-  "github.com/helmutkemper/gOsmServer/setupProject"
-  "github.com/helmutkemper/gOkmz"
-  "github.com/helmutkemper/gOsmServer/restFul"
-  "github.com/helmutkemper/gOsmServer/information"
-  "github.com/helmutkemper/gOsmServer/restFulGps"
-  "github.com/helmutkemper/gOsmServer/restFulPoint"
-  "github.com/helmutkemper/gOsmServer/leaflet"
-  "github.com/helmutkemper/sessions"
-  "github.com/helmutkemper/mux"
-  "flag"
-  "time"
-  "strconv"
-)
+
+
 
 ////////////////seguir a relacao de id 11980, dá pau na sub relacao de id 1362232
 /////////////// relation id 6515 faz um poligono estranho
