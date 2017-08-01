@@ -1,7 +1,29 @@
 package main
 
-
-
+import (
+  "net/http"
+  "github.com/helmutkemper/gOsm/geoMath"
+  "github.com/helmutkemper/gOsm/consts"
+  "github.com/helmutkemper/mgo/bson"
+  "github.com/helmutkemper/gOsm"
+  "github.com/helmutkemper/gOkmz/gOkmzConsts"
+  "log"
+  "github.com/helmutkemper/gOsmServer/Install"
+  "github.com/helmutkemper/gOsmServer/ibge"
+  "github.com/helmutkemper/gOsm/db"
+  "github.com/helmutkemper/gOsmServer/setupProject"
+  "github.com/helmutkemper/gOkmz"
+  "github.com/helmutkemper/gOsmServer/restFul"
+  "github.com/helmutkemper/gOsmServer/information"
+  "github.com/helmutkemper/gOsmServer/restFulGps"
+  "github.com/helmutkemper/gOsmServer/restFulPoint"
+  "github.com/helmutkemper/gOsmServer/leaflet"
+  "github.com/helmutkemper/sessions"
+  "github.com/helmutkemper/mux"
+  "flag"
+  "time"
+  "strconv"
+)
 
 ////////////////seguir a relacao de id 11980, dá pau na sub relacao de id 1362232
 /////////////// relation id 6515 faz um poligono estranho
@@ -31,6 +53,19 @@ package main
 {"tag.admin_level": "9", "tag.boundary": "administrative", "tag.type":"boundary",  "tag.name": "Canasvieiras"}
  */
 
+/*
+
+tem que ser definido dinamicamente
+.leaflet-div-icon {
+	top: -14px !important;
+	left: -4px !important;
+	background: transparent !important;
+	border: none !important;
+}
+
+
+*/
+//todo: fuzzy text com nomes de ruas por área do mapa - urgente
 //todo procurar por bson.NewObjectId() e mudar
 //todo apagar por id antes de dá insert
 //todo rever chaves do banco - urgente
