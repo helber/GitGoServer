@@ -154,9 +154,61 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
   output := restFul.JSonOutStt{}
   output.ToGeoJSonStart( w )
 
-  rel := geoMath.RelationStt{}
-  rel.FindOne( consts.DB_OSM_FILE_RELATIONS_COLLECTIONS, bson.M{"id": id } )
-  output.ToGeoJSonFeatures( rel, w )
+  polygon := geoMath.PolygonListStt{}
+  polygon.Find( consts.DB_OSM_FILE_POLYGONS_COLLECTIONS, bson.M{"idRelation": id } )
+  output.ToGeoJSonFeatures( polygon, w )
+
+  //point := geoMath.PointStt{}
+  //point.FindOne( consts.DB_OSM_FILE_NODES_COLLECTIONS, bson.M{"id": id } )
+  //output.ToGeoJSonFeatures( point, w )
+
+  //if point.Id != 0 {
+  //  w.Write( []byte(",") )
+  //}
+
+  //way := geoMath.WayStt{}
+  //way.FindOne( consts.DB_OSM_FILE_WAYS_COLLECTIONS, bson.M{"id": id } )
+  //output.ToGeoJSonFeatures( way, w )
+
+  //if way.Id != 0 {
+  //  w.Write( []byte(",") )
+  //}
+
+  //rel := geoMath.RelationStt{}
+  //rel.FindOne( consts.DB_OSM_FILE_RELATIONS_COLLECTIONS, bson.M{"id": id } )
+
+  //for k, rNodeId := range rel.IdNode {
+  //  if k != 0 {
+  //    w.Write( []byte( "," ) )
+  //  }
+
+  //  point := geoMath.PointListStt{}
+  //  point.Find( consts.DB_OSM_FILE_NODES_COLLECTIONS, bson.M{"idRelation": rNodeId } )
+  //  output.ToGeoJSonFeatures( point, w )
+  //}
+  //w.Write( []byte( "," ) )
+
+  //for k, rWayId := range rel.IdWay {
+  //  if k != 0 {
+  //    w.Write( []byte( "," ) )
+  //  }
+
+  //  way := geoMath.WayListStt{}
+  //  way.Find( consts.DB_OSM_FILE_WAYS_COLLECTIONS, bson.M{"id": rWayId } )
+  //  output.ToGeoJSonFeatures( way, w )
+  //}
+  //for k, rPolygonId := range rel.IdPolygon {
+  //  if k != 0 {
+  //    w.Write( []byte( "," ) )
+  //  }
+
+  //  polygon := geoMath.PolygonListStt{}
+  //  polygon.Find( consts.DB_OSM_FILE_POLYGONS_COLLECTIONS, bson.M{"idRelation": rPolygonId } )
+  //  output.ToGeoJSonFeatures( polygon, w )
+  //}
+
+  //output.ToGeoJSonFeatures( rel, w )
+
   /*
   way := geoMath.WayListStt{}
   way.Find(
@@ -430,6 +482,13 @@ func main() {
       Method: "GET",
       Pattern: "/osm/download/way/{id:[0-9]{1,23}}",
       HandlerFunc: install.DownloadWayByOsmApi,
+    },
+
+    restFul.RouteStt{
+      Name: "DownloadWayByOsmApi",
+      Method: "GET",
+      Pattern: "/osm/download/relation/{id:[0-9]{1,23}}",
+      HandlerFunc: install.DownloadRelationByOsmApi,
     },
 
     // Mostra a alocação de memória
