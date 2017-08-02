@@ -16,7 +16,15 @@ package main
 
 
 
-
+/*
+$.ajax("https://localhost:8083/GeoPunchIn/", {
+method: 'POST',
+data: JSON.stringify( data ),
+xhrFields: { withCredentials: true },
+crossDomain: true,
+success: function (data) {}
+}
+*/
 
 /*
 <tag k="admin_level" v="9"/>
