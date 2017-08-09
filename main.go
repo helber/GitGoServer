@@ -141,7 +141,7 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
   output.ToGeoJSonStart( w )
 
   polygon := geoMath.PolygonListStt{}
-  polygon.Find( consts.DB_OSM_FILE_POLYGONS_COLLECTIONS, bson.M{"idRelation": id } )
+  polygon.FindOne( consts.DB_OSM_FILE_POLYGONS_COLLECTIONS, bson.M{"id": id } )
   output.ToGeoJSonFeatures( polygon, w )
 
   //point := geoMath.PointStt{}
