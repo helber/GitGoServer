@@ -131,6 +131,7 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
 
 	polygon := geoMath.PolygonListStt{}
 	polygon.FindOne(consts.DB_OSM_FILE_POLYGONS_COLLECTIONS, bson.M{"id": id})
+
 	output.ToGeoJSonFeatures(polygon, w)
 
 	//point := geoMath.PointStt{}
@@ -266,7 +267,6 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
 	*/
 
 	output.ToGeoJSonEnd(w)
-
 }
 
 func geoJSonDbHull(w http.ResponseWriter, r *http.Request) {
@@ -335,6 +335,11 @@ func main() {
 	flag.StringVar(&dbHost, "mongodb-host", "127.0.0.1", "MONGODB host name or $MONGODB_HOST env var")
 	flag.StringVar(&dbPass, "mongodb-password", "", "MONGODB password or $MONGODB_PASS env var")
 	flag.StringVar(&listenPort, "listen-port", "8082", "Listen port or $LISTEN_PORT env var")
+
+	// This will serve files under http://domain.com/static/<filename>
+	var dir string
+	flag.StringVar(&dir, "dir", "static", "the directory to serve files from.")
+	flag.Parse()
 
 	// db Connection
 	db.Connect(dbHost, dbPass)
@@ -569,11 +574,6 @@ func main() {
 			Name(route.Name).
 			Handler(handler)
 	}
-
-	// This will serve files under http://domain.com/static/<filename>
-	var dir string
-	flag.StringVar(&dir, "dir", setupProject.Config.Server.StaticFileSysPath, "the directory to serve files from.")
-	flag.Parse()
 
 	router.PathPrefix(setupProject.Config.Server.StaticServerPath).Handler(http.StripPrefix(setupProject.Config.Server.StaticServerPath, http.FileServer(http.Dir(dir))))
 
