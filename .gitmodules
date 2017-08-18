@@ -1,0 +1,51 @@
+[submodule "Libraries/src/github.com/helmutkemper/check"]
+	path = Libraries/src/github.com/helmutkemper/check
+	url = https://github.com/helmutkemper/check.git
+[submodule "Libraries/src/github.com/helmutkemper/context"]
+	path = Libraries/src/github.com/helmutkemper/context
+	url = https://github.com/helmutkemper/context.git
+[submodule "Libraries/src/github.com/helmutkemper/goftp"]
+	path = Libraries/src/github.com/helmutkemper/goftp
+	url = https://github.com/helmutkemper/goftp.git
+[submodule "Libraries/src/github.com/helmutkemper/gOkmz"]
+	path = Libraries/src/github.com/helmutkemper/gOkmz
+	url = https://github.com/helmutkemper/gOkmz.git
+[submodule "Libraries/src/github.com/helmutkemper/go-radix"]
+	path = Libraries/src/github.com/helmutkemper/go-radix
+	url = https://github.com/helmutkemper/go-radix.git
+[submodule "Libraries/src/github.com/helmutkemper/GoSemanticUI"]
+	path = Libraries/src/github.com/helmutkemper/GoSemanticUI
+	url = https://github.com/helmutkemper/GoSemanticUI.git
+[submodule "Libraries/src/github.com/helmutkemper/gOsmServer"]
+	path = Libraries/src/github.com/helmutkemper/gOsmServer
+	url = https://github.com/helmutkemper/gOsmServer.git
+[submodule "Libraries/src/github.com/helmutkemper/grab"]
+	path = Libraries/src/github.com/helmutkemper/grab
+	url = https://github.com/helmutkemper/grab.git
+[submodule "Libraries/src/github.com/helmutkemper/jwt-go"]
+	path = Libraries/src/github.com/helmutkemper/jwt-go
+	url = https://github.com/helmutkemper/jwt-go.git
+[submodule "Libraries/src/github.com/helmutkemper/mgo"]
+	path = Libraries/src/github.com/helmutkemper/mgo
+	url = https://github.com/helmutkemper/mgo.git
+[submodule "Libraries/src/github.com/helmutkemper/mux"]
+	path = Libraries/src/github.com/helmutkemper/mux
+	url = https://github.com/helmutkemper/mux.git
+[submodule "Libraries/src/github.com/helmutkemper/securecookie"]
+	path = Libraries/src/github.com/helmutkemper/securecookie
+	url = https://github.com/helmutkemper/securecookie.git
+[submodule "Libraries/src/github.com/helmutkemper/seelog"]
+	path = Libraries/src/github.com/helmutkemper/seelog
+	url = https://github.com/helmutkemper/seelog.git
+[submodule "Libraries/src/github.com/helmutkemper/sessions"]
+	path = Libraries/src/github.com/helmutkemper/sessions
+	url = https://github.com/helmutkemper/sessions.git
+[submodule "Libraries/src/github.com/helmutkemper/tomb"]
+	path = Libraries/src/github.com/helmutkemper/tomb
+	url = https://github.com/helmutkemper/tomb.git
+[submodule "Libraries/src/github.com/helmutkemper/yaml"]
+	path = Libraries/src/github.com/helmutkemper/yaml
+	url = https://github.com/helmutkemper/yaml.git
+[submodule "Libraries/src/github.com/helmutkemper/gOsm"]
+	path = Libraries/src/github.com/helmutkemper/gOsm
+	url = https://github.com/helmutkemper/gOsm.git
