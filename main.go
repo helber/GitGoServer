@@ -420,7 +420,7 @@ func main() {
     restFul.RouteStt{
       Name:        "js",
       Method:      "GET",
-      Pattern:     "/js.js/{id:[0-9]{1,23}}",
+      Pattern:     "/js.js/{id:-*[0-9]{1,23}}",
       HandlerFunc: geoJSonDb,
     },
 
