@@ -51,6 +51,8 @@ tem que ser definido dinamicamente
 
 
 */
+//todo: temporarypoint tem que ser revisto. parte do código foi apagada devido a um bug e problemas de tempo na entrega
+//todo: a relação e o polígono tem que ter os ids dos formadores. id dos ways no polígono e id do polígono na relação
 //todo: fuzzy text com nomes de ruas por área do mapa - urgente
 //todo procurar por bson.NewObjectId() e mudar
 //todo apagar por id antes de dá insert
@@ -135,6 +137,7 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
 
   var id int
   var err error
+  var coma bool = false
 
   if id, err = strconv.Atoi(vars["id"]); err != nil {
     panic(err)
@@ -145,27 +148,43 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
 
   polygon := geoMath.PolygonListStt{}
   polygon.FindOne( consts.DB_OSM_FILE_POLYGONS_COLLECTIONS, bson.M{"id": id } )
+  if polygon.Id != 0 {
+    coma = true
+  }
 
   output.ToGeoJSonFeatures( polygon, w )
 
-  //point := geoMath.PointStt{}
-  //point.FindOne( consts.DB_OSM_FILE_NODES_COLLECTIONS, bson.M{"id": id } )
-  //output.ToGeoJSonFeatures( point, w )
 
-  //if point.Id != 0 {
-  //  w.Write( []byte(",") )
-  //}
+  point := geoMath.PointStt{}
+  point.FindOne( consts.DB_OSM_FILE_NODES_COLLECTIONS, bson.M{"id": id } )
 
-  //way := geoMath.WayStt{}
-  //way.FindOne( consts.DB_OSM_FILE_WAYS_COLLECTIONS, bson.M{"id": id } )
-  //output.ToGeoJSonFeatures( way, w )
+  if coma == true {
+    w.Write( []byte(",") )
+    coma = false
+  }
 
-  //if way.Id != 0 {
-  //  w.Write( []byte(",") )
-  //}
+  if point.Id != 0 {
+    coma = true
+  }
 
-  //rel := geoMath.RelationStt{}
-  //rel.FindOne( consts.DB_OSM_FILE_RELATIONS_COLLECTIONS, bson.M{"id": id } )
+  output.ToGeoJSonFeatures( point, w )
+
+  way := geoMath.WayStt{}
+  way.FindOne( consts.DB_OSM_FILE_WAYS_COLLECTIONS, bson.M{"id": id } )
+
+  if coma == true {
+    w.Write( []byte(",") )
+    coma = false
+  }
+
+  if way.Id != 0 {
+    coma = true
+  }
+
+  output.ToGeoJSonFeatures( way, w )
+
+  rel := geoMath.RelationStt{}
+  rel.FindOne( consts.DB_OSM_FILE_RELATIONS_COLLECTIONS, bson.M{"id": id } )
 
   //for k, rNodeId := range rel.IdNode {
   //  if k != 0 {
@@ -310,7 +329,7 @@ func geoJSonDbHull(w http.ResponseWriter, r *http.Request) {
 
 func geoJSon(w http.ResponseWriter, r *http.Request) {
 
-  gOsm.StatisticsEnable( false )
+  gOsm.StatisticsEnable( true )
   gOsm.ParserOsmXml( "/home/hkemper/Desktop/brasil_novo/brazil-latest-relations.osm" )
   //gOsm.ParserOsmXml( "/home/kemper/Documents/ahgora/importMap/brazil-latest.osm" )
   return
@@ -412,7 +431,7 @@ func main() {
     restFul.RouteStt{
       Name:        "js",
       Method:      "GET",
-      Pattern:     "/bolivia",
+      Pattern:     "/relation",
       HandlerFunc: geoJSon,
     },
 
