@@ -137,7 +137,7 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
 
   var id int
   var err error
-  var coma bool = false
+  //var coma bool = false
 
   if id, err = strconv.Atoi(vars["id"]); err != nil {
     panic(err)
@@ -146,45 +146,59 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
   output := restFul.JSonOutStt{}
   output.ToGeoJSonStart( w )
 
-  polygon := geoMath.PolygonListStt{}
-  polygon.FindOne( consts.DB_OSM_FILE_POLYGONS_COLLECTIONS, bson.M{"id": id } )
-  if polygon.Id != 0 {
-    coma = true
+  var polygonLStt geoMath.PolygonStt = geoMath.PolygonStt{}
+  var pointListLStt geoMath.PointListStt
+
+  _, pointListLStt = polygonLStt.FindPointInOnePolygon( bson.M{ "id": id }, bson.M{} )
+  if len( pointListLStt.List ) != 0 {
+    //coma = true
+
+    output.ToGeoJSonFeatures( polygonLStt, w )
+    for _, p := range pointListLStt.List{
+      w.Write( []byte(",") )
+
+      output.ToGeoJSonFeatures( p, w )
+    }
   }
 
-  output.ToGeoJSonFeatures( polygon, w )
+  //polygon := geoMath.PolygonListStt{}
+  //polygon.FindOne( consts.DB_OSM_FILE_POLYGONS_COLLECTIONS, bson.M{"id": id } )
+  //if polygon.Id != 0 {
+  //  coma = true
+  //}
+
+  //output.ToGeoJSonFeatures( polygon, w )
 
 
-  point := geoMath.PointStt{}
-  point.FindOne( consts.DB_OSM_FILE_NODES_COLLECTIONS, bson.M{"id": id } )
+  //point := geoMath.PointStt{}
+  //point.FindOne( consts.DB_OSM_FILE_NODES_COLLECTIONS, bson.M{"id": id } )
+  //if coma == true {
+  //  w.Write( []byte(",") )
+  //  coma = false
+  //}
 
-  if coma == true {
-    w.Write( []byte(",") )
-    coma = false
-  }
+  //if point.Id != 0 {
+  //  coma = true
+  //}
 
-  if point.Id != 0 {
-    coma = true
-  }
+  //output.ToGeoJSonFeatures( point, w )
 
-  output.ToGeoJSonFeatures( point, w )
+  //way := geoMath.WayStt{}
+  //way.FindOne( consts.DB_OSM_FILE_WAYS_COLLECTIONS, bson.M{"id": id } )
 
-  way := geoMath.WayStt{}
-  way.FindOne( consts.DB_OSM_FILE_WAYS_COLLECTIONS, bson.M{"id": id } )
+  //if coma == true {
+  //  w.Write( []byte(",") )
+  //  coma = false
+  //}
 
-  if coma == true {
-    w.Write( []byte(",") )
-    coma = false
-  }
+  //if way.Id != 0 {
+  //  coma = true
+  //}
 
-  if way.Id != 0 {
-    coma = true
-  }
+  //output.ToGeoJSonFeatures( way, w )
 
-  output.ToGeoJSonFeatures( way, w )
-
-  rel := geoMath.RelationStt{}
-  rel.FindOne( consts.DB_OSM_FILE_RELATIONS_COLLECTIONS, bson.M{"id": id } )
+  //rel := geoMath.RelationStt{}
+  //rel.FindOne( consts.DB_OSM_FILE_RELATIONS_COLLECTIONS, bson.M{"id": id } )
 
   //for k, rNodeId := range rel.IdNode {
   //  if k != 0 {
@@ -300,7 +314,6 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
   */
 
   output.ToGeoJSonEnd( w )
-
 }
 
 func geoJSonDbHull(w http.ResponseWriter, r *http.Request) {
@@ -391,11 +404,11 @@ func main() {
 	}
 	listenPort, ok := os.LookupEnv("LISTEN_PORT")
 	if !ok {
-		listenPort = "8082"
+		listenPort = "8085"
 	}
 	flag.StringVar(&dbHost, "mongodb-host", "127.0.0.1", "MONGODB host name or $MONGODB_HOST env var")
 	flag.StringVar(&dbPass, "mongodb-password", "", "MONGODB password or $MONGODB_PASS env var")
-	flag.StringVar(&listenPort, "listen-port", "8082", "Listen port or $LISTEN_PORT env var")
+	flag.StringVar(&listenPort, "listen-port", listenPort, "Listen port or $LISTEN_PORT env var")
 
 	// This will serve files under http://domain.com/static/<filename>
 	var dir string
