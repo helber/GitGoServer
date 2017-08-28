@@ -159,6 +159,8 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
 
       output.ToGeoJSonFeatures( p, w )
     }
+  } else {
+    output.ToGeoJSonFeatures( polygonLStt, w )
   }
 
   //polygon := geoMath.PolygonListStt{}
@@ -417,7 +419,7 @@ func main() {
 
 	// db Connection
   //db.Connect(dbHost, dbPass)
-  db.Connect( "127.0.0.1", "20170617" )
+  db.Connect( "127.0.0.1", "20170628" )
 
   geoMath.AutoId.Prepare()
 
