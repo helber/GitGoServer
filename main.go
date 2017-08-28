@@ -48,6 +48,7 @@ tem que ser definido dinamicamente
 
 
 */
+//todo: gravar os erros e rever
 //todo: importar configuração antga e adicionar a nova nas config do banco
 //todo: polygon tem tags dos ways para serem adicionadas ao geojson
 //todo: temporarypoint tem que ser revisto. parte do código foi apagada devido a um bug e problemas de tempo na entrega
