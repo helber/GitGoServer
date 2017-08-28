@@ -1,8 +1,5 @@
 package main
 
-
-
-
 ////////////////seguir a relacao de id 11980, dá pau na sub relacao de id 1362232
 /////////////// relation id 6515 faz um poligono estranho
 
@@ -51,6 +48,7 @@ tem que ser definido dinamicamente
 
 
 */
+//todo: importar configuração antga e adicionar a nova nas config do banco
 //todo: polygon tem tags dos ways para serem adicionadas ao geojson
 //todo: temporarypoint tem que ser revisto. parte do código foi apagada devido a um bug e problemas de tempo na entrega
 //todo: a relação e o polígono tem que ter os ids dos formadores. id dos ways no polígono e id do polígono na relação
@@ -405,7 +403,7 @@ func main() {
 	}
 	listenPort, ok := os.LookupEnv("LISTEN_PORT")
 	if !ok {
-		listenPort = "8085"
+		listenPort = "8082"
 	}
 	flag.StringVar(&dbHost, "mongodb-host", "127.0.0.1", "MONGODB host name or $MONGODB_HOST env var")
 	flag.StringVar(&dbPass, "mongodb-password", "", "MONGODB password or $MONGODB_PASS env var")
