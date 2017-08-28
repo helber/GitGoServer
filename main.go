@@ -51,6 +51,7 @@ tem que ser definido dinamicamente
 
 
 */
+//todo: polygon tem tags dos ways para serem adicionadas ao geojson
 //todo: temporarypoint tem que ser revisto. parte do código foi apagada devido a um bug e problemas de tempo na entrega
 //todo: a relação e o polígono tem que ter os ids dos formadores. id dos ways no polígono e id do polígono na relação
 //todo: fuzzy text com nomes de ruas por área do mapa - urgente
