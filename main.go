@@ -48,6 +48,7 @@ tem que ser definido dinamicamente
 
 
 */
+//todo: polygon e multipolygon tem que gravar internacional
 //todo: gravar os erros e rever
 //todo: importar configuração antga e adicionar a nova nas config do banco
 //todo: polygon tem tags dos ways para serem adicionadas ao geojson
@@ -146,8 +147,12 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
   output := restFul.JSonOutStt{}
   output.ToGeoJSonStart( w )
 
+  var multiPolygonLStt geoMath.PolygonListStt = geoMath.PolygonListStt{}
   var polygonLStt geoMath.PolygonStt = geoMath.PolygonStt{}
   var pointListLStt geoMath.PointListStt
+
+  err = multiPolygonLStt.Find( consts.DB_OSM_FILE_MULTIPOLYGONS_COLLECTIONS, bson.M{ "id": id } )
+  output.ToGeoJSonFeatures( multiPolygonLStt, w )
 
   _, pointListLStt = polygonLStt.FindPointInOnePolygon( bson.M{ "id": id }, bson.M{} )
   if len( pointListLStt.List ) != 0 {
@@ -162,6 +167,8 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
   } else {
     output.ToGeoJSonFeatures( polygonLStt, w )
   }
+
+
 
   //polygon := geoMath.PolygonListStt{}
   //polygon.FindOne( consts.DB_OSM_FILE_POLYGONS_COLLECTIONS, bson.M{"id": id } )
