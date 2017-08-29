@@ -151,7 +151,7 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
   var polygonLStt geoMath.PolygonStt = geoMath.PolygonStt{}
   var pointListLStt geoMath.PointListStt
 
-  err = multiPolygonLStt.Find( consts.DB_OSM_FILE_MULTIPOLYGONS_COLLECTIONS, bson.M{ "id": id } )
+  err = multiPolygonLStt.FindOne( consts.DB_OSM_FILE_MULTIPOLYGONS_COLLECTIONS, bson.M{ "id": id } )
   output.ToGeoJSonFeatures( multiPolygonLStt, w )
 
   _, pointListLStt = polygonLStt.FindPointInOnePolygon( bson.M{ "id": id }, bson.M{} )
@@ -206,38 +206,38 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
 
   //output.ToGeoJSonFeatures( way, w )
 
-  //rel := geoMath.RelationStt{}
-  //rel.FindOne( consts.DB_OSM_FILE_RELATIONS_COLLECTIONS, bson.M{"id": id } )
+  rel := geoMath.RelationStt{}
+  rel.FindOne( consts.DB_OSM_FILE_RELATIONS_COLLECTIONS, bson.M{"id": id } )
 
-  //for k, rNodeId := range rel.IdNode {
-  //  if k != 0 {
-  //    w.Write( []byte( "," ) )
-  //  }
+  for k, rNodeId := range rel.IdNode {
+    if k != 0 {
+      w.Write( []byte( "," ) )
+    }
 
-  //  point := geoMath.PointListStt{}
-  //  point.Find( consts.DB_OSM_FILE_NODES_COLLECTIONS, bson.M{"idRelation": rNodeId } )
-  //  output.ToGeoJSonFeatures( point, w )
-  //}
+    point := geoMath.PointStt{}
+    point.FindOne( consts.DB_OSM_FILE_NODES_COLLECTIONS, bson.M{"id": rNodeId } )
+    output.ToGeoJSonFeatures( point, w )
+  }
   //w.Write( []byte( "," ) )
 
-  //for k, rWayId := range rel.IdWay {
-  //  if k != 0 {
-  //    w.Write( []byte( "," ) )
-  //  }
+  for k, rWayId := range rel.IdWay {
+    if k != 0 {
+      w.Write( []byte( "," ) )
+    }
 
-  //  way := geoMath.WayListStt{}
-  //  way.Find( consts.DB_OSM_FILE_WAYS_COLLECTIONS, bson.M{"id": rWayId } )
-  //  output.ToGeoJSonFeatures( way, w )
-  //}
-  //for k, rPolygonId := range rel.IdPolygon {
-  //  if k != 0 {
-  //    w.Write( []byte( "," ) )
-  //  }
+    way := geoMath.WayListStt{}
+    way.Find( consts.DB_OSM_FILE_WAYS_COLLECTIONS, bson.M{"id": rWayId } )
+    output.ToGeoJSonFeatures( way, w )
+  }
+  for k, rPolygonId := range rel.IdPolygon {
+    if k != 0 {
+      w.Write( []byte( "," ) )
+    }
 
-  //  polygon := geoMath.PolygonListStt{}
-  //  polygon.Find( consts.DB_OSM_FILE_POLYGONS_COLLECTIONS, bson.M{"idRelation": rPolygonId } )
-  //  output.ToGeoJSonFeatures( polygon, w )
-  //}
+    polygon := geoMath.PolygonListStt{}
+    polygon.FindOne( consts.DB_OSM_FILE_POLYGONS_COLLECTIONS, bson.M{"id": rPolygonId } )
+    output.ToGeoJSonFeatures( polygon, w )
+  }
 
   //output.ToGeoJSonFeatures( rel, w )
 
