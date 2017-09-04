@@ -438,7 +438,7 @@ func main() {
   //db.Connect(dbHost, dbPass)
   db.Connect( "127.0.0.1", "20170617" )
 
-  geoMath.AutoId.Prepare()
+  geoMath.AutoId.Prepare( false )
 
   // configuration from database
   setupProject.Config = setupProject.Configuration{}
