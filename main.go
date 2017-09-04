@@ -48,6 +48,8 @@ tem que ser definido dinamicamente
 
 
 */
+//todo: em caso de erro de download, arquiva a informação para fazer o download depois.
+//todo: ultipolygon não tem tags ******************************************************************* urgente
 //todo: polygon e multipolygon tem que gravar internacional
 //todo: gravar os erros e rever
 //todo: importar configuração antga e adicionar a nova nas config do banco
@@ -133,12 +135,19 @@ func Index(w http.ResponseWriter, r *http.Request) {
   t.ExecuteTemplate(w, "index", nil)  // merge.
 }
 
+func hasData(w http.ResponseWriter, hasDataABoo *bool){
+  if *hasDataABoo == true {
+    *hasDataABoo = false
+    w.Write( []byte(",") )
+  }
+}
+
 func geoJSonDb(w http.ResponseWriter, r *http.Request) {
   vars := mux.Vars(r)
 
   var id int
   var err error
-  //var coma bool = false
+  var coma bool = false
 
   if id, err = strconv.Atoi(vars["id"]); err != nil {
     panic(err)
@@ -156,8 +165,7 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
 
   _, pointListLStt = polygonLStt.FindPointInOnePolygon( bson.M{ "id": id }, bson.M{} )
   if len( pointListLStt.List ) != 0 {
-    //coma = true
-
+    coma = true
     output.ToGeoJSonFeatures( polygonLStt, w )
     for _, p := range pointListLStt.List{
       w.Write( []byte(",") )
@@ -165,22 +173,30 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
       output.ToGeoJSonFeatures( p, w )
     }
   } else {
-    output.ToGeoJSonFeatures( polygonLStt, w )
+    hasData(w, &coma)
+    output.ToGeoJSonFeatures( pointListLStt, w )
+    if polygonLStt.Id != 0 {
+      coma = true
+    }
+  }
+
+  polygon := geoMath.PolygonListStt{}
+  polygon.FindOne( consts.DB_OSM_FILE_POLYGONS_COLLECTIONS, bson.M{"id": id } )
+  hasData(w, &coma)
+  output.ToGeoJSonFeatures( polygon, w )
+  if polygon.Id != 0 {
+    coma = true
   }
 
 
 
-  //polygon := geoMath.PolygonListStt{}
-  //polygon.FindOne( consts.DB_OSM_FILE_POLYGONS_COLLECTIONS, bson.M{"id": id } )
-  //if polygon.Id != 0 {
-  //  coma = true
-  //}
-
-  //output.ToGeoJSonFeatures( polygon, w )
-
-
-  //point := geoMath.PointStt{}
-  //point.FindOne( consts.DB_OSM_FILE_NODES_COLLECTIONS, bson.M{"id": id } )
+  point := geoMath.PointStt{}
+  point.FindOne( consts.DB_OSM_FILE_NODES_COLLECTIONS, bson.M{"id": id } )
+  hasData(w, &coma)
+  output.ToGeoJSonFeatures( point, w )
+  if point.Id != 0 {
+    coma = true
+  }
   //if coma == true {
   //  w.Write( []byte(",") )
   //  coma = false
@@ -192,19 +208,13 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
 
   //output.ToGeoJSonFeatures( point, w )
 
-  //way := geoMath.WayStt{}
-  //way.FindOne( consts.DB_OSM_FILE_WAYS_COLLECTIONS, bson.M{"id": id } )
-
-  //if coma == true {
-  //  w.Write( []byte(",") )
-  //  coma = false
-  //}
-
-  //if way.Id != 0 {
-  //  coma = true
-  //}
-
-  //output.ToGeoJSonFeatures( way, w )
+  way := geoMath.WayStt{}
+  way.FindOne( consts.DB_OSM_FILE_WAYS_COLLECTIONS, bson.M{"id": id } )
+  hasData(w, &coma)
+  output.ToGeoJSonFeatures( way, w )
+  if way.Id != 0 {
+    coma = true
+  }
 
   rel := geoMath.RelationStt{}
   rel.FindOne( bson.M{"id": id } )
