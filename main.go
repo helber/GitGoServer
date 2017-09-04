@@ -207,7 +207,7 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
   //output.ToGeoJSonFeatures( way, w )
 
   rel := geoMath.RelationStt{}
-  rel.FindOne( consts.DB_OSM_FILE_RELATIONS_COLLECTIONS, bson.M{"id": id } )
+  rel.FindOne( bson.M{"id": id } )
 
   for k, rNodeId := range rel.IdNode {
     if k != 0 {
