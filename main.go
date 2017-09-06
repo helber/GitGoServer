@@ -147,7 +147,6 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
 
   var id int
   var err error
-  var coma bool = false
 
   if id, err = strconv.Atoi(vars["id"]); err != nil {
     panic(err)
@@ -168,7 +167,6 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
   b := polygonLStt.BBox
   fmt.Println( b.ToDegreesString() )
   if len( pointListLStt.List ) != 0 {
-    coma = true
     output.ToGeoJSonFeatures( polygonLStt, w )
     for _, p := range pointListLStt.List{
       w.Write( []byte(",") )
@@ -176,11 +174,7 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
       output.ToGeoJSonFeatures( p, w )
     }
   } else {
-    hasData(w, &coma)
     output.ToGeoJSonFeatures( pointListLStt, w )
-    if polygonLStt.Id != 0 {
-      coma = true
-    }
   }
 
 
@@ -193,7 +187,6 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
   polygonLStt.SetCollectionName( consts.DB_OSM_FILE_POLYGONS_SURROUNDINGS_COLLECTIONS )
   _, pointListLStt = polygonLStt.FindPointInOnePolygon( bson.M{ "id": id }, bson.M{} )
   if len( pointListLStt.List ) != 0 {
-    coma = true
     output.ToGeoJSonFeatures( polygonLStt, w )
     for _, p := range pointListLStt.List{
       w.Write( []byte(",") )
@@ -201,31 +194,19 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
       output.ToGeoJSonFeatures( p, w )
     }
   } else {
-    hasData(w, &coma)
     output.ToGeoJSonFeatures( pointListLStt, w )
-    if polygonLStt.Id != 0 {
-      coma = true
-    }
   }
   output.ToGeoJSonFeatures( polygonLStt, w )
 
   polygon := geoMath.PolygonListStt{}
   polygon.FindOne( consts.DB_OSM_FILE_POLYGONS_COLLECTIONS, bson.M{"id": id } )
-  hasData(w, &coma)
   output.ToGeoJSonFeatures( polygon, w )
-  if polygon.Id != 0 {
-    coma = true
-  }
 
 
 
   point := geoMath.PointStt{}
   point.FindOne( consts.DB_OSM_FILE_NODES_COLLECTIONS, bson.M{"id": id } )
-  hasData(w, &coma)
   output.ToGeoJSonFeatures( point, w )
-  if point.Id != 0 {
-    coma = true
-  }
   //if coma == true {
   //  w.Write( []byte(",") )
   //  coma = false
@@ -244,12 +225,9 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
 
 
   way := geoMath.WayStt{}
-  way.FindOne( consts.DB_OSM_FILE_WAYS_COLLECTIONS, bson.M{"id": id } )
-  hasData(w, &coma)
+  way.SetCollectionName( consts.DB_OSM_FILE_WAYS_COLLECTIONS )
+  way.FindOne( bson.M{"id": id } )
   output.ToGeoJSonFeatures( way, w )
-  if way.Id != 0 {
-    coma = true
-  }
 
   rel := geoMath.RelationStt{}
   rel.SetCollectionName( consts.DB_OSM_FILE_RELATIONS_COLLECTIONS )
@@ -400,7 +378,15 @@ func geoJSonDbHull(w http.ResponseWriter, r *http.Request) {
   )
 }
 
-func geoJSon(w http.ResponseWriter, r *http.Request) {
+func wayProcess(w http.ResponseWriter, r *http.Request) {
+
+  gOsm.StatisticsEnable(true)
+  gOsm.ParserOsmXml("/home/hkemper/Desktop/brasil_novo/brazil-latest-ways.osm")
+  //gOsm.ParserOsmXml( "/home/kemper/Documents/ahgora/importMap/brazil-latest.osm" )
+  return
+}
+
+func relationProcess(w http.ResponseWriter, r *http.Request) {
 
   gOsm.StatisticsEnable( true )
   gOsm.ParserOsmXml( "/home/hkemper/Desktop/brasil_novo/brazil-latest-relations.osm" )
@@ -505,7 +491,14 @@ func main() {
       Name:        "js",
       Method:      "GET",
       Pattern:     "/relation",
-      HandlerFunc: geoJSon,
+      HandlerFunc: relationProcess,
+    },
+
+    restFul.RouteStt{
+      Name:        "js",
+      Method:      "GET",
+      Pattern:     "/way",
+      HandlerFunc: wayProcess,
     },
 
     // geoJSon
