@@ -158,11 +158,39 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
 
   var multiPolygonLStt geoMath.PolygonListStt = geoMath.PolygonListStt{}
   var polygonLStt geoMath.PolygonStt = geoMath.PolygonStt{}
+  polygonLStt.SetCollectionName( consts.DB_OSM_FILE_POLYGONS_COLLECTIONS )
   var pointListLStt geoMath.PointListStt
 
   err = multiPolygonLStt.FindOne( consts.DB_OSM_FILE_MULTIPOLYGONS_COLLECTIONS, bson.M{ "id": id } )
   output.ToGeoJSonFeatures( multiPolygonLStt, w )
 
+  _, pointListLStt = polygonLStt.FindPointInOnePolygon( bson.M{ "id": id }, bson.M{} )
+  b := polygonLStt.BBox
+  fmt.Println( b.ToDegreesString() )
+  if len( pointListLStt.List ) != 0 {
+    coma = true
+    output.ToGeoJSonFeatures( polygonLStt, w )
+    for _, p := range pointListLStt.List{
+      w.Write( []byte(",") )
+
+      output.ToGeoJSonFeatures( p, w )
+    }
+  } else {
+    hasData(w, &coma)
+    output.ToGeoJSonFeatures( pointListLStt, w )
+    if polygonLStt.Id != 0 {
+      coma = true
+    }
+  }
+
+
+//  polygonLStt.SetCollectionName( consts.DB_OSM_FILE_POLYGONS_SURROUNDINGS_COLLECTIONS )
+//  polygonLStt.FindOne( bson.M{ "id": id } )
+//  output.ToGeoJSonFeatures( polygonLStt, w )
+
+//  w.Write( []byte(",") )
+
+  polygonLStt.SetCollectionName( consts.DB_OSM_FILE_POLYGONS_SURROUNDINGS_COLLECTIONS )
   _, pointListLStt = polygonLStt.FindPointInOnePolygon( bson.M{ "id": id }, bson.M{} )
   if len( pointListLStt.List ) != 0 {
     coma = true
@@ -179,6 +207,7 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
       coma = true
     }
   }
+  output.ToGeoJSonFeatures( polygonLStt, w )
 
   polygon := geoMath.PolygonListStt{}
   polygon.FindOne( consts.DB_OSM_FILE_POLYGONS_COLLECTIONS, bson.M{"id": id } )
@@ -208,6 +237,12 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
 
   //output.ToGeoJSonFeatures( point, w )
 
+  //w.Write( []byte(",") )
+
+
+
+
+
   way := geoMath.WayStt{}
   way.FindOne( consts.DB_OSM_FILE_WAYS_COLLECTIONS, bson.M{"id": id } )
   hasData(w, &coma)
@@ -217,6 +252,12 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
   }
 
   rel := geoMath.RelationStt{}
+  rel.SetCollectionName( consts.DB_OSM_FILE_RELATIONS_COLLECTIONS )
+  rel.SetCollectionNameDistinctTag( consts.DB_IBGE_FILE_DISTRICT_COLLECTIONS )
+  rel.SetCollectionNameForNode( consts.DB_OSM_FILE_NODES_COLLECTIONS )
+  rel.SetCollectionNameForPolygon( consts.DB_OSM_FILE_POLYGONS_COLLECTIONS )
+  rel.SetCollectionNameForRelation( consts.DB_OSM_FILE_RELATIONS_COLLECTIONS )
+  rel.SetCollectionNameForWay( consts.DB_OSM_FILE_WAYS_COLLECTIONS )
   rel.FindOne( bson.M{"id": id } )
 
   for k, rNodeId := range rel.IdNode {
