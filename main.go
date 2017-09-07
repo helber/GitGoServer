@@ -380,7 +380,7 @@ func geoJSonDbHull(w http.ResponseWriter, r *http.Request) {
 
 func wayProcess(w http.ResponseWriter, r *http.Request) {
 
-  gOsm.StatisticsEnable(true)
+  gOsm.StatisticsEnable(false)
   gOsm.ParserOsmXml("/home/hkemper/Desktop/brasil_novo/brazil-latest-ways.osm")
   //gOsm.ParserOsmXml( "/home/kemper/Documents/ahgora/importMap/brazil-latest.osm" )
   return
@@ -388,7 +388,7 @@ func wayProcess(w http.ResponseWriter, r *http.Request) {
 
 func relationProcess(w http.ResponseWriter, r *http.Request) {
 
-  gOsm.StatisticsEnable( true )
+  gOsm.StatisticsEnable(false)
   gOsm.ParserOsmXml( "/home/hkemper/Desktop/brasil_novo/brazil-latest-relations.osm" )
   //gOsm.ParserOsmXml( "/home/kemper/Documents/ahgora/importMap/brazil-latest.osm" )
   return
