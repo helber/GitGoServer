@@ -159,7 +159,7 @@ func ToSurroundingWay(w http.ResponseWriter, r *http.Request) {
   var way geoMath.WayStt = geoMath.WayStt{}
   way.SetCollectionName( consts.DB_OSM_FILE_WAYS_COLLECTIONS )
   way.FindOne( bson.M{"id": id } )
-  outputLStt.ToGeoJSonFeaturesSurroundings( way, bson.M{}, 55.0, restFul.SURROUNDING_ALL, w )
+  outputLStt.ToGeoJSonFeaturesSurroundings( way, bson.M{}, 55.0, restFul.SURROUNDING_LEFT, w )
 
   outputLStt.ToGeoJSonEnd( w )
 }
