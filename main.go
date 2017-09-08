@@ -2,6 +2,7 @@ package main
 
 ////////////////seguir a relacao de id 11980, dá pau na sub relacao de id 1362232
 /////////////// relation id 6515 faz um poligono estranho
+////////////////http://localhost:8082/osm/download/sur/way/4330708
 
 
 
@@ -158,7 +159,7 @@ func ToSurroundingWay(w http.ResponseWriter, r *http.Request) {
   var way geoMath.WayStt = geoMath.WayStt{}
   way.SetCollectionName( consts.DB_OSM_FILE_WAYS_COLLECTIONS )
   way.FindOne( bson.M{"id": id } )
-  outputLStt.ToGeoJSonFeaturesSurroundings( way, bson.M{}, 55.0, w )
+  outputLStt.ToGeoJSonFeaturesSurroundings( way, bson.M{}, 55.0, restFul.SURROUNDING_ALL, w )
 
   outputLStt.ToGeoJSonEnd( w )
 }
@@ -601,6 +602,13 @@ func main() {
       Method: "GET",
       Pattern: "/osm/download/way/{id:[0-9]{1,23}}",
       HandlerFunc: install.DownloadWayByOsmApi,
+    },
+
+    restFul.RouteStt{
+      Name: "DownloadWayByOsmApi",
+      Method: "GET",
+      Pattern: "/osm/download/sur/way/{id:[0-9]{1,23}}",
+      HandlerFunc: install.DownloadSurroundingWayByOsmApi,
     },
 
     restFul.RouteStt{
