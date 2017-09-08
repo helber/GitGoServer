@@ -142,6 +142,27 @@ func hasData(w http.ResponseWriter, hasDataABoo *bool){
   }
 }
 
+func ToSurroundingWay(w http.ResponseWriter, r *http.Request) {
+  vars := mux.Vars(r)
+
+  var id int
+  var err error
+
+  if id, err = strconv.Atoi(vars["id"]); err != nil {
+    panic(err)
+  }
+
+  var outputLStt restFul.JSonOutStt = restFul.JSonOutStt{}
+  outputLStt.ToGeoJSonStart( w )
+
+  var way geoMath.WayStt = geoMath.WayStt{}
+  way.SetCollectionName( consts.DB_OSM_FILE_WAYS_COLLECTIONS )
+  way.FindOne( bson.M{"id": id } )
+  outputLStt.ToGeoJSonFeaturesSurroundings( way, bson.M{}, 55.0, w )
+
+  outputLStt.ToGeoJSonEnd( w )
+}
+
 func geoJSonDb(w http.ResponseWriter, r *http.Request) {
   vars := mux.Vars(r)
 
@@ -506,7 +527,8 @@ func main() {
       Name:        "js",
       Method:      "GET",
       Pattern:     "/js.js/{id:-*[0-9]{1,23}}",
-      HandlerFunc: geoJSonDb,
+      HandlerFunc: ToSurroundingWay,
+      //HandlerFunc: geoJSonDb,
     },
 
     // geoJSon
