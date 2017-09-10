@@ -102,7 +102,7 @@ import (
 	"github.com/helmutkemper/gOsmServer/Install"
 	"github.com/helmutkemper/gOsmServer/ibge"
 	"github.com/helmutkemper/gOsmServer/information"
-	"github.com/helmutkemper/gOsmServer/leaflet"
+	//"github.com/helmutkemper/gOsmServer/leaflet"
 	"github.com/helmutkemper/gOsmServer/restFul"
 	"github.com/helmutkemper/gOsmServer/restFulGps"
 	"github.com/helmutkemper/gOsmServer/restFulPoint"
@@ -156,8 +156,9 @@ func ToSurroundingWay(w http.ResponseWriter, r *http.Request) {
   var outputLStt restFul.JSonOutStt = restFul.JSonOutStt{}
   outputLStt.ToGeoJSonStart( w )
 
-  var way geoMath.WayStt = geoMath.WayStt{}
-  way.SetCollectionName( consts.DB_OSM_FILE_WAYS_COLLECTIONS )
+  var way geoMath.WayStt = geoMath.WayStt{
+    DbCollectionName: consts.DB_OSM_FILE_NODES_COLLECTIONS,
+  }
   way.FindOne( bson.M{"id": id } )
   outputLStt.ToGeoJSonFeaturesSurroundings( way, bson.M{}, 55.0, restFul.SURROUNDING_LEFT, w )
 
@@ -177,12 +178,17 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
   output := restFul.JSonOutStt{}
   output.ToGeoJSonStart( w )
 
-  var multiPolygonLStt geoMath.PolygonListStt = geoMath.PolygonListStt{}
-  var polygonLStt geoMath.PolygonStt = geoMath.PolygonStt{}
-  polygonLStt.SetCollectionName( consts.DB_OSM_FILE_POLYGONS_COLLECTIONS )
-  var pointListLStt geoMath.PointListStt
+  var multiPolygonLStt geoMath.PolygonListStt = geoMath.PolygonListStt{
+    DbCollectionName: consts.DB_OSM_FILE_NODES_COLLECTIONS,
+  }
+  var polygonLStt geoMath.PolygonStt = geoMath.PolygonStt{
+    DbCollectionName: consts.DB_OSM_FILE_NODES_COLLECTIONS,
+  }
+  var pointListLStt geoMath.PointListStt = geoMath.PointListStt{
+    DbCollectionName: consts.DB_OSM_FILE_NODES_COLLECTIONS,
+  }
 
-  err = multiPolygonLStt.FindOne( consts.DB_OSM_FILE_MULTIPOLYGONS_COLLECTIONS, bson.M{ "id": id } )
+  err = multiPolygonLStt.FindOne( bson.M{ "id": id } )
   output.ToGeoJSonFeatures( multiPolygonLStt, w )
 
   _, pointListLStt = polygonLStt.FindPointInOnePolygon( bson.M{ "id": id }, bson.M{} )
@@ -206,7 +212,6 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
 
 //  w.Write( []byte(",") )
 
-  polygonLStt.SetCollectionName( consts.DB_OSM_FILE_POLYGONS_SURROUNDINGS_COLLECTIONS )
   _, pointListLStt = polygonLStt.FindPointInOnePolygon( bson.M{ "id": id }, bson.M{} )
   if len( pointListLStt.List ) != 0 {
     output.ToGeoJSonFeatures( polygonLStt, w )
@@ -220,14 +225,18 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
   }
   output.ToGeoJSonFeatures( polygonLStt, w )
 
-  polygon := geoMath.PolygonListStt{}
-  polygon.FindOne( consts.DB_OSM_FILE_POLYGONS_COLLECTIONS, bson.M{"id": id } )
+  polygon := geoMath.PolygonListStt{
+    DbCollectionName: consts.DB_OSM_FILE_NODES_COLLECTIONS,
+  }
+  polygon.FindOne( bson.M{"id": id } )
   output.ToGeoJSonFeatures( polygon, w )
 
 
 
-  point := geoMath.PointStt{}
-  point.FindOne( consts.DB_OSM_FILE_NODES_COLLECTIONS, bson.M{"id": id } )
+  point := geoMath.PointStt{
+    DbCollectionName: consts.DB_OSM_FILE_NODES_COLLECTIONS,
+  }
+  point.FindOne( bson.M{"id": id } )
   output.ToGeoJSonFeatures( point, w )
   //if coma == true {
   //  w.Write( []byte(",") )
@@ -246,18 +255,15 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
 
 
 
-  way := geoMath.WayStt{}
-  way.SetCollectionName( consts.DB_OSM_FILE_WAYS_COLLECTIONS )
+  way := geoMath.WayStt{
+    DbCollectionName: consts.DB_OSM_FILE_NODES_COLLECTIONS,
+  }
   way.FindOne( bson.M{"id": id } )
   output.ToGeoJSonFeatures( way, w )
 
-  rel := geoMath.RelationStt{}
-  rel.SetCollectionName( consts.DB_OSM_FILE_RELATIONS_COLLECTIONS )
-  rel.SetCollectionNameDistinctTag( consts.DB_IBGE_FILE_DISTRICT_COLLECTIONS )
-  rel.SetCollectionNameForNode( consts.DB_OSM_FILE_NODES_COLLECTIONS )
-  rel.SetCollectionNameForPolygon( consts.DB_OSM_FILE_POLYGONS_COLLECTIONS )
-  rel.SetCollectionNameForRelation( consts.DB_OSM_FILE_RELATIONS_COLLECTIONS )
-  rel.SetCollectionNameForWay( consts.DB_OSM_FILE_WAYS_COLLECTIONS )
+  rel := geoMath.RelationStt{
+    DbCollectionName: consts.DB_OSM_FILE_NODES_COLLECTIONS,
+  }
   rel.FindOne( bson.M{"id": id } )
 
   for k, rNodeId := range rel.IdNode {
@@ -265,8 +271,10 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
       w.Write( []byte( "," ) )
     }
 
-    point := geoMath.PointStt{}
-    point.FindOne( consts.DB_OSM_FILE_NODES_COLLECTIONS, bson.M{"id": rNodeId } )
+    point := geoMath.PointStt{
+      DbCollectionName: consts.DB_OSM_FILE_NODES_COLLECTIONS,
+    }
+    point.FindOne( bson.M{"id": rNodeId } )
     output.ToGeoJSonFeatures( point, w )
   }
   //w.Write( []byte( "," ) )
@@ -276,8 +284,10 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
       w.Write( []byte( "," ) )
     }
 
-    way := geoMath.WayListStt{}
-    way.Find( consts.DB_OSM_FILE_WAYS_COLLECTIONS, bson.M{"id": rWayId } )
+    way := geoMath.WayListStt{
+      DbCollectionName: consts.DB_OSM_FILE_NODES_COLLECTIONS,
+    }
+    way.Find( bson.M{"id": rWayId } )
     output.ToGeoJSonFeatures( way, w )
   }
   for k, rPolygonId := range rel.IdPolygon {
@@ -285,8 +295,10 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
       w.Write( []byte( "," ) )
     }
 
-    polygon := geoMath.PolygonListStt{}
-    polygon.FindOne( consts.DB_OSM_FILE_POLYGONS_COLLECTIONS, bson.M{"id": rPolygonId } )
+    polygon := geoMath.PolygonListStt{
+      DbCollectionName: consts.DB_OSM_FILE_NODES_COLLECTIONS,
+    }
+    polygon.FindOne( bson.M{"id": rPolygonId } )
     output.ToGeoJSonFeatures( polygon, w )
   }
 
@@ -416,7 +428,9 @@ func relationProcess(w http.ResponseWriter, r *http.Request) {
   return
 
 
-  var polygon geoMath.PolygonListStt = geoMath.PolygonListStt{}
+  var polygon geoMath.PolygonListStt = geoMath.PolygonListStt{
+    DbCollectionName: consts.DB_OSM_FILE_NODES_COLLECTIONS,
+  }
   err := polygon.Find( gOkmzConsts.DB_IBGE_FILE_POLYGONS_COLLECTIONS, bson.M{ "$or": []bson.M{ { "tag.district": "centro" }, { "tag.district": "arnopolis" }, { "tag.district": "alfredo wagner" }, { "tag.district": "agronomica" }, { "tag.county": "abdon batista" }, { "tag.district": "abelardo luz" }, { "tag.district": "agrolandia" } } } )
   //err := polygon.Find( gOkmzConsts.DB_IBGE_FILE_POLYGONS_COLLECTIONS, bson.M{} )
   if err != nil {
@@ -426,7 +440,9 @@ func relationProcess(w http.ResponseWriter, r *http.Request) {
   //upper right -27.092948, -48.144736
 
 
-  var multiPolygon geoMath.PolygonListStt = geoMath.PolygonListStt{}
+  var multiPolygon geoMath.PolygonListStt = geoMath.PolygonListStt{
+    DbCollectionName: consts.DB_OSM_FILE_NODES_COLLECTIONS,
+  }
   multiPolygon.List = polygon.List
 
   var geoJSon geoMath.GeoJSon = geoMath.GeoJSon{}
@@ -644,6 +660,7 @@ func main() {
       Pattern: "/point/{id:[0-9a-fA-F]{24}}",
       HandlerFunc: restFulPoint.GetPointByIdMongo,
     },
+    /*
     restFul.RouteStt{
       Name: "getPoints",
       Method: "POST",
@@ -656,7 +673,7 @@ func main() {
       Pattern: "/getProx",
       HandlerFunc: leaflet.GetProximidades,
     },
-
+    */
     // Recarrega as configurações do sistema
     restFul.RouteStt{
       Name:        "reconfigure",
