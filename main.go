@@ -112,6 +112,7 @@ import (
 	log "github.com/helmutkemper/seelog"
 	"github.com/helmutkemper/sessions"
 	"github.com/helmutkemper/gOkmz/gOkmzConsts"
+  "os/exec"
 )
 
 type RoutesStt            []restFul.RouteStt
@@ -163,6 +164,18 @@ func ToSurroundingWay(w http.ResponseWriter, r *http.Request) {
   outputLStt.ToGeoJSonFeaturesSurroundings( way, bson.M{}, 55.0, restFul.SURROUNDING_LEFT, w )
 
   outputLStt.ToGeoJSonEnd( w )
+}
+
+func dumpMake(w http.ResponseWriter, r *http.Request) {
+  cmd := exec.Command( "mongodump", "--host 127.0.0.1", "--db brasil", "-o /home/hkemper/Dropbox/GitGoServer/static", "--gzip" )
+  err := cmd.Run()
+  if err != nil {
+    log.Critical( err )
+  }
+  err = cmd.Wait()
+  if err != nil {
+    log.Critical( err )
+  }
 }
 
 func geoJSonDb(w http.ResponseWriter, r *http.Request) {
@@ -501,7 +514,7 @@ func main() {
 	}
 	listenPort, ok := os.LookupEnv("LISTEN_PORT")
 	if !ok {
-		listenPort = "8082"
+		listenPort = "8083"
 	}
 	flag.StringVar(&dbHost, "mongodb-host", "127.0.0.1", "MONGODB host name or $MONGODB_HOST env var")
 	flag.StringVar(&dbPass, "mongodb-password", "", "MONGODB password or $MONGODB_PASS env var")
@@ -514,7 +527,7 @@ func main() {
 
 	// db Connection
   //db.Connect(dbHost, dbPass)
-  db.Connect( "127.0.0.1", "parser_novo" )
+  db.Connect( "127.0.0.1", "brasil" )
 
   geoMath.AutoId.Prepare( false )
 
@@ -537,6 +550,13 @@ func main() {
       HandlerFunc: Index,
     },
 
+    restFul.RouteStt{
+      Name:        "dump",
+      Method:      "GET",
+      Pattern:     "/dump",
+      HandlerFunc: dumpMake,
+    },
+
     // geoJSon
     restFul.RouteStt{
       Name:        "js",
@@ -546,7 +566,14 @@ func main() {
     },
 
     restFul.RouteStt{
-      Name:        "js",
+      Name:        "node",
+      Method:      "GET",
+      Pattern:     "/node",
+      HandlerFunc: nodeProcess,
+    },
+
+    restFul.RouteStt{
+      Name:        "way",
       Method:      "GET",
       Pattern:     "/way",
       HandlerFunc: wayProcess,
@@ -700,6 +727,13 @@ func main() {
       Method:      "GET",
       Pattern:     "/reconfigure",
       HandlerFunc: setupProject.Reload,
+    },
+
+    restFul.RouteStt{
+      Name:        "reconfigure",
+      Method:      "GET",
+      Pattern:     "/loggerall",
+      HandlerFunc: setupProject.LogAll,
     },
 
     restFul.RouteStt{
