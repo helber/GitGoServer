@@ -191,9 +191,7 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
   err = multiPolygonLStt.FindOne( bson.M{ "id": id } )
   output.ToGeoJSonFeatures( multiPolygonLStt, w )
 
-  _, pointListLStt = polygonLStt.FindPointInOnePolygon( bson.M{ "id": id }, bson.M{} )
-  b := polygonLStt.BBox
-  fmt.Println( b.ToDegreesString() )
+  err, pointListLStt = polygonLStt.FindPointInOnePolygon( bson.M{ "id": id }, bson.M{} )
   if len( pointListLStt.List ) != 0 {
     output.ToGeoJSonFeatures( polygonLStt, w )
     for _, p := range pointListLStt.List{
@@ -212,7 +210,7 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
 
 //  w.Write( []byte(",") )
 
-  _, pointListLStt = polygonLStt.FindPointInOnePolygon( bson.M{ "id": id }, bson.M{} )
+  err, pointListLStt = polygonLStt.FindPointInOnePolygon( bson.M{ "id": id }, bson.M{} )
   if len( pointListLStt.List ) != 0 {
     output.ToGeoJSonFeatures( polygonLStt, w )
     for _, p := range pointListLStt.List{
@@ -228,7 +226,7 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
   polygon := geoMath.PolygonListStt{
     DbCollectionName: consts.DB_OSM_FILE_NODES_COLLECTIONS,
   }
-  polygon.FindOne( bson.M{"id": id } )
+  err = polygon.FindOne( bson.M{"id": id } )
   output.ToGeoJSonFeatures( polygon, w )
 
 
@@ -236,7 +234,7 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
   point := geoMath.PointStt{
     DbCollectionName: consts.DB_OSM_FILE_NODES_COLLECTIONS,
   }
-  point.FindOne( bson.M{"id": id } )
+  err = point.FindOne( bson.M{"id": id } )
   output.ToGeoJSonFeatures( point, w )
   //if coma == true {
   //  w.Write( []byte(",") )
@@ -258,13 +256,13 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
   way := geoMath.WayStt{
     DbCollectionName: consts.DB_OSM_FILE_NODES_COLLECTIONS,
   }
-  way.FindOne( bson.M{"id": id } )
+  err = way.FindOne( bson.M{"id": id } )
   output.ToGeoJSonFeatures( way, w )
 
   rel := geoMath.RelationStt{
     DbCollectionName: consts.DB_OSM_FILE_NODES_COLLECTIONS,
   }
-  rel.FindOne( bson.M{"id": id } )
+  err = rel.FindOne( bson.M{"id": id } )
 
   for k, rNodeId := range rel.IdNode {
     if k != 0 {
@@ -274,7 +272,7 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
     point := geoMath.PointStt{
       DbCollectionName: consts.DB_OSM_FILE_NODES_COLLECTIONS,
     }
-    point.FindOne( bson.M{"id": rNodeId } )
+    err = point.FindOne( bson.M{"id": rNodeId } )
     output.ToGeoJSonFeatures( point, w )
   }
   //w.Write( []byte( "," ) )
@@ -287,7 +285,7 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
     way := geoMath.WayListStt{
       DbCollectionName: consts.DB_OSM_FILE_NODES_COLLECTIONS,
     }
-    way.Find( bson.M{"id": rWayId } )
+    err = way.Find( bson.M{"id": rWayId } )
     output.ToGeoJSonFeatures( way, w )
   }
   for k, rPolygonId := range rel.IdPolygon {
@@ -298,7 +296,7 @@ func geoJSonDb(w http.ResponseWriter, r *http.Request) {
     polygon := geoMath.PolygonListStt{
       DbCollectionName: consts.DB_OSM_FILE_NODES_COLLECTIONS,
     }
-    polygon.FindOne( bson.M{"id": rPolygonId } )
+    err = polygon.FindOne( bson.M{"id": rPolygonId } )
     output.ToGeoJSonFeatures( polygon, w )
   }
 
@@ -412,6 +410,21 @@ func geoJSonDbHull(w http.ResponseWriter, r *http.Request) {
   )
 }
 
+func brasilProcess(w http.ResponseWriter, r *http.Request) {
+
+  gOsm.StatisticsEnable(false)
+  gOsm.ParserOsmXml( "/home/hkemper/Desktop/brasil_novo/brazil-latest.osm" )
+  return
+}
+
+func nodeProcess(w http.ResponseWriter, r *http.Request) {
+
+  gOsm.StatisticsEnable(false)
+  gOsm.ParserOsmXml("/home/hkemper/Desktop/brasil_novo/brazil-latest-nodes.osm")
+  //gOsm.ParserOsmXml( "/home/kemper/Documents/ahgora/importMap/brazil-latest.osm" )
+  return
+}
+
 func wayProcess(w http.ResponseWriter, r *http.Request) {
 
   gOsm.StatisticsEnable(false)
@@ -501,7 +514,7 @@ func main() {
 
 	// db Connection
   //db.Connect(dbHost, dbPass)
-  db.Connect( "127.0.0.1", "20170617" )
+  db.Connect( "127.0.0.1", "parser_novo" )
 
   geoMath.AutoId.Prepare( false )
 
@@ -539,13 +552,20 @@ func main() {
       HandlerFunc: wayProcess,
     },
 
+    restFul.RouteStt{
+      Name:        "brasil",
+      Method:      "GET",
+      Pattern:     "/brasil",
+      HandlerFunc: brasilProcess,
+    },
+
     // geoJSon
     restFul.RouteStt{
       Name:        "js",
       Method:      "GET",
       Pattern:     "/js.js/{id:-*[0-9]{1,23}}",
-      HandlerFunc: ToSurroundingWay,
-      //HandlerFunc: geoJSonDb,
+      //HandlerFunc: ToSurroundingWay,
+      HandlerFunc: geoJSonDb,
     },
 
     // geoJSon
