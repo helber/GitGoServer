@@ -49,6 +49,7 @@ tem que ser definido dinamicamente
 
 
 */
+//todo: gosmserver.backup tem que saida de sucesso/erro
 //todo: em caso de erro de download, arquiva a informação para fazer o download depois.
 //todo: ultipolygon não tem tags ******************************************************************* urgente
 //todo: polygon e multipolygon tem que gravar internacional
@@ -113,6 +114,7 @@ import (
 	"github.com/helmutkemper/sessions"
 	"github.com/helmutkemper/gOkmz/gOkmzConsts"
   "os/exec"
+  "github.com/helmutkemper/gOsmServer/backup"
 )
 
 type RoutesStt            []restFul.RouteStt
@@ -514,7 +516,7 @@ func main() {
 	}
 	listenPort, ok := os.LookupEnv("LISTEN_PORT")
 	if !ok {
-		listenPort = "8083"
+		listenPort = "8082"
 	}
 	flag.StringVar(&dbHost, "mongodb-host", "127.0.0.1", "MONGODB host name or $MONGODB_HOST env var")
 	flag.StringVar(&dbPass, "mongodb-password", "", "MONGODB password or $MONGODB_PASS env var")
@@ -527,7 +529,7 @@ func main() {
 
 	// db Connection
   //db.Connect(dbHost, dbPass)
-  db.Connect( "127.0.0.1", "brasil" )
+  db.Connect( "127.0.0.1", "20170617" )
 
   geoMath.AutoId.Prepare( false )
 
@@ -609,6 +611,20 @@ func main() {
       Method: "GET",
       Pattern: "/parserratio",
       HandlerFunc: ParserRatio,
+    },
+
+    restFul.RouteStt{
+      Name: "mondoDB_backup_make",
+      Method: "GET",
+      Pattern: "/adm/backup/make",
+      HandlerFunc: backup.MongoDbBackup,
+    },
+
+    restFul.RouteStt{
+      Name: "mondoDB_backup_restore",
+      Method: "GET",
+      Pattern: "/adm/backup/restore",
+      HandlerFunc: backup.MongoDbRestore,
     },
 
     // Download osm xml from geofabrik
