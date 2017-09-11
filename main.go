@@ -168,6 +168,10 @@ func ToSurroundingWay(w http.ResponseWriter, r *http.Request) {
   outputLStt.ToGeoJSonEnd( w )
 }
 
+func lixo(w http.ResponseWriter, r *http.Request) {
+
+}
+
 func dumpMake(w http.ResponseWriter, r *http.Request) {
   cmd := exec.Command( "mongodump", "--host 127.0.0.1", "--db brasil", "-o /home/hkemper/Dropbox/GitGoServer/static", "--gzip" )
   err := cmd.Run()
@@ -529,7 +533,7 @@ func main() {
 
 	// db Connection
   //db.Connect(dbHost, dbPass)
-  db.Connect( "127.0.0.1", "20170617" )
+  db.Connect( "127.0.0.1", "test" )
 
   geoMath.AutoId.Prepare( false )
 
@@ -545,6 +549,13 @@ func main() {
   // server pages
   Routes = RoutesStt{
     // index
+    restFul.RouteStt{
+      Name:        "index",
+      Method:      "GET",
+      Pattern:     "/lixo",
+      HandlerFunc: lixo,
+    },
+
     restFul.RouteStt{
       Name:        "index",
       Method:      "GET",
