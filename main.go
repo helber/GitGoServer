@@ -518,7 +518,7 @@ func main() {
 
 	// db Connection
   //db.Connect(dbHost, dbPass)
-  db.Connect( "127.0.0.1", "20170617" )
+  db.Connect( "127.0.0.1", "brasil" )
 
   geoMath.AutoId.Prepare( false )
 
