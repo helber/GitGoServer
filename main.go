@@ -616,15 +616,29 @@ func main() {
     restFul.RouteStt{
       Name: "mondoDB_backup_make",
       Method: "GET",
-      Pattern: "/adm/backup/make",
+      Pattern: "/admin/backup/make/{name:[a-z0-9_]+}",
       HandlerFunc: backup.MongoDbBackup,
     },
 
     restFul.RouteStt{
       Name: "mondoDB_backup_restore",
       Method: "GET",
-      Pattern: "/adm/backup/restore",
+      Pattern: "/admin/backup/restore/{name:[a-z0-9_]+}",
       HandlerFunc: backup.MongoDbRestore,
+    },
+
+    restFul.RouteStt{
+      Name: "mondoDB_backup_list",
+      Method: "GET",
+      Pattern: "/admin/backup/list/",
+      HandlerFunc: backup.MongoDbBackupList,
+    },
+
+    restFul.RouteStt{
+      Name: "mondoDB_backup_delete",
+      Method: "GET",
+      Pattern: `/admin/backup/delete/{name:[a-z0-9_]+\.bson.gz}`,
+      HandlerFunc: backup.MongoDbBackupDelete,
     },
 
     // Download osm xml from geofabrik
