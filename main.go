@@ -113,8 +113,8 @@ import (
 	log "github.com/helmutkemper/seelog"
 	"github.com/helmutkemper/sessions"
 	"github.com/helmutkemper/gOkmz/gOkmzConsts"
-  "os/exec"
   "github.com/helmutkemper/gOsmServer/backup"
+  "github.com/helmutkemper/gOsmServer/logger"
 )
 
 type RoutesStt            []restFul.RouteStt
@@ -166,18 +166,6 @@ func ToSurroundingWay(w http.ResponseWriter, r *http.Request) {
   outputLStt.ToGeoJSonFeaturesSurroundings( way, bson.M{}, 55.0, restFul.SURROUNDING_LEFT, w )
 
   outputLStt.ToGeoJSonEnd( w )
-}
-
-func dumpMake(w http.ResponseWriter, r *http.Request) {
-  cmd := exec.Command( "mongodump", "--host 127.0.0.1", "--db brasil", "-o /home/hkemper/Dropbox/GitGoServer/static", "--gzip" )
-  err := cmd.Run()
-  if err != nil {
-    log.Critical( err )
-  }
-  err = cmd.Wait()
-  if err != nil {
-    log.Critical( err )
-  }
 }
 
 func geoJSonDb(w http.ResponseWriter, r *http.Request) {
@@ -488,7 +476,7 @@ func relationProcess(w http.ResponseWriter, r *http.Request) {
 }
 
 func onLoadConfig() {
-  install.Initialize( setupProject.Config.Server.StaticFileSysPath, setupProject.Config.Server.OsmApiDownloadPath )
+  install.Initialize( setupProject.Config.Server.StaticFileSysPath, setupProject.Config.Server.BackupFileSysPath, setupProject.Config.Server.OsmApiDownloadPath )
 
   ibge.FuzzySearchNeighborhoodClear()
   ibge.FuzzySearchDistrictClear()
@@ -523,8 +511,9 @@ func main() {
 	flag.StringVar(&listenPort, "listen-port", listenPort, "Listen port or $LISTEN_PORT env var")
 
 	// This will serve files under http://domain.com/static/<filename>
-	var dir string
+	var dir, dirBackup string
 	flag.StringVar(&dir, "dir", "static", "the directory to serve files from.")
+	flag.StringVar(&dirBackup, "dirBackup", "static", "the directory to serve files from.")
 	flag.Parse()
 
 	// db Connection
@@ -550,13 +539,6 @@ func main() {
       Method:      "GET",
       Pattern:     "/",
       HandlerFunc: Index,
-    },
-
-    restFul.RouteStt{
-      Name:        "dump",
-      Method:      "GET",
-      Pattern:     "/dump",
-      HandlerFunc: dumpMake,
     },
 
     // geoJSon
@@ -755,29 +737,29 @@ func main() {
     restFul.RouteStt{
       Name:        "reconfigure",
       Method:      "GET",
-      Pattern:     "/reconfigure",
-      HandlerFunc: setupProject.Reload,
+      Pattern:     "/admin/config/reconfigure",
+      HandlerFunc: logger.ReloadAllSetupConfig,
     },
 
     restFul.RouteStt{
       Name:        "reconfigure",
       Method:      "GET",
-      Pattern:     "/loggerall",
-      HandlerFunc: setupProject.LogAll,
+      Pattern:     "/admin/config/loggerall",
+      HandlerFunc: logger.LogAll,
     },
 
     restFul.RouteStt{
       Name:        "reconfigure",
       Method:      "GET",
-      Pattern:     "/loggeron",
-      HandlerFunc: setupProject.LogOn,
+      Pattern:     "/admin/config/loggeron",
+      HandlerFunc: logger.LogOn,
     },
 
     restFul.RouteStt{
       Name:        "reconfigure",
       Method:      "GET",
-      Pattern:     "/loggeroff",
-      HandlerFunc: setupProject.LogOff,
+      Pattern:     "/admin/config/loggeroff",
+      HandlerFunc: logger.LogOff,
     },
 
     // Procura pelo bairro
@@ -836,7 +818,11 @@ func main() {
       Handler(handler)
   }
 
-	router.PathPrefix(setupProject.Config.Server.StaticServerPath).Handler(http.StripPrefix(setupProject.Config.Server.StaticServerPath, http.FileServer(http.Dir(dir))))
+  if setupProject.Config.Server.BackupFileSysPathOpen == true {
+    router.PathPrefix("/"+setupProject.Config.Server.BackupServerPath).Handler(http.StripPrefix("/"+setupProject.Config.Server.BackupServerPath, http.FileServer(http.Dir(setupProject.Config.Server.BackupServerPath))))
+  }
+
+	router.PathPrefix("/"+setupProject.Config.Server.StaticServerPath).Handler(http.StripPrefix("/"+setupProject.Config.Server.StaticServerPath, http.FileServer(http.Dir(setupProject.Config.Server.StaticServerPath))))
 
 	// For use certificated server ( https )
 	// openssl genrsa 1024 > host.key
