@@ -115,15 +115,14 @@ import (
 	"github.com/helmutkemper/gOkmz/gOkmzConsts"
   "github.com/helmutkemper/gOsmServer/backup"
   "github.com/helmutkemper/gOsmServer/logger"
+  "github.com/helmutkemper/gOsmServer/apiMaker"
 )
 
-type RoutesStt            []restFul.RouteStt
-
-var Routes                RoutesStt
-var AddMapChannel         chan string
+var Routes                restFul.RoutesStt
+//var AddMapChannel         chan string
 
 func init(){
-  AddMapChannel = make( chan string, 20 )
+//  AddMapChannel = make( chan string, 20 )
 }
 
 var store *sessions.CookieStore
@@ -416,15 +415,14 @@ func geoJSonDbHull(w http.ResponseWriter, r *http.Request) {
 func brasilProcess(w http.ResponseWriter, r *http.Request) {
 
   gOsm.StatisticsEnable(false)
-  gOsm.ParserOsmXml( "/home/hkemper/Desktop/brasil_novo/brazil-latest.osm" )
+  gOsm.ParserOsmXml( "/osm/brazil-latest.osm" )
   return
 }
 
 func nodeProcess(w http.ResponseWriter, r *http.Request) {
 
   gOsm.StatisticsEnable(false)
-  gOsm.ParserOsmXml("/home/hkemper/Desktop/brasil_novo/brazil-latest-nodes.osm")
-  //gOsm.ParserOsmXml( "/home/kemper/Documents/ahgora/importMap/brazil-latest.osm" )
+  gOsm.ParserOsmXml("/osm/brazil-latest-nodes.osm")
   return
 }
 
@@ -504,7 +502,7 @@ func main() {
 	}
 	listenPort, ok := os.LookupEnv("LISTEN_PORT")
 	if !ok {
-		listenPort = "8082"
+		listenPort = "8083"
 	}
 	flag.StringVar(&dbHost, "mongodb-host", "127.0.0.1", "MONGODB host name or $MONGODB_HOST env var")
 	flag.StringVar(&dbPass, "mongodb-password", "", "MONGODB password or $MONGODB_PASS env var")
@@ -531,8 +529,30 @@ func main() {
   gOkmz.EnableConcaveHull( setupProject.Config.Ibge.MakeConcaveHull, setupProject.Config.Ibge.MakeGeoJSonConcaveHull )
   gOkmz.EnableConvexHull( setupProject.Config.Ibge.MakeConcaveHull, setupProject.Config.Ibge.MakeConvexHullDistance, setupProject.Config.Ibge.MakeGeoJSonConvexHull )
 
+  var inVarsNames map[string]string = make( map[string]string )
+  inVarsNames["id"] = "id"
+
+  var inVarsType map[string]interface{} = make( map[string]interface{} )
+  inVarsType["id"] = bson.M{}
+
+
+
+  var config apiMaker.ConfigApi = apiMaker.ConfigApi{
+    Name: "test",
+    Method: apiMaker.RESTFUL_METHOD_GET,
+    Pattern: "/test/{id:[0-9]+}",
+    Query: bson.M{ "id": bson.M{ "$ne": bson.M{ "gOsmQuery": "id", "gOsmType": "int" } } },
+    //Query: bson.M{ "id": bson.M{ "gOsmQuery": "id", "gOsmType": "int" } },
+    //InVarsNames: inVarsNames,
+    //InVarsTypes: inVarsType,
+  }
+
+
   // server pages
-  Routes = RoutesStt{
+  Routes = restFul.RoutesStt{
+
+    config.Route(),
+
     // index
     restFul.RouteStt{
       Name:        "index",
