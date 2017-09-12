@@ -541,10 +541,10 @@ func main() {
     Name: "test",
     Method: apiMaker.RESTFUL_METHOD_GET,
     Pattern: "/test/{id:[0-9]+}",
-    Query: bson.M{ "id": bson.M{ "$ne": bson.M{ "gOsmQuery": "id", "gOsmType": "int" } } },
-    //Query: bson.M{ "id": bson.M{ "gOsmQuery": "id", "gOsmType": "int" } },
-    //InVarsNames: inVarsNames,
-    //InVarsTypes: inVarsType,
+    //Query: bson.M{ "id": bson.M{ "$ne": bson.M{ "gOsmQuery": "id", "gOsmType": "int" } } },
+    Query: bson.M{ "id": bson.M{ "gOsmQuery": "id", "gOsmType": "int" } },
+    Element: geoMath.PointStt{},
+    Output: apiMaker.RESTFUL_OUTPUT_GEOJSON,
   }
 
 
