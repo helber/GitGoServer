@@ -537,7 +537,7 @@ func main() {
 
 
 
-  var config apiMaker.ConfigApi = apiMaker.ConfigApi{
+  var config apiMaker.ConfigApiStt = apiMaker.ConfigApiStt{
     Name: "test",
     Method: apiMaker.RESTFUL_METHOD_GET,
     Pattern: "/test/{id:[0-9]+}",
@@ -617,8 +617,8 @@ func main() {
 
     restFul.RouteStt{
       Name: "mondoDB_backup_make",
-      Method: "GET",
-      Pattern: "/admin/backup/make/{name:[a-z0-9_]+}",
+      Method: "POST",
+      Pattern: "/admin/backup/{name:[a-z0-9_]+}",
       HandlerFunc: backup.MongoDbBackup,
     },
 
@@ -632,14 +632,14 @@ func main() {
     restFul.RouteStt{
       Name: "mondoDB_backup_list",
       Method: "GET",
-      Pattern: "/admin/backup/list/",
+      Pattern: "/admin/backup/",
       HandlerFunc: backup.MongoDbBackupList,
     },
 
     restFul.RouteStt{
       Name: "mondoDB_backup_delete",
-      Method: "GET",
-      Pattern: `/admin/backup/delete/{name:[a-z0-9_]+\.bson.gz}`,
+      Method: "DELETE",
+      Pattern: `/admin/backup/{name:[a-z0-9_]+\.bson.gz}`,
       HandlerFunc: backup.MongoDbBackupDelete,
     },
 
