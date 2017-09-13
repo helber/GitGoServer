@@ -537,7 +537,7 @@ func main() {
 
 
 
-  var config apiMaker.ConfigApiInterface = &apiMaker.ConfigApi{
+  var config apiMaker.ConfigApi = apiMaker.ConfigApi{
     Name: "test",
     Method: apiMaker.RESTFUL_METHOD_GET,
     Pattern: "/test/{id:[0-9]+}",
