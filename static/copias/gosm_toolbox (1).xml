@@ -1,0 +1,63 @@
+<xml xmlns="http://www.w3.org/1999/xhtml" id="toolbox" style="display: none;">
+  <category name="api">
+    <block type="inputquerystring1input"></block>
+    <block type="typemodulenamestring">
+      <field name="valueModuleNameString">module_name</field>
+    </block>
+    <block type="typequerystring">
+      <field name="type">integer</field>
+      <field name="NAME">id</field>
+    </block>
+  </category>
+  <category name="query"></category>
+  <category name="query.tag">
+    <block type="typetagname">
+      <field name="valueTagName">name</field>
+    </block>
+    <block type="typetaghighway">
+      <field name="NAME">primary</field>
+    </block>
+    <block type="typetagplace">
+      <field name="NAME">square</field>
+    </block>
+  </category>
+  <category name="query.field">
+    <block type="typefield">
+      <field name="id">id</field>
+    </block>
+    <block type="typefieldloc">
+      <field name="lng">lng</field>
+      <field name="lat">lat</field>
+    </block>
+  </category>
+  <category name="examples">
+    <block type="inputquerystring1input">
+      <value name="moduleNameString">
+        <block type="typemodulenamestring">
+          <field name="valueModuleNameString">point</field>
+          <value name="NAME">
+            <block type="typequerystring">
+              <field name="type">integer</field>
+              <field name="NAME">id</field>
+            </block>
+          </value>
+        </block>
+      </value>
+      <statement name="inputFieldInput">
+        <block type="typefiedinput">
+          <value name="NAME">
+            <block type="typefield">
+              <field name="id">id</field>
+            </block>
+          </value>
+        </block>
+      </statement>
+      <statement name="typeElementInput">
+        <block type="elementpoint"></block>
+      </statement>
+      <statement name="typeOutputInput">
+        <block type="outputgeojson"></block>
+      </statement>
+    </block>
+  </category>
+</xml>

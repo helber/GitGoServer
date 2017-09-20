@@ -1,0 +1,29 @@
+<xml xmlns="http://www.w3.org/1999/xhtml" id="toolbox" style="display: none;">
+  <category name="api">
+    <block type="inputquerystring1input"></block>
+    <block type="typemodulenamestring">
+      <field name="valueModuleNameString">module_name</field>
+    </block>
+    <block type="typequerystring">
+      <field name="type">integer</field>
+      <field name="NAME">id</field>
+    </block>
+  </category>
+  <category name="query"></category>
+  <category name="query.tag">
+    <block type="typetagname">
+      <field name="valueTagName">name</field>
+    </block>
+    <block type="typetaghighway">
+      <field name="NAME">primary</field>
+    </block>
+    <block type="typetagplace">
+      <field name="NAME">square</field>
+    </block>
+  </category>
+  <category name="query.field">
+    <block type="typefield">
+      <field name="NAME">1</field>
+    </block>
+  </category>
+</xml>

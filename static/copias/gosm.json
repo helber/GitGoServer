@@ -1,0 +1,198 @@
+[{
+  "type": "typequerystring",
+  "message0": "type: %1 name (letters only): %2 / %3",
+  "args0": [
+    {
+      "type": "field_dropdown",
+      "name": "type",
+      "options": [
+        [
+          "int",
+          "integer"
+        ],
+        [
+          "float",
+          "float point"
+        ],
+        [
+          "string",
+          "text"
+        ],
+        [
+          "nearby",
+          "near by coordinates"
+        ],
+        [
+          "regex",
+          "regular expression"
+        ]
+      ]
+    },
+    {
+      "type": "field_input",
+      "name": "NAME",
+      "text": "id"
+    },
+    {
+      "type": "input_value",
+      "name": "valueQueryString",
+      "check": [
+        "typeQueryString",
+        "typeModuleNameStringValueInput"
+      ]
+    }
+  ],
+  "inputsInline": false,
+  "output": "typeQueryString",
+  "colour": 120,
+  "tooltip": "typeQueryString",
+  "helpUrl": ""
+},
+{
+  "type": "inputquerystring1input",
+  "message0": "api.gosm.io/ %1 %2",
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "moduleNameString",
+      "check": "typeModuleNameString"
+    },
+    {
+      "type": "input_statement",
+      "name": "inputFieldInput",
+      "check": "fieldInput"
+    }
+  ],
+  "colour": 230,
+  "tooltip": "define query string",
+  "helpUrl": ""
+},
+{
+  "type": "fieldinput",
+  "message0": "field: %1 type: %2 %3",
+  "args0": [
+    {
+      "type": "field_dropdown",
+      "name": "fieldName",
+      "options": [
+        [
+          "tag",
+          "tag"
+        ],
+        [
+          "id",
+          "id"
+        ],
+        [
+          "nearBy",
+          "nearBy"
+        ]
+      ]
+    },
+    {
+      "type": "field_dropdown",
+      "name": "nameType",
+      "options": [
+        [
+          "fix value",
+          "fixValue"
+        ],
+        [
+          "query string value",
+          "queryStringValue"
+        ]
+      ]
+    },
+    {
+      "type": "input_value",
+      "name": "NAME"
+    }
+  ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "colour": 230,
+  "tooltip": "",
+  "helpUrl": ""
+},
+{
+  "type": "inputquerystring",
+  "message0": "%1",
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "NAME"
+    }
+  ],
+  "colour": 230,
+  "tooltip": "",
+  "helpUrl": ""
+},
+{
+  "type": "typemodulenamestring",
+  "message0": "%1 / %2",
+  "args0": [
+    {
+      "type": "field_input",
+      "name": "valueModuleNameString",
+      "text": "module_name"
+    },
+    {
+      "type": "input_value",
+      "name": "NAME",
+      "check": [
+        "typeQueryString",
+        "typeModuleNameString"
+      ]
+    }
+  ],
+  "output": [
+    "typeModuleNameString",
+    "typeQueryString"
+  ],
+  "colour": 230,
+  "tooltip": "",
+  "helpUrl": ""
+},
+{
+  "type": "typetagname",
+  "message0": "tag.name: %1",
+  "args0": [
+    {
+      "type": "field_input",
+      "name": "valueTagName",
+      "text": "name"
+    }
+  ],
+  "output": "typeTagName",
+  "colour": 230,
+  "tooltip": "",
+  "helpUrl": ""
+},
+{
+  "type": "typetaghighway",
+  "message0": "tag.highway: %1",
+  "args0": [
+    {
+      "type": "field_dropdown",
+      "name": "NAME",
+      "options": [
+        [
+          "primary",
+          "primary"
+        ],
+        [
+          "secondary",
+          "secondary"
+        ],
+        [
+          "residential",
+          "residential"
+        ]
+      ]
+    }
+  ],
+  "output": "typeTag",
+  "colour": 230,
+  "tooltip": "",
+  "helpUrl": ""
+}]
