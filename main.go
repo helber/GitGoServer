@@ -90,7 +90,7 @@ import (
 	"github.com/helmutkemper/gOsm/consts"
 	"github.com/helmutkemper/gOsm/db"
 	"github.com/helmutkemper/gOsm/geoMath"
-	"github.com/helmutkemper/gOsmServer/Install"
+	install "github.com/helmutkemper/gOsmServer/Install"
 	"github.com/helmutkemper/gOsmServer/ibge"
 	"github.com/helmutkemper/gOsmServer/information"
 	//"github.com/helmutkemper/gOsmServer/leaflet"
@@ -497,6 +497,7 @@ func main() {
 	flag.Parse()
 
 	// db Connection
+	fmt.Printf("Mongo: mongodb://%s:27017 pass=%s\n", dbHost, dbPass)
 	db.Connect(dbHost, dbPass)
 	// db.Connect( "127.0.0.1", "brasil" )
 
@@ -831,6 +832,7 @@ func main() {
 
 	// For uncertificated server ( http )
 	portConn := fmt.Sprintf(":%s", listenPort)
+	fmt.Printf("LISTEN on %s\n", portConn)
 	log.Critical(http.ListenAndServe(portConn, router))
 
 	//context.ClearHandler(http.DefaultServeMux)
