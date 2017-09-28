@@ -6,7 +6,7 @@ Installing:
 
 clone this repository
 
-git submodule udpate --init --recursive
+git submodule update
 
 export GOPATH="`pwd`/Libraries"
 
