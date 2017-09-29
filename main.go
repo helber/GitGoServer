@@ -479,16 +479,21 @@ func main() {
 	// Variables
 	dbHost, ok := os.LookupEnv("MONGODB_HOST")
 	dbPass, ok := os.LookupEnv("MONGODB_PASS")
+	fmt.Printf("GO ===> MONGODB_HOST=%s\n", dbHost)
+	fmt.Printf("GO ===> MONGODB_PASS=%s\n", dbPass)
+	pwd, _ := os.Getwd()
+	fmt.Printf("Current dir: %s\n", pwd)
 	if dbHost == "" {
-		dbHost = "127.0.0.1"
+		flag.StringVar(&dbHost, "mongodb-host", "127.0.0.1", "MONGODB host name or $MONGODB_HOST env var")
 	}
 	listenPort, ok := os.LookupEnv("LISTEN_PORT")
 	if !ok {
 		listenPort = "8083"
+		flag.StringVar(&listenPort, "listen-port", listenPort, "Listen port or $LISTEN_PORT env var")
 	}
-	flag.StringVar(&dbHost, "mongodb-host", "127.0.0.1", "MONGODB host name or $MONGODB_HOST env var")
-	flag.StringVar(&dbPass, "mongodb-password", "", "MONGODB password or $MONGODB_PASS env var")
-	flag.StringVar(&listenPort, "listen-port", listenPort, "Listen port or $LISTEN_PORT env var")
+	if dbPass == "" {
+		flag.StringVar(&dbPass, "mongodb-password", "", "MONGODB password or $MONGODB_PASS env var")
+	}
 
 	// This will serve files under http://domain.com/static/<filename>
 	var dir, dirBackup string

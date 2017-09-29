@@ -10,14 +10,11 @@ RUN \
 RUN \
     export GOPATH=/app/GitGoServer/Libraries && \
     cd /app/GitGoServer && \
-    cp -r /app/GitGoServer/static /app/static && \
-    go build -o /app/app && \
-    rm -Rf /app/GitGoServer
+    cp -r /app/GitGoServer/templates /go/templates && \
+    cp -r /app/GitGoServer/static /go/static && \
+    go build -o /app/app
 
-ENV \
-    MONGODB_HOST="mongo" \
-    MONGODB_PASS="" \
-    LISTEN_PORT="80"
+# COPY entrypoint.sh /entrypoint.sh
 
-
-ENTRYPOINT ["/app/app", "-dir", "/app/static", "-dirBackup", "/app/static"]
+ENTRYPOINT ["/app/app", "-dir", "/go/static", "-dirBackup", "/go/static"]
+# ENTRYPOINT ["/entrypoint.sh"]
